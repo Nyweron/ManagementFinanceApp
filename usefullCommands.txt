@@ -1,0 +1,7 @@
+https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetcore-2.2&tabs=visual-studio
+
+--DotNet Core 2.1
+
+--run this command in WebApi
+dotnet watch run
+
