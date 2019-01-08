@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { managementFinance } from "../apiUrls";
 
 export class FetchData extends Component {
   displayName = FetchData.name
@@ -7,10 +8,9 @@ export class FetchData extends Component {
     super(props);
     this.state = { forecasts: [], loading: true };
 
-    fetch('api/SampleData/WeatherForecasts')
+    fetch(managementFinance +'api/SampleData/WeatherForecasts')
       .then(response => response.json())
       .then(data => {
-        console.log("data",data)
         this.setState({ forecasts: data, loading: false });
       });
   }
