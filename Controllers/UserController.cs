@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Entities;
+using ManagementFinanceApp.Repository.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,45 +14,34 @@ namespace ManagementFinanceApp.Controllers
   public class UserController : Controller
   {
     private readonly ManagementFinanceAppDbContext _context;
+    private IUserRepository _userRepository;
 
-    public UserController(ManagementFinanceAppDbContext context)
+    public UserController(ManagementFinanceAppDbContext context, IUserRepository userRepository)
     {
       _context = context;
-
-      if (_context.Users.Count() == 0)
-      {
-        // Create a new TodoItem if collection is empty,
-        // which means you can't delete all TodoItems.
-        _context.Users.Add(new User
-        {
-          FirstName = "FirstName 1",
-            LastName = "LastName 1",
-            Nick = "Nick 1",
-            Email = "Email1",
-            IsDelete = false
-        });
-        _context.SaveChanges();
-      }
+      _userRepository = userRepository;
     }
     // GET: api/Todo
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+    public IActionResult GetUsers()
     {
-      return await _context.Users.ToListAsync();
+      var userEntities = _userRepository.GetAllAsync().Result;
+      return Ok(userEntities);
     }
 
-    // GET: api/Todo/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(int id)
-    {
-      var todoItem = await _context.Users.FindAsync(id);
+    // // GET: api/Todo/5
+    // [HttpGet("{id}")]
+    // public async Task<ActionResult<User>> GetUser(int id)
+    // {
+    //   var todoItem = await _context.Users.FindAsync(id);
 
-      if (todoItem == null)
-      {
-        return NotFound();
-      }
+    //   if (todoItem == null)
+    //   {
+    //     return NotFound();
+    //   }
 
-      return todoItem;
-    }
+    //   return todoItem;
+    // }
+
   }
 }
