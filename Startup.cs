@@ -1,4 +1,8 @@
+using System;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using ManagementFinanceApp.Data;
+using ManagementFinanceApp.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -12,31 +16,47 @@ namespace ManagementFinanceApp
 {
   public class Startup
   {
+    public IConfiguration Configuration { get; }
+    public IContainer Container { get; private set; }
+
     public Startup(IConfiguration configuration)
     {
       Configuration = configuration;
     }
 
-    public IConfiguration Configuration { get; }
-
     // This method gets called by the runtime. Use this method to add services to the container.
-    public void ConfigureServices(IServiceCollection services)
+    public IServiceProvider ConfigureServices(IServiceCollection services)
     {
       services.AddDbContext<ManagementFinanceAppDbContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddCors();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddMemoryCache();
+      services.AddResponseCaching();
 
       // In production, the React files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
       {
         configuration.RootPath = "ClientApp/build";
       });
+
+      // Configute Autofac
+      var builder = new ContainerBuilder();
+      // Loads the already configured items from services object
+      builder.Populate(services);
+
+      builder.RegisterAssemblyTypes(typeof(Startup).Assembly)
+        .AsImplementedInterfaces()
+        .InstancePerLifetimeScope();
+      RepositoryContainer.Update(builder);
+      Container = builder.Build();
+
+      return new AutofacServiceProvider(Container);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
     {
       if (env.IsDevelopment())
       {
@@ -73,6 +93,8 @@ namespace ManagementFinanceApp
         }
 
       });
+
+      applicationLifetime.ApplicationStopped.Register(() => Container.Dispose());
     }
   }
 }
