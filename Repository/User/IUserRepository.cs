@@ -3,8 +3,14 @@ using System.Threading.Tasks;
 
 namespace ManagementFinanceApp.Repository.User
 {
-  public interface IUserRepository
+  public interface IUserRepository : IRepository<Entities.User>
   {
-    Task<IEnumerable<Entities.User>> GetAllAsync();
+    bool UserExists(int userId);
+    Task<bool> UserExistsAsync(int userId);
+    bool EmailExists(string email);
+    Task<bool> EmailExistsAsync(string email);
+    void UpdateUser(Entities.User user);
+    bool Save();
+    Task<bool> SaveAsync();
   }
 }
