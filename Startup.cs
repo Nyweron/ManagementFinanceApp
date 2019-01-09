@@ -22,11 +22,11 @@ namespace ManagementFinanceApp
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
-      services.AddDbContext<ManagementFinanceAppDbContext>(opt =>
-        opt.UseInMemoryDatabase("ManagementFinanceApp"));
+      // services.AddDbContext<ManagementFinanceAppDbContext>(options =>
+      //   options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddCors();
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
       // In production, the React files will be served from this directory
       services.AddSpaStaticFiles(configuration =>
