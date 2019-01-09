@@ -30,7 +30,7 @@ namespace ManagementFinanceApp.Entities
     public string Email { get; set; }
 
     [Required]
-    public bool IsDelete { get; set; }
+    public bool IsDelete { get; set; } = false;
 
   }
 }
