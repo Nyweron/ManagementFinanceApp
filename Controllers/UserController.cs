@@ -21,7 +21,7 @@ namespace ManagementFinanceApp.Controllers
       _context = context;
       _userRepository = userRepository;
     }
-    // GET: api/Todo
+
     [HttpGet]
     public IActionResult GetUsers()
     {
@@ -29,19 +29,18 @@ namespace ManagementFinanceApp.Controllers
       return Ok(userEntities);
     }
 
-    // // GET: api/Todo/5
-    // [HttpGet("{id}")]
-    // public async Task<ActionResult<User>> GetUser(int id)
-    // {
-    //   var todoItem = await _context.Users.FindAsync(id);
+    [HttpGet("{id}")]
+    public async Task<ActionResult<User>> GetUser(int id)
+    {
+      var todoItem = await _context.Users.FindAsync(id);
 
-    //   if (todoItem == null)
-    //   {
-    //     return NotFound();
-    //   }
+      if (todoItem == null)
+      {
+        return NotFound();
+      }
 
-    //   return todoItem;
-    // }
+      return todoItem;
+    }
 
   }
 }
