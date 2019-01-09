@@ -9,6 +9,7 @@ namespace ManagementFinanceApp.Settings
     public static IMapper GetMapper() => new MapperConfiguration(cfg =>
     {
       cfg.CreateMap<UserDto, User>();
+      cfg.CreateMap<User, UserDto>();
     }).CreateMapper();
   }
 }
