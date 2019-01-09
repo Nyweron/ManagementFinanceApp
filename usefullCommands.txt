@@ -5,3 +5,12 @@ https://docs.microsoft.com/en-us/aspnet/core/client-side/spa/react?view=aspnetco
 --run this command in WebApi
 dotnet watch run
 
+--Remove migration (database must be removed before run this command. Or delete record from EFMigrationsHistory table)
+dotnet ef migrations remove
+
+--Generate sql script, run this command in WebApi
+ dotnet ef migrations script
+
+--Update database, run this command in WebApi
+ dotnet ef database update
+
