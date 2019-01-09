@@ -15,11 +15,9 @@ namespace ManagementFinanceApp.Entities
     [MaxLength(30)]
     public string FirstName { get; set; }
 
-    [Required]
     [MaxLength(40)]
     public string LastName { get; set; }
 
-    [Required]
     [MaxLength(20)]
     public string Nick { get; set; }
     public string Address { get; set; }
