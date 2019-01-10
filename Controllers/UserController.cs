@@ -30,7 +30,7 @@ namespace ManagementFinanceApp.Controllers
     [HttpGet]
     public IActionResult GetUsers()
     {
-      var userEntities = _userRepository.GetAllAsync().Result;
+      var userEntities = _userRepository.GetAllAsync().Result.OrderByDescending(x => x.Id);
       return Ok(userEntities);
     }
 
