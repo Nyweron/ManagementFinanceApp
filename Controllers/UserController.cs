@@ -28,9 +28,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpGet]
-    public IActionResult GetAll()
+    public async Task<IActionResult> GetAll()
     {
-      var userEntities = _userRepository.GetAllAsync().Result.OrderByDescending(x => x.Id);
+      var userEntities = await _userRepository.GetAllAsync();
       return Ok(userEntities);
     }
 
