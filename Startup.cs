@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace ManagementFinanceApp
 {
@@ -27,6 +28,11 @@ namespace ManagementFinanceApp
     // This method gets called by the runtime. Use this method to add services to the container.
     public IServiceProvider ConfigureServices(IServiceCollection services)
     {
+      services.AddSwaggerGen(c =>
+      {
+        c.SwaggerDoc("v1", new Info { Title = "Contacts API", Version = "v1" });
+      });
+
       services.AddDbContext<ManagementFinanceAppDbContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -67,6 +73,17 @@ namespace ManagementFinanceApp
         app.UseExceptionHandler("/Error");
         app.UseHsts();
       }
+
+      // Enable middleware to serve generated Swagger as a JSON endpoint.
+      app.UseSwagger();
+
+      // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+      // specifying the Swagger JSON endpoint.
+      //https://localhost:5001/swagger/
+      app.UseSwaggerUI(c =>
+      {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+      });
 
       app.UseHttpsRedirection();
       app.UseStaticFiles();
