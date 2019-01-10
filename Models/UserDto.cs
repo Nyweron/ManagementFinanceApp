@@ -11,13 +11,13 @@ namespace ManagementFinanceApp.Models
     public string LastName { get; set; }
     public string Nick { get; set; }
     public string Address { get; set; }
+
+    [Phone]
     public string Phone { get; set; }
 
     [Required]
+    [EmailAddress(ErrorMessage = "Bad email")]
     public string Email { get; set; }
-
-    [Required]
-    public bool IsDelete { get; set; } = false;
 
   }
 }
