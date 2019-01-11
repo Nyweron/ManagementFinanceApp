@@ -35,17 +35,17 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpGet("{userId}")]
-    public IActionResult Get(int userId)
+    public async Task<IActionResult> Get(int userId)
     {
       try
       {
-        if (!_userRepository.UserExistsAsync(userId).Result)
+        if (!await _userRepository.UserExistsAsync(userId))
         {
           // _logger.LogInformation($"User with id {userId} wasn't found when accessing to UserController/Get(int userId).");
           return NotFound();
         }
 
-        var userEntities = _userRepository.GetAsync(userId).Result;
+        var userEntities = _userRepository.GetAsync(userId);
         return Ok(userEntities);
       }
       catch (Exception ex)
@@ -56,7 +56,7 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public IActionResult Post([FromBody] UserDto user)
+    public async Task<IActionResult> Post([FromBody] UserDto user)
     {
       if (user == null)
       {
@@ -76,9 +76,9 @@ namespace ManagementFinanceApp.Controllers
       }
 
       var userEntity = _mapper.Map<User>(user);
-      _userRepository.AddAsync(userEntity);
+      await _userRepository.AddAsync(userEntity);
 
-      if (!_userRepository.SaveAsync().Result)
+      if (!await _userRepository.SaveAsync())
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
@@ -89,14 +89,14 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPut("{userId}")]
-    public IActionResult Put([FromBody] UserDto user, int userId)
+    public async Task<IActionResult> Put([FromBody] UserDto user, int userId)
     {
       if (user == null)
       {
         return BadRequest();
       }
 
-      if (!_userRepository.UserExists(userId))
+      if (!await _userRepository.UserExistsAsync(userId))
       {
         return NotFound();
       }
@@ -107,9 +107,10 @@ namespace ManagementFinanceApp.Controllers
       }
 
       var updatedUser = _mapper.Map<User>(user);
-      _userRepository.UpdateUser(updatedUser);
+      updatedUser.Id = userId;
+      await _userRepository.UpdateUserAsync(updatedUser);
 
-      if (!_userRepository.Save())
+      if (!await _userRepository.SaveAsync())
       {
         return StatusCode(500, "A problem happend while handling your request.");
       }
@@ -118,18 +119,17 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
-      if (!_userRepository.UserExistsAsync(id).Result)
+      if (!await _userRepository.UserExistsAsync(id))
       {
         // _logger.LogInformation($"User with id: {id} is not exist. When accessing to UserController/Delete(int id).");
         return NotFound();
       }
 
-      var user = _userRepository.GetAsync(id).Result;
-      _userRepository.Remove(user);
+      var user = await _userRepository.GetAsync(id);
 
-      if (!_userRepository.SaveAsync().Result)
+      if (!await _userRepository.RemoveAsync(user))
       {
         //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
         return StatusCode(500, "A problem happend while handling your request.");
