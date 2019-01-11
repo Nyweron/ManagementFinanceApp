@@ -40,6 +40,20 @@ namespace ManagementFinanceApp.Repository.User
       ManagementFinanceAppDbContext.Update(user);
     }
 
+    public async Task UpdateUserAsync(Entities.User user)
+    {
+      var itemToUpdate = await ManagementFinanceAppDbContext.Users.SingleOrDefaultAsync(r => r.Id == user.Id);
+      if (itemToUpdate != null)
+      {
+        itemToUpdate.FirstName = user.FirstName;
+        itemToUpdate.LastName = user.LastName;
+        itemToUpdate.Nick = user.Nick;
+        itemToUpdate.Address = user.Address;
+        itemToUpdate.Phone = user.Phone;
+        itemToUpdate.Email = user.Email;
+      }
+    }
+
     public bool Save()
     {
       return (ManagementFinanceAppDbContext.SaveChanges() >= 0);

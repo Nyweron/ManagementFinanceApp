@@ -10,6 +10,7 @@ namespace ManagementFinanceApp.Repository.User
     bool EmailExists(string email);
     Task<bool> EmailExistsAsync(string email);
     void UpdateUser(Entities.User user);
+    Task UpdateUserAsync(Entities.User user);
     bool Save();
     Task<bool> SaveAsync();
   }
