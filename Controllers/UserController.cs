@@ -51,7 +51,7 @@ namespace ManagementFinanceApp.Controllers
       catch (Exception ex)
       {
         // _logger.LogCritical($"Exception {userId}.", ex);
-        return StatusCode(500, "Problem with your request.");
+        return StatusCode(500, "A problem happend while handling your request.");
       }
     }
 
