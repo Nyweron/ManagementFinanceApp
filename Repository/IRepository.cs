@@ -5,18 +5,19 @@ using System.Threading.Tasks;
 
 namespace ManagementFinanceApp.Repository
 {
-  public interface IRepository<TEntitiy> where TEntitiy : class
+  public interface IRepository<TEntity> where TEntity : class
   {
-    TEntitiy Get(int id);
-    Task<TEntitiy> GetAsync(int id);
-    IEnumerable<TEntitiy> GetAll();
-    Task<IEnumerable<TEntitiy>> GetAllAsync();
-    IEnumerable<TEntitiy> Find(Expression<Func<TEntitiy, bool>> predicate);
-    void Add(TEntitiy entity);
-    Task AddAsync(TEntitiy entity);
-    void AddRange(IEnumerable<TEntitiy> entities);
-    Task AddRangeAsync(IEnumerable<TEntitiy> entities);
-    void Remove(TEntitiy entity);
-    void RemoveRange(IEnumerable<TEntitiy> entities);
+    TEntity Get(int id);
+    Task<TEntity> GetAsync(int id);
+    IEnumerable<TEntity> GetAll();
+    Task<IEnumerable<TEntity>> GetAllAsync();
+    IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+    void Add(TEntity entity);
+    Task AddAsync(TEntity entity);
+    void AddRange(IEnumerable<TEntity> entities);
+    Task AddRangeAsync(IEnumerable<TEntity> entities);
+    void Remove(TEntity entity);
+    void RemoveRange(IEnumerable<TEntity> entities);
+    Task<bool> RemoveAsync(TEntity entity);
   }
 }

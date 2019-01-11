@@ -71,5 +71,12 @@ namespace ManagementFinanceApp.Repository
     {
       Context.Set<TEntity>().RemoveRange(entities);
     }
+
+    public async Task<bool> RemoveAsync(TEntity entity)
+    {
+      Context.Set<TEntity>().Remove(entity);
+      var result = await Context.SaveChangesAsync();
+      return (result >= 0);
+    }
   }
 }
