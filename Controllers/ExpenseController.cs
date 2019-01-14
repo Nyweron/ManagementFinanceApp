@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.Expense;
 using Microsoft.AspNetCore.Mvc;
@@ -17,5 +18,13 @@ namespace ManagementFinanceApp.Controllers
       _expenseRepository = expenseRepository;
       _mapper = mapper;
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+      var getAll = await _expenseRepository.GetAllAsync();
+      return Ok(getAll);
+    }
+
   }
 }
