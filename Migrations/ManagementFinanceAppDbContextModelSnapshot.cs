@@ -7,79 +7,79 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ManagementFinanceApp.Migrations
+{
+  [DbContext(typeof(ManagementFinanceAppDbContext))]
+  partial class ManagementFinanceAppDbContextModelSnapshot : ModelSnapshot
   {
-    [DbContext(typeof(ManagementFinanceAppDbContext))]
-    partial class ManagementFinanceAppDbContextModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
-      protected override void BuildModel(ModelBuilder modelBuilder)
-      {
 #pragma warning disable 612, 618
-        modelBuilder
-          .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-          .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
-          .HasAnnotation("Relational:MaxIdentifierLength", 63);
+      modelBuilder
+        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
+        .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
+        .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-        modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryGroup", b =>
-          modelBuilder.Entity("ManagementFinanceApp.Entities.Expense", b =>
-          {
-            b.Property<int>("Id")
-              .ValueGeneratedOnAdd();
+      modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryGroup", b => { });
+      modelBuilder.Entity("ManagementFinanceApp.Entities.Expense", b =>
+      {
+        b.Property<int>("Id")
+          .ValueGeneratedOnAdd();
 
-            b.Property<int>("CategoryType");
+        b.Property<int>("CategoryType");
 
-            b.Property<bool>("IsDeleted");
+        b.Property<bool>("IsDeleted");
 
-            b.Property<string>("Name")
-              .IsRequired();
+        b.Property<string>("Name")
+          .IsRequired();
 
-            b.HasKey("Id");
+        b.HasKey("Id");
 
-            b.ToTable("CategoryGroups");
-            b.Property<string>("Attachment");
+        b.ToTable("CategoryGroups");
+        b.Property<string>("Attachment");
 
-            b.Property<string>("Comment");
+        b.Property<string>("Comment");
 
-            b.Property<DateTime>("Date");
+        b.Property<DateTime>("Date");
 
-            b.Property<double>("HowMuch");
+        b.Property<double>("HowMuch");
 
-            b.Property<bool>("StandingOrder");
+        b.Property<bool>("StandingOrder");
 
-            b.HasKey("Id");
+        b.HasKey("Id");
 
-            b.ToTable("Expenses");
-          });
+        b.ToTable("Expenses");
+      });
 
-          modelBuilder.Entity("ManagementFinanceApp.Entities.User", b =>
-          {
-            b.Property<int>("Id")
-              .ValueGeneratedOnAdd();
+      modelBuilder.Entity("ManagementFinanceApp.Entities.User", b =>
+      {
+        b.Property<int>("Id")
+          .ValueGeneratedOnAdd();
 
-            b.Property<string>("Address");
+        b.Property<string>("Address");
 
-            b.Property<string>("Email")
-              .IsRequired()
-              .HasMaxLength(50);
+        b.Property<string>("Email")
+          .IsRequired()
+          .HasMaxLength(50);
 
-            b.Property<string>("FirstName")
-              .IsRequired()
-              .HasMaxLength(30);
+        b.Property<string>("FirstName")
+          .IsRequired()
+          .HasMaxLength(30);
 
-            b.Property<bool>("IsDelete");
+        b.Property<bool>("IsDelete");
 
-            b.Property<string>("LastName")
-              .HasMaxLength(40);
+        b.Property<string>("LastName")
+          .HasMaxLength(40);
 
-            b.Property<string>("Nick")
-              .HasMaxLength(20);
+        b.Property<string>("Nick")
+          .HasMaxLength(20);
 
-            b.Property<string>("Phone");
+        b.Property<string>("Phone");
 
-            b.HasKey("Id");
+        b.HasKey("Id");
 
-            b.ToTable("Users");
-          });
+        b.ToTable("Users");
+      });
 #pragma warning restore 612, 618
-        }
-      }
     }
+  }
+}
