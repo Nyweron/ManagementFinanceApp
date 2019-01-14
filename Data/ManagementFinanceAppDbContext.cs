@@ -8,5 +8,6 @@ namespace ManagementFinanceApp.Data
     public ManagementFinanceAppDbContext(DbContextOptions<ManagementFinanceAppDbContext> options) : base(options) { }
 
     public DbSet<User> Users { get; set; }
+    public DbSet<CategoryGroup> CategoryGroups { get; set; }
   }
 }

@@ -10,6 +10,7 @@ namespace ManagementFinanceApp.Settings
     {
       cfg.CreateMap<UserDto, User>();
       cfg.CreateMap<User, UserDto>();
+      cfg.CreateMap<Entities.CategoryGroup, Models.CategoryGroup>();
     }).CreateMapper();
   }
 }
