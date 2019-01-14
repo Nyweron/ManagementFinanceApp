@@ -7,6 +7,7 @@ using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Repository.User;
+using ManagementFinanceApp.Service.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ namespace ManagementFinanceApp.Controllers
 
     private IUserRepository _userRepository;
     private IMapper _mapper;
+    private UserService _userService;
     public UserController(IUserRepository userRepository,
       IMapper mapper
     )
@@ -64,7 +66,7 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest();
       }
 
-      if (_userRepository.EmailExistsAsync(user.Email).Result)
+      if (await _userRepository.EmailExistsAsync(user.Email))
       {
         // _logger.LogInformation($"The Email {user.Email} exist in database, use other email. UserController/Post(UserDto user).");
         return BadRequest($"The Email {user.Email} exist, user other email.");
@@ -75,17 +77,18 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var userEntity = _mapper.Map<User>(user);
-      await _userRepository.AddAsync(userEntity);
+      _userService = new UserService(_userRepository, _mapper);
+      var isCreated = await _userService.AddUser(user);
 
-      if (!await _userRepository.SaveAsync())
+      if (isCreated)
+      {
+        return Created("", null);
+      }
+      else
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
-
-      //TODO: Implement Realistic Implementation
-      return Created("", null);
     }
 
     [HttpPut("{userId}")]
