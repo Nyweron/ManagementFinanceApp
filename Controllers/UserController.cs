@@ -20,12 +20,13 @@ namespace ManagementFinanceApp.Controllers
 
     private IUserRepository _userRepository;
     private IMapper _mapper;
-    private UserService _userService;
-    public UserController(IUserRepository userRepository,
+    private IUserService _userService;
+    public UserController(IUserRepository userRepository, IUserService userService,
       IMapper mapper
     )
     {
       _userRepository = userRepository;
+      _userService = userService;
       _mapper = mapper;
     }
 
@@ -77,7 +78,6 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      _userService = new UserService(_userRepository, _mapper);
       var isCreated = await _userService.AddUser(user);
 
       if (isCreated)
@@ -109,16 +109,18 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var updatedUser = _mapper.Map<User>(user);
-      updatedUser.Id = userId;
-      await _userRepository.UpdateUserAsync(updatedUser);
-
-      if (!await _userRepository.SaveAsync())
+      var isUpdated = await _userService.EditUser(user, userId);
+      if (isUpdated)
       {
+        //TODO: Implement Realistic Implementation
+        return Ok();
+      }
+      else
+      {
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
-      //TODO: Implement Realistic Implementation
-      return Ok();
+
     }
 
     [HttpDelete("{id}")]
