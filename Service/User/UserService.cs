@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.User;
@@ -36,11 +37,16 @@ namespace ManagementFinanceApp.Service.User
       var existedUser = await _userRepository.GetAsync(userId);
       var mappedUser = _mapper.Map<Entities.User>(user);
 
-      //TO DO write code which create data entity + model = objtToSaveWithNewDataFromModelAndRestDataFromExistEntity
+      if (existedUser.Address != user.Address && user.Address != null) { existedUser.Address = user.Address; }
+      if (existedUser.Email != user.Email && user.Email != null) { existedUser.Email = user.Email; }
+      if (existedUser.FirstName != user.FirstName && user.FirstName != null) { existedUser.FirstName = user.FirstName; }
+      if (existedUser.LastName != user.LastName && user.LastName != null) { existedUser.LastName = user.LastName; }
+      if (existedUser.Nick != user.Nick && user.Nick != null) { existedUser.Nick = user.Nick; }
+      if (existedUser.Phone != user.Phone && user.Phone != null) { existedUser.Phone = user.Phone; }
 
-      var x = 0;
+      //Idea - Front should send All data about exist and changed data to backend then backend only update row in db?
 
-      await _userRepository.UpdateUserAsync(mappedUser);
+      await _userRepository.UpdateUserAsync(existedUser);
 
       if (!await _userRepository.SaveAsync())
       {
