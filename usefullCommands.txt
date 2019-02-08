@@ -14,3 +14,6 @@ dotnet ef migrations remove
 --Update database, run this command in WebApi
  dotnet ef database update
 
+--Add migration
+ dotnet ef migrations add NameOfMigration
+
