@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,7 @@ namespace ManagementFinanceApp.Entities
 
     [Required]
     public int CategoryType { get; set; } = -1;
+
+    public List<CategorySaving> CategorySavings { get; set; }
   }
 }
