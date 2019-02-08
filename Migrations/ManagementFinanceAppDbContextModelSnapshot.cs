@@ -19,8 +19,19 @@ namespace ManagementFinanceApp.Migrations
         .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
         .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-      modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryGroup", b => { });
-      modelBuilder.Entity("ManagementFinanceApp.Entities.Expense", b =>
+      modelBuilder.Entity("ManagementFinanceApp.Entities.Blog", b =>
+      {
+        b.Property<int>("BlogId")
+          .ValueGeneratedOnAdd();
+
+        b.Property<string>("Url");
+
+        b.HasKey("BlogId");
+
+        b.ToTable("Blogs");
+      });
+
+      modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryGroup", b =>
       {
         b.Property<int>("Id")
           .ValueGeneratedOnAdd();
@@ -35,6 +46,13 @@ namespace ManagementFinanceApp.Migrations
         b.HasKey("Id");
 
         b.ToTable("CategoryGroups");
+      });
+
+      modelBuilder.Entity("ManagementFinanceApp.Entities.Expense", b =>
+      {
+        b.Property<int>("Id")
+          .ValueGeneratedOnAdd();
+
         b.Property<string>("Attachment");
 
         b.Property<string>("Comment");
@@ -50,34 +68,60 @@ namespace ManagementFinanceApp.Migrations
         b.ToTable("Expenses");
       });
 
-      modelBuilder.Entity("ManagementFinanceApp.Entities.User", b =>
+      modelBuilder.Entity("ManagementFinanceApp.Entities.Post", b =>
       {
-        b.Property<int>("Id")
+        b.Property<int>("PostId")
           .ValueGeneratedOnAdd();
 
-        b.Property<string>("Address");
+        b.Property<int>("BlogId");
 
-        b.Property<string>("Email")
-          .IsRequired()
-          .HasMaxLength(50);
+        b.Property<string>("Content");
 
-        b.Property<string>("FirstName")
-          .IsRequired()
-          .HasMaxLength(30);
+        b.Property<string>("Title");
 
-        b.Property<bool>("IsDelete");
+        b.HasKey("PostId");
 
-        b.Property<string>("LastName")
-          .HasMaxLength(40);
+        b.HasIndex("BlogId");
 
-        b.Property<string>("Nick")
-          .HasMaxLength(20);
+        b.ToTable("Posts");
+      });
 
-        b.Property<string>("Phone");
+      // modelBuilder.Entity("ManagementFinanceApp.Entities.User", b =>
+      //     {
+      //         b.Property<int>("Id")
+      //             .ValueGeneratedOnAdd();
 
-        b.HasKey("Id");
+      //         b.Property<string>("Address");
 
-        b.ToTable("Users");
+      //         b.Property<string>("Email")
+      //             .IsRequired()
+      //             .HasMaxLength(50);
+
+      //         b.Property<string>("FirstName")
+      //             .IsRequired()
+      //             .HasMaxLength(30);
+
+      //         b.Property<bool>("IsDelete");
+
+      //         b.Property<string>("LastName")
+      //             .HasMaxLength(40);
+
+      //         b.Property<string>("Nick")
+      //             .HasMaxLength(20);
+
+      //         b.Property<string>("Phone");
+
+      //         b.HasKey("Id");
+
+      //         b.ToTable("Users");
+      //     });
+
+      modelBuilder.Entity("ManagementFinanceApp.Entities.Post", b =>
+      {
+        b.HasOne("ManagementFinanceApp.Entities.Blog", "Blog")
+          .WithMany("Posts")
+          .HasForeignKey("BlogId")
+          .OnDelete(DeleteBehavior.Cascade);
       });
 #pragma warning restore 612, 618
     }
