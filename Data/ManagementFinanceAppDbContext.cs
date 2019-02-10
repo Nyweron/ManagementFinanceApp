@@ -11,6 +11,7 @@ namespace ManagementFinanceApp.Data
     public DbSet<CategoryGroup> CategoryGroups { get; set; }
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<CategorySaving> CategorySavings { get; set; }
+    public DbSet<TransferHistory> TransferHistories { get; set; }
 
   }
 }
