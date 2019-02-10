@@ -4,7 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManagementFinanceApp.Entities
 {
-  public class Expense
+  /* Przychód - Income */
+  public class Income
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

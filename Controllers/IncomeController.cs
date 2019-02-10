@@ -1,28 +1,28 @@
 using System.Threading.Tasks;
 using AutoMapper;
-using ManagementFinanceApp.Repository.Expense;
+using ManagementFinanceApp.Repository.Income;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class ExpenseController : Controller
+  public class IncomeController : Controller
   {
-    private IExpenseRepository _expenseRepository;
+    private IIncomeRepository _incomeRepository;
     private IMapper _mapper;
-    public ExpenseController(IExpenseRepository expenseRepository,
+    public IncomeController(IIncomeRepository incomeRepository,
       IMapper mapper
     )
     {
-      _expenseRepository = expenseRepository;
+      _incomeRepository = incomeRepository;
       _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-      var getAll = await _expenseRepository.GetAllAsync();
+      var getAll = await _incomeRepository.GetAllAsync();
       return Ok(getAll);
     }
 

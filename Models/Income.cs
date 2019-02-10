@@ -2,7 +2,8 @@ using System;
 
 namespace ManagementFinanceApp.Models
 {
-  public class Expense
+  /* Przychód - Income */
+  public class Income
   {
     public int Id { get; set; }
     public double HowMuch { get; set; }
