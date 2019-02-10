@@ -9,10 +9,10 @@ namespace ManagementFinanceApp.Data
 
     public DbSet<User> Users { get; set; }
     public DbSet<CategoryGroup> CategoryGroups { get; set; }
-    public DbSet<Expense> Expenses { get; set; }
+    public DbSet<Income> Incomes { get; set; }
     public DbSet<CategorySaving> CategorySavings { get; set; }
     public DbSet<TransferHistory> TransferHistories { get; set; }
-    public DbSet<CategoryRevenue> CategoryRevenues { get; set; }
+    public DbSet<CategoryIncome> CategoryIncomes { get; set; }
 
   }
 }
