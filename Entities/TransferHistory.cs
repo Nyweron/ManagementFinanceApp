@@ -21,6 +21,9 @@ namespace ManagementFinanceApp.Entities
     public CategorySaving CategorySaving { get; set; }
 
     [Required]
+    public int CategorySavingId { get; set; }
+
+    [Required]
     public int CategorySavingIdFrom { get; set; }
 
     [Required]
