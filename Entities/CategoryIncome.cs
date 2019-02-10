@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManagementFinanceApp.Entities
 {
-  public class CategoryRevenue
+  public class CategoryIncome
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
