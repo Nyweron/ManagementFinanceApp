@@ -3,15 +3,17 @@ using System;
 using ManagementFinanceApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ManagementFinanceApp.Migrations
 {
     [DbContext(typeof(ManagementFinanceAppDbContext))]
-    partial class ManagementFinanceAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190213125720_CorrectRelation_ver004")]
+    partial class CorrectRelation_ver004
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -465,7 +467,7 @@ namespace ManagementFinanceApp.Migrations
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryIncome", b =>
                 {
                     b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroup")
-                        .WithMany("CategoryIncomes")
+                        .WithMany()
                         .HasForeignKey("CategoryGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -3,15 +3,17 @@ using System;
 using ManagementFinanceApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ManagementFinanceApp.Migrations
 {
     [DbContext(typeof(ManagementFinanceAppDbContext))]
-    partial class ManagementFinanceAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190213123010_Entities_part3")]
+    partial class Entities_part3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,7 +379,7 @@ namespace ManagementFinanceApp.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int>("FrequencyId");
+                    b.Property<int>("Frequency");
 
                     b.Property<int>("SavingId");
 
@@ -388,8 +390,6 @@ namespace ManagementFinanceApp.Migrations
                     b.Property<int>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FrequencyId");
 
                     b.HasIndex("SavingId");
 
@@ -465,7 +465,7 @@ namespace ManagementFinanceApp.Migrations
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryIncome", b =>
                 {
                     b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroup")
-                        .WithMany("CategoryIncomes")
+                        .WithMany()
                         .HasForeignKey("CategoryGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -553,11 +553,6 @@ namespace ManagementFinanceApp.Migrations
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.StandingOrderHistory", b =>
                 {
-                    b.HasOne("ManagementFinanceApp.Entities.Frequency", "Frequency")
-                        .WithMany()
-                        .HasForeignKey("FrequencyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("ManagementFinanceApp.Entities.Saving", "Savings")
                         .WithMany()
                         .HasForeignKey("SavingId")

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManagementFinanceApp.Entities
 {
+  /* TransferHistory - Historia przelewow*/
   public class TransferHistory
   {
     [Key]

@@ -3,15 +3,17 @@ using System;
 using ManagementFinanceApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ManagementFinanceApp.Migrations
 {
     [DbContext(typeof(ManagementFinanceAppDbContext))]
-    partial class ManagementFinanceAppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190213125430_CorrectRelation_ver003")]
+    partial class CorrectRelation_ver003
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,7 +114,7 @@ namespace ManagementFinanceApp.Migrations
 
                     b.Property<int>("CategoryExpenseId");
 
-                    b.Property<int>("CategorySavingId");
+                    b.Property<int>("CategoryIncomeId");
 
                     b.Property<string>("Comment");
 
@@ -128,7 +130,7 @@ namespace ManagementFinanceApp.Migrations
 
                     b.HasIndex("CategoryExpenseId");
 
-                    b.HasIndex("CategorySavingId");
+                    b.HasIndex("CategoryIncomeId");
 
                     b.HasIndex("UserId");
 
@@ -465,7 +467,7 @@ namespace ManagementFinanceApp.Migrations
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryIncome", b =>
                 {
                     b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroup")
-                        .WithMany("CategoryIncomes")
+                        .WithMany()
                         .HasForeignKey("CategoryGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -485,9 +487,9 @@ namespace ManagementFinanceApp.Migrations
                         .HasForeignKey("CategoryExpenseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ManagementFinanceApp.Entities.CategorySaving", "CategorySaving")
+                    b.HasOne("ManagementFinanceApp.Entities.CategoryIncome", "CategoryIncome")
                         .WithMany()
-                        .HasForeignKey("CategorySavingId")
+                        .HasForeignKey("CategoryIncomeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ManagementFinanceApp.Entities.User", "User")

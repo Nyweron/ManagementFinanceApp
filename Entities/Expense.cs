@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManagementFinanceApp.Entities
 {
-  /* Przychód - Income */
-  public class Income
+  /* Wydatki - Expense */
+  public class Expense
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,12 +16,11 @@ namespace ManagementFinanceApp.Entities
 
     [Required]
     public DateTime Date { get; set; }
-
     public string Comment { get; set; }
+    public string Attachment { get; set; }
 
     [Required]
     public bool StandingOrder { get; set; }
-    public string Attachment { get; set; }
 
     [Required]
     public User User { get; set; }
@@ -30,16 +29,15 @@ namespace ManagementFinanceApp.Entities
     public int UserId { get; set; }
 
     [Required]
-    public CategoryIncome CategoryIncome { get; set; }
-
-    [Required]
-    public int CategoryIncomeId { get; set; }
-
-    [Required]
     public CategorySaving CategorySaving { get; set; }
 
     [Required]
     public int CategorySavingId { get; set; }
 
+    [Required]
+    public CategoryExpense CategoryExpense { get; set; }
+
+    [Required]
+    public int CategoryExpenseId { get; set; }
   }
 }
