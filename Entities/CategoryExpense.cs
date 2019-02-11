@@ -1,26 +1,28 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManagementFinanceApp.Entities
 {
-  public class CategoryGroup
+  /* KategorieWydatkow - CategoryExpense */
+  public class CategoryExpense
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string Description { get; set; }
 
     [Required]
     public bool IsDeleted { get; set; }
 
     [Required]
-    public int CategoryType { get; set; } = -1;
+    public int Weight { get; set; }
 
-    public List<CategorySaving> CategorySavings { get; set; }
-    public List<CategoryExpense> CategoryExpense { get; set; }
-    public List<CategoryIncome> CategoryIncomes { get; set; }
+    [Required]
+    public CategoryGroup CategoryGroup { get; set; }
+
+    [Required]
+    public int CategoryGroupId { get; set; }
   }
 }
