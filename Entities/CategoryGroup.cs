@@ -20,5 +20,6 @@ namespace ManagementFinanceApp.Entities
     public int CategoryType { get; set; } = -1;
 
     public List<CategorySaving> CategorySavings { get; set; }
+    public List<CategoryExpense> CategoryExpense { get; set; }
   }
 }
