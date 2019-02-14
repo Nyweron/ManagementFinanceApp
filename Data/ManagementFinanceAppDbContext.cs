@@ -20,7 +20,7 @@ namespace ManagementFinanceApp.Data
     public DbSet<Saving> Savings { get; set; }
     public DbSet<StandingOrder> StandingOrders { get; set; }
     public DbSet<StandingOrderHistory> StandingOrderHistories { get; set; }
-    // public DbSet<SavingState> SavingStates { get; set; }
+    public DbSet<SavingState> SavingStates { get; set; }
     // public DbSet<Plan> Plans { get; set; }
     // public DbSet<Investment> Investments { get; set; }
     // public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
