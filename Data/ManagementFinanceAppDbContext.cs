@@ -23,6 +23,6 @@ namespace ManagementFinanceApp.Data
     public DbSet<SavingState> SavingStates { get; set; }
     public DbSet<Plan> Plans { get; set; }
     public DbSet<Investment> Investments { get; set; }
-    // public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
+    public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
   }
 }
