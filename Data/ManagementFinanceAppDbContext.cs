@@ -13,7 +13,7 @@ namespace ManagementFinanceApp.Data
     public DbSet<CategoryIncome> CategoryIncomes { get; set; }
     public DbSet<Income> Incomes { get; set; }
     public DbSet<TransferHistory> TransferHistories { get; set; }
-    // public DbSet<CategoryExpense> CategoryExpenses { get; set; }
+    public DbSet<CategoryExpense> CategoryExpenses { get; set; }
     // public DbSet<Expense> Expenses { get; set; }
     // public DbSet<Restriction> Restrictions { get; set; }
     // public DbSet<Frequency> Frequencies { get; set; }
