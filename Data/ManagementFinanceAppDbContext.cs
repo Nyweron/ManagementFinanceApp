@@ -16,7 +16,7 @@ namespace ManagementFinanceApp.Data
     public DbSet<CategoryExpense> CategoryExpenses { get; set; }
     public DbSet<Expense> Expenses { get; set; }
     public DbSet<Restriction> Restrictions { get; set; }
-    // public DbSet<Frequency> Frequencies { get; set; }
+    public DbSet<Frequency> Frequencies { get; set; }
     // public DbSet<Saving> Savings { get; set; }
     // public DbSet<StandingOrder> StandingOrders { get; set; }
     // public DbSet<StandingOrderHistory> StandingOrderHistories { get; set; }
