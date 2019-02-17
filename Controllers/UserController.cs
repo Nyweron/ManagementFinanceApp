@@ -45,7 +45,7 @@ namespace ManagementFinanceApp.Controllers
           return NotFound();
         }
 
-        var userEntities = _userRepository.GetAsync(userId);
+        var userEntities = await _userRepository.GetAsync(userId);
         return Ok(userEntities);
       }
       catch (Exception ex)
