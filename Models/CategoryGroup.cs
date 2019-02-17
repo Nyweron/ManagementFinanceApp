@@ -1,5 +1,6 @@
 namespace ManagementFinanceApp.Models
 {
+  /* Kategoria Grup - CategoryGroup */
   public class CategoryGroup
   {
     public int Id { get; set; }

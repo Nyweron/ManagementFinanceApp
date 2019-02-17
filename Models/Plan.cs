@@ -2,6 +2,7 @@ using System;
 
 namespace ManagementFinanceApp.Models
 {
+  /* Plany - Plan */
   public class Plan
   {
     public int Id { get; set; }
