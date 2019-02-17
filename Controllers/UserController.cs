@@ -64,7 +64,7 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest();
       }
 
-      if (_userRepository.EmailExistsAsync(user.Email).Result)
+      if (await _userRepository.EmailExistsAsync(user.Email))
       {
         // _logger.LogInformation($"The Email {user.Email} exist in database, use other email. UserController/Post(UserDto user).");
         return BadRequest($"The Email {user.Email} exist, user other email.");
