@@ -10,9 +10,6 @@ namespace ManagementFinanceApp.Models
     public bool IsDeleted { get; set; }
 
     public int Weight { get; set; }
-
-    public CategoryGroup CategoryGroup { get; set; }
-
     public int CategoryGroupId { get; set; }
   }
 }
