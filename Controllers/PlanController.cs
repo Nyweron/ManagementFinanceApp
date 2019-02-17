@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
 {
-  public class PlanController
+  [Route("api/[controller]")]
+  [ApiController]
+  public class PlanController : ControllerBase
   {
     private IPlanRepository _planRepository;
     private IMapper _mapper;
@@ -30,7 +32,7 @@ namespace ManagementFinanceApp.Controllers
     {
       try
       {
-        var planEntities = _planRepository.GetAsync(planId);
+        var planEntities = await _planRepository.GetAsync(planId);
         return Ok(planEntities);
       }
       catch (Exception ex)
