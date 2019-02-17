@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ManagementFinanceApp.Entities
 {
+  /* CategorySaving - kategoria oszczednosci*/
   public class CategorySaving
   {
     [Key]
