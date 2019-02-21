@@ -35,7 +35,7 @@ namespace ManagementFinanceApp.Controllers
         var transferHistoryEntities = await _transferHistoryRepository.GetAsync(transferHistoryId);
         return Ok(transferHistoryEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {transferHistoryId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");

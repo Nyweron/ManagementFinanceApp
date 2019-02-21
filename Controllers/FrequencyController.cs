@@ -36,7 +36,7 @@ namespace ManagementFinanceApp.Controllers
         var frequencyEntities = await _frequencyRepository.GetAsync(frequencyId);
         return Ok(frequencyEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {frequencyId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");

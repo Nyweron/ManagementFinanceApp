@@ -35,7 +35,7 @@ namespace ManagementFinanceApp.Controllers
         var restrictionEntities = await _restrictionRepository.GetAsync(restrictionId);
         return Ok(restrictionEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {restrictionId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");

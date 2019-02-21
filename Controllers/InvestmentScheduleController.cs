@@ -36,7 +36,7 @@ namespace ManagementFinanceApp.Controllers
         var investmentScheduleEntities = await _investmentScheduleRepository.GetAsync(investmentScheduleId);
         return Ok(investmentScheduleEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {investmentScheduleId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");
