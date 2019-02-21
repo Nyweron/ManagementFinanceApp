@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -20,7 +21,7 @@ namespace ManagementFinanceApp.Entities
     public int RestrictionYear { get; set; }
 
     [Required]
-    public System.DateTime Date { get; set; }
+    public DateTime Date { get; set; }
 
     [Required]
     public CategoryExpense CategoryExpense { get; set; }
