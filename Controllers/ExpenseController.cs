@@ -36,7 +36,7 @@ namespace ManagementFinanceApp.Controllers
         var expenseEntities = await _expenseRepository.GetAsync(expenseId);
         return Ok(expenseEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {expenseId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");

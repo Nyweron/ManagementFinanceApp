@@ -35,7 +35,7 @@ namespace ManagementFinanceApp.Controllers
         var savingStateEntities = await _savingStateRepository.GetAsync(savingStateId);
         return Ok(savingStateEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {savingStateId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");

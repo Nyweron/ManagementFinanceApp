@@ -35,7 +35,7 @@ namespace ManagementFinanceApp.Controllers
         var categoryIncomeEntities = await _categoryIncomeRepository.GetAsync(categoryIncomeId);
         return Ok(categoryIncomeEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {categoryIncomeId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");

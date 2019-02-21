@@ -35,7 +35,7 @@ namespace ManagementFinanceApp.Controllers
         var standingOrderHistoryEntities = await _standingOrderHistoryRepository.GetAsync(standingOrderHistoryId);
         return Ok(standingOrderHistoryEntities);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
         // _logger.LogCritical($"Exception {standingOrderHistoryId}.", ex);
         return StatusCode(500, "A problem happend while handling your request.");
