@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using ManagementFinanceApp.Data;
 
 namespace ManagementFinanceApp.Repository.Income
@@ -9,5 +10,11 @@ namespace ManagementFinanceApp.Repository.Income
       get { return Context as ManagementFinanceAppDbContext; }
     }
     public IncomeRepository(ManagementFinanceAppDbContext context) : base(context) { }
+
+    public async Task<bool> SaveAsync()
+    {
+      var result = await ManagementFinanceAppDbContext.SaveChangesAsync();
+      return (result >= 0);
+    }
   }
 }
