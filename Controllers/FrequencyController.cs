@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.Frequency;
@@ -44,9 +46,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Models.Frequency frequency)
+    public async Task<IActionResult> Post([FromBody] List<Models.Frequency> frequency)
     {
-      if (frequency == null)
+      if (!frequency.Any())
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto frequency).");
         return BadRequest();
@@ -57,8 +59,8 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var frequencyEntity = _mapper.Map<Entities.Frequency>(frequency);
-      await _frequencyRepository.AddAsync(frequencyEntity);
+      var frequencyEntity = _mapper.Map<List<Entities.Frequency>>(frequency);
+      await _frequencyRepository.AddRangeAsync(frequencyEntity);
 
       if (!await _frequencyRepository.SaveAsync())
       {
