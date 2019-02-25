@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.CategorySaving;
@@ -43,9 +45,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Models.CategorySaving categorySaving)
+    public async Task<IActionResult> Post([FromBody] List<Models.CategorySaving> categorySaving)
     {
-      if (categorySaving == null)
+      if (!categorySaving.Any())
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto categorySaving).");
         return BadRequest();
@@ -56,8 +58,8 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var categorySavingEntity = _mapper.Map<Entities.CategorySaving>(categorySaving);
-      await _categorySavingRepository.AddAsync(categorySavingEntity);
+      var categorySavingEntity = _mapper.Map<List<Entities.CategorySaving>>(categorySaving);
+      await _categorySavingRepository.AddRangeAsync(categorySavingEntity);
 
       if (!await _categorySavingRepository.SaveAsync())
       {
