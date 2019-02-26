@@ -22,6 +22,7 @@ namespace ManagementFinanceApp.Entities
     public string Nick { get; set; }
     public string Address { get; set; }
     public string Phone { get; set; }
+    public int Weight { get; set; }
 
     [Required]
     [MaxLength(50)]

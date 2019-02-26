@@ -11,6 +11,7 @@ namespace ManagementFinanceApp.Models
     public string LastName { get; set; }
     public string Nick { get; set; }
     public string Address { get; set; }
+    public int Weight { get; set; }
 
     [Phone]
     public string Phone { get; set; }

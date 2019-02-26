@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManagementFinanceApp.Migrations
 {
     [DbContext(typeof(ManagementFinanceAppDbContext))]
-    [Migration("20190226141907_Init")]
+    [Migration("20190226160812_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -450,6 +450,8 @@ namespace ManagementFinanceApp.Migrations
                         .HasMaxLength(20);
 
                     b.Property<string>("Phone");
+
+                    b.Property<int>("Weight");
 
                     b.HasKey("Id");
 

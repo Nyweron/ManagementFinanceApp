@@ -108,6 +108,7 @@ namespace ManagementFinanceApp.Migrations
                     Nick = table.Column<string>(maxLength: 20, nullable: true),
                     Address = table.Column<string>(nullable: true),
                     Phone = table.Column<string>(nullable: true),
+                    Weight = table.Column<int>(nullable: false),
                     Email = table.Column<string>(maxLength: 50, nullable: false),
                     IsDeleted = table.Column<bool>(nullable: false)
                 },

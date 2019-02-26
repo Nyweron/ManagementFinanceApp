@@ -449,6 +449,8 @@ namespace ManagementFinanceApp.Migrations
 
                     b.Property<string>("Phone");
 
+                    b.Property<int>("Weight");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
