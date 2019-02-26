@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManagementFinanceApp.Migrations
 {
     [DbContext(typeof(ManagementFinanceAppDbContext))]
-    [Migration("20190214194404_Saving")]
-    partial class Saving
+    [Migration("20190226160812_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -66,7 +66,7 @@ namespace ManagementFinanceApp.Migrations
 
                     b.Property<int>("CategoryGroupId");
 
-                    b.Property<string>("Comment")
+                    b.Property<string>("Description")
                         .IsRequired();
 
                     b.Property<bool>("IsDeleted");
@@ -181,6 +181,102 @@ namespace ManagementFinanceApp.Migrations
                     b.ToTable("Incomes");
                 });
 
+            modelBuilder.Entity("ManagementFinanceApp.Entities.Investment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Amount");
+
+                    b.Property<int>("InvestmentScheduleId");
+
+                    b.Property<int>("IsActive");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("PeriodInvestment");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.Property<int>("UnitInvestment");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvestmentScheduleId");
+
+                    b.ToTable("Investments");
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.InvestmentSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("AddedDate");
+
+                    b.Property<bool>("AddedScheduleFromUser");
+
+                    b.Property<string>("Bank")
+                        .IsRequired();
+
+                    b.Property<int>("Capitalization");
+
+                    b.Property<string>("ConditionEarlyTerminationInvestment");
+
+                    b.Property<bool>("InterestRateInAllPerdiodInvestment");
+
+                    b.Property<double>("InterestRateOnScaleOfYear");
+
+                    b.Property<double>("MaxAmount");
+
+                    b.Property<double>("MinAmount");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("PeriodDeposit");
+
+                    b.Property<bool>("PossibilityEarlyTerminationInvestment");
+
+                    b.Property<bool>("RequiredPersonalAccountInCurrentBank");
+
+                    b.Property<string>("RestInformation");
+
+                    b.Property<int>("UnitDeposit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InvestmentSchedules");
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.Plan", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Amount");
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<bool>("IsAddedToQueue");
+
+                    b.Property<bool>("IsDone");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("PlanType");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Plans");
+                });
+
             modelBuilder.Entity("ManagementFinanceApp.Entities.Restriction", b =>
                 {
                     b.Property<int>("Id")
@@ -223,6 +319,87 @@ namespace ManagementFinanceApp.Migrations
                     b.HasIndex("CategorySavingId");
 
                     b.ToTable("Savings");
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.SavingState", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<double>("State");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SavingStates");
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.StandingOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Amount");
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("Frequency");
+
+                    b.Property<int>("FrequencyId");
+
+                    b.Property<bool>("IsActive");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<int>("SavingId");
+
+                    b.Property<int>("TypeStandingOrder");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FrequencyId");
+
+                    b.HasIndex("SavingId");
+
+                    b.ToTable("StandingOrders");
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.StandingOrderHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<double>("Amount");
+
+                    b.Property<int>("CategoryId");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("FrequencyId");
+
+                    b.Property<int>("SavingId");
+
+                    b.Property<int>("StandingOrderId");
+
+                    b.Property<int>("TypeStandingOrder");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FrequencyId");
+
+                    b.HasIndex("SavingId");
+
+                    b.HasIndex("StandingOrderId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("StandingOrderHistories");
                 });
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.TransferHistory", b =>
@@ -273,6 +450,8 @@ namespace ManagementFinanceApp.Migrations
                         .HasMaxLength(20);
 
                     b.Property<string>("Phone");
+
+                    b.Property<int>("Weight");
 
                     b.HasKey("Id");
 
@@ -339,6 +518,14 @@ namespace ManagementFinanceApp.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("ManagementFinanceApp.Entities.Investment", b =>
+                {
+                    b.HasOne("ManagementFinanceApp.Entities.InvestmentSchedule", "InvestmentSchedule")
+                        .WithMany("Investments")
+                        .HasForeignKey("InvestmentScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("ManagementFinanceApp.Entities.Restriction", b =>
                 {
                     b.HasOne("ManagementFinanceApp.Entities.CategoryExpense", "CategoryExpense")
@@ -352,6 +539,42 @@ namespace ManagementFinanceApp.Migrations
                     b.HasOne("ManagementFinanceApp.Entities.CategorySaving", "CategorySaving")
                         .WithMany()
                         .HasForeignKey("CategorySavingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.StandingOrder", b =>
+                {
+                    b.HasOne("ManagementFinanceApp.Entities.Frequency", "Frequencies")
+                        .WithMany()
+                        .HasForeignKey("FrequencyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ManagementFinanceApp.Entities.Saving", "Savings")
+                        .WithMany()
+                        .HasForeignKey("SavingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.StandingOrderHistory", b =>
+                {
+                    b.HasOne("ManagementFinanceApp.Entities.Frequency", "Frequency")
+                        .WithMany()
+                        .HasForeignKey("FrequencyId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ManagementFinanceApp.Entities.Saving", "Savings")
+                        .WithMany()
+                        .HasForeignKey("SavingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ManagementFinanceApp.Entities.StandingOrder", "StandingOrder")
+                        .WithMany()
+                        .HasForeignKey("StandingOrderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ManagementFinanceApp.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -64,7 +64,7 @@ namespace ManagementFinanceApp.Migrations
 
                     b.Property<int>("CategoryGroupId");
 
-                    b.Property<string>("Comment")
+                    b.Property<string>("Description")
                         .IsRequired();
 
                     b.Property<bool>("IsDeleted");
@@ -448,6 +448,8 @@ namespace ManagementFinanceApp.Migrations
                         .HasMaxLength(20);
 
                     b.Property<string>("Phone");
+
+                    b.Property<int>("Weight");
 
                     b.HasKey("Id");
 
