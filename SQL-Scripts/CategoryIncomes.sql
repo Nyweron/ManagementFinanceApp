@@ -1,0 +1,20 @@
+--CategoryIncomes
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (1,-1,'Darowizna',false,1);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (2,-1,'Nadgodziny',false,7);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (3,-1,'Odsetki',false,8);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (4,-1,'Odszkodowanie',false,9);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (5,-1,'Pobory',false,10);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (6,-1,'Pożyczka',false,11);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (7,-1,'Premia',false,12);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (8,-1,'Premia od banku',false,13);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (9,-1,'Prezent',false,14);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (10,-1,'Przychód wynikający ze sprzedaży',false,15);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (11,-1,'Ubezpieczenie',false,21);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (12,-1,'Usługa',false,22);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (13,-1,'Wynagrodzenie',false,25);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (14,-1,'Wypłata',false,27);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (15,-1,'Zaliczka',false,28);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (16,-1,'Zwrot',false,30);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (17,-1,'Zwrot podatku',false,31);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (18,-1,'Zwrot pożyczki',false,32);
+INSERT INTO public."CategoryIncomes"("Id","CategoryGroupId","Description","IsDeleted","Weight") VALUES (19,-1,'Zysk z lokaty',false,34);
