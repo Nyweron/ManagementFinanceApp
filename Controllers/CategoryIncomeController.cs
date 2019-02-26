@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.CategoryIncome;
@@ -43,9 +46,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] Models.CategoryIncome categoryIncome)
+    public async Task<IActionResult> Post([FromBody] List<Models.CategoryIncome> categoryIncome)
     {
-      if (categoryIncome == null)
+      if (!categoryIncome.Any())
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto categoryIncome).");
         return BadRequest();
@@ -56,13 +59,23 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var categoryIncomeEntity = _mapper.Map<Entities.CategoryIncome>(categoryIncome);
-      await _categoryIncomeRepository.AddAsync(categoryIncomeEntity);
-
-      if (!await _categoryIncomeRepository.SaveAsync())
+      try
       {
-        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
-        return StatusCode(500, "A problem happend while handling your request.");
+
+        var categoryIncomeEntity = _mapper.Map<List<Entities.CategoryIncome>>(categoryIncome);
+        await _categoryIncomeRepository.AddRangeAsync(categoryIncomeEntity);
+
+        if (!await _categoryIncomeRepository.SaveAsync())
+        {
+          // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+          return StatusCode(500, "A problem happend while handling your request.");
+        }
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex);
+        Debug.WriteLine(ex);
+        return BadRequest(ex.InnerException.Message);
       }
 
       //TODO: Implement Realistic Implementation

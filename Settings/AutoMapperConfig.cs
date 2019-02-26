@@ -16,6 +16,8 @@ namespace ManagementFinanceApp.Settings
       cfg.CreateMap<Models.CategorySaving, Entities.CategorySaving>();
       cfg.CreateMap<Models.TransferHistory, Entities.TransferHistory>();
       cfg.CreateMap<Entities.TransferHistory, Models.TransferHistory>();
+      cfg.CreateMap<Entities.CategoryIncome, Models.CategoryIncome>();
+      cfg.CreateMap<Models.CategoryIncome, Entities.CategoryIncome>();
 
     }).CreateMapper();
   }

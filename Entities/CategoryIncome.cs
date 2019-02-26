@@ -11,7 +11,7 @@ namespace ManagementFinanceApp.Entities
     public int Id { get; set; }
 
     [Required]
-    public string Comment { get; set; }
+    public string Description { get; set; }
 
     [Required]
     public bool IsDeleted { get; set; }
