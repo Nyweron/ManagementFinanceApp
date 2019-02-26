@@ -64,7 +64,7 @@ namespace ManagementFinanceApp.Migrations
 
                     b.Property<int>("CategoryGroupId");
 
-                    b.Property<string>("Comment")
+                    b.Property<string>("Description")
                         .IsRequired();
 
                     b.Property<bool>("IsDeleted");
