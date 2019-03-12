@@ -14,7 +14,7 @@ namespace ManagementFinanceApp.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class UserController : Controller
+  public class UserController : ControllerBase
   {
 
     private IUserRepository _userRepository;

@@ -9,7 +9,7 @@ namespace ManagementFinanceApp.Controllers
 
   [Route("api/[controller]")]
   [ApiController]
-  public class InvestmentController : Controller
+  public class InvestmentController : ControllerBase
   {
     private IInvestmentRepository _investmentRepository;
     private IMapper _mapper;

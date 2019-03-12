@@ -11,7 +11,7 @@ namespace ManagementFinanceApp.Controllers
 
   [Route("api/[controller]")]
   [ApiController]
-  public class FrequencyController : Controller
+  public class FrequencyController : ControllerBase
   {
     private IFrequencyRepository _frequencyRepository;
     private IMapper _mapper;

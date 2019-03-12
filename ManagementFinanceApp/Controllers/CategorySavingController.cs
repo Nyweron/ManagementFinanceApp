@@ -11,7 +11,7 @@ namespace ManagementFinanceApp.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class CategorySavingController : Controller
+  public class CategorySavingController : ControllerBase
   {
     private ICategorySavingRepository _categorySavingRepository;
     private IMapper _mapper;

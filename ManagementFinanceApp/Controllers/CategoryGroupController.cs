@@ -11,7 +11,7 @@ namespace ManagementFinanceApp.Controllers
 {
   [Route("api/[controller]")]
   [ApiController]
-  public class CategoryGroupController : Controller
+  public class CategoryGroupController : ControllerBase
   {
     private ICategoryGroupRepository _categoryGroupRepository;
     private IMapper _mapper;
