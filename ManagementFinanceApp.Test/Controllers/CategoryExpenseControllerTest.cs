@@ -52,8 +52,7 @@ namespace ManagementFinanceApp.Test.Controllers
       //assert
       Assert.NotNull(okObjectResult, "Ok Object Result is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
-
-      //Assert.AreEqual(testCategoryExpenses, result.Count, "testCategoryExpenses");
+      Assert.AreEqual(testModelCategoryExpense.Id, result[0].Id, "Id doesnt equal");
 
     }
 
