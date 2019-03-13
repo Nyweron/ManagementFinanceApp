@@ -8,6 +8,7 @@ using ManagementFinanceApp.Controllers;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Repository;
 using ManagementFinanceApp.Repository.CategoryExpense;
+using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -17,6 +18,8 @@ namespace ManagementFinanceApp.Test.Controllers
   [TestFixture]
   public class CategoryExpenseControllerTest
   {
+
+    IMapper mapper = AutoMapperConfig.GetMapper();
 
     public class OrganizationProfile : Profile
     {
@@ -33,17 +36,15 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // arrange
       var expectedNumberOfCategoryExpensesList = 4;
-      var config = new MapperConfiguration(cfg =>
-      {
-        cfg.AddProfile<OrganizationProfile>();
-      });
-      IMapper mapper = config.CreateMapper();
-      var testModelCategoryExpense = new Models.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 };
+      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 };
 
-      // var mappedObject = mapper.Map<Entities.CategoryExpense>(testModelCategoryExpense);
-      var testCategoryExpenses = GetTestCategoryExpenses();
+      var mappedObject = mapper.Map<Models.CategoryExpense>(testModelCategoryExpense);
+
+      var categoryExpensesListTest = GetTestCategoryExpenses();
+
       var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(testCategoryExpenses));
+      mock.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesListTest));
+
       var controller = new CategoryExpenseController(mock.Object, mapper);
 
       //act
