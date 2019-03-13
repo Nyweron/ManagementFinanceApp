@@ -49,6 +49,7 @@ namespace ManagementFinanceApp.Test.Controllers
       //act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
       var result = okObjectResult.Value as List<Entities.CategoryExpense>;
+
       //assert
       Assert.NotNull(okObjectResult, "Ok Object Result is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
