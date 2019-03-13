@@ -2,7 +2,11 @@ using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManagementFinanceApp.Data;
+using ManagementFinanceApp.Entities;
+using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Repository;
+using ManagementFinanceApp.Repository.User;
+using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -51,11 +55,11 @@ namespace ManagementFinanceApp
       var builder = new ContainerBuilder();
       // Loads the already configured items from services object
       builder.Populate(services);
-
       builder.RegisterAssemblyTypes(typeof(Startup).Assembly)
         .AsImplementedInterfaces()
         .InstancePerLifetimeScope();
-      RepositoryContainer.Update(builder);
+      builder.RegisterInstance(AutoMapperConfig.GetMapper())
+        .SingleInstance();
       Container = builder.Build();
 
       return new AutofacServiceProvider(Container);

@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Repository.User;
+using ManagementFinanceApp.Service.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,15 +16,13 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class UserController : ControllerBase
   {
-
     private IUserRepository _userRepository;
-    private IMapper _mapper;
-    public UserController(IUserRepository userRepository,
-      IMapper mapper
-    )
+    private IUserService _userService;
+
+    public UserController(IUserRepository userRepository, IUserService userService)
     {
       _userRepository = userRepository;
-      _mapper = mapper;
+      _userService = userService;
     }
 
     [HttpGet]
@@ -75,17 +73,17 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var userEntity = _mapper.Map<User>(user);
-      await _userRepository.AddAsync(userEntity);
+      var isCreated = await _userService.AddUser(user);
 
-      if (!await _userRepository.SaveAsync())
+      if (isCreated)
+      {
+        return Created("", null);
+      }
+      else
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
-
-      //TODO: Implement Realistic Implementation
-      return Created("", null);
     }
 
     [HttpPut("{userId}")]
@@ -106,16 +104,18 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var updatedUser = _mapper.Map<User>(user);
-      updatedUser.Id = userId;
-      await _userRepository.UpdateUserAsync(updatedUser);
-
-      if (!await _userRepository.SaveAsync())
+      var isUpdated = await _userService.EditUser(user, userId);
+      if (isUpdated)
       {
+        //TODO: Implement Realistic Implementation
+        return Ok();
+      }
+      else
+      {
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
-      //TODO: Implement Realistic Implementation
-      return Ok();
+
     }
 
     [HttpDelete("{id}")]
