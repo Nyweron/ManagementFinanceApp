@@ -8,6 +8,7 @@ using ManagementFinanceApp.Controllers;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Repository;
 using ManagementFinanceApp.Repository.CategoryExpense;
+using ManagementFinanceApp.Service.CategoryExpense;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -21,41 +22,27 @@ namespace ManagementFinanceApp.Test.Controllers
 
     IMapper mapper = AutoMapperConfig.GetMapper();
 
-    public class OrganizationProfile : Profile
-    {
-      public OrganizationProfile()
-      {
-        CreateMap<Models.CategoryExpense, Entities.CategoryExpense>();
-        CreateMap<Entities.CategoryExpense, Models.CategoryExpense>();
-        // Use CreateMap... Etc.. here (Profile methods are the same as configuration methods)
-      }
-    }
-
     [Test]
     public async Task GetCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
     {
       // arrange
       var expectedNumberOfCategoryExpensesList = 4;
       var testModelCategoryExpense = new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 };
-
-      var mappedObject = mapper.Map<Models.CategoryExpense>(testModelCategoryExpense);
-
       var categoryExpensesListTest = GetTestCategoryExpenses();
 
       var mock = new Mock<ICategoryExpenseRepository>();
       mock.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesListTest));
 
-      var controller = new CategoryExpenseController(mock.Object, mapper);
+      var controller = new CategoryExpenseController(mock.Object, null);
 
       //act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
       var result = okObjectResult.Value as List<Entities.CategoryExpense>;
 
       //assert
-      Assert.NotNull(okObjectResult, "Ok Object Result is null");
+      Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
-      Assert.AreEqual(testModelCategoryExpense.Id, result[0].Id, "Id doesnt equal");
-
+      Assert.AreEqual(testModelCategoryExpense.Id, result[0].Id, "Id is not equal");
     }
 
     private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
