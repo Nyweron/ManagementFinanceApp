@@ -23,7 +23,7 @@ namespace ManagementFinanceApp.Test.Controllers
     IMapper mapper = AutoMapperConfig.GetMapper();
 
     [Test]
-    public async Task GetCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
+    public async Task GetAllCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
     {
       // arrange
       var expectedNumberOfCategoryExpensesList = 4;
