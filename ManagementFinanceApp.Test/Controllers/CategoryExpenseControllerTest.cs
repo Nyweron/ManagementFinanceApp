@@ -35,14 +35,37 @@ namespace ManagementFinanceApp.Test.Controllers
 
       var controller = new CategoryExpenseController(mock.Object, null);
 
-      //act
+      // act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
       var result = okObjectResult.Value as List<Entities.CategoryExpense>;
 
-      //assert
+      // assert
       Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
       Assert.AreEqual(testModelCategoryExpense.Id, result[0].Id, "Id is not equal");
+    }
+
+    [Test]
+    public async Task GetByIdCategoryExpenses_ShouldReturnOneCategoryExpenseAsync()
+    {
+      // arrange
+      var expectedIdOfCategoryExpense = 2;
+      var secondItemFromList = 1;
+      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      var categoryExpenseTest = GetTestCategoryExpenses().ToList() [secondItemFromList];
+
+      var mock = new Mock<ICategoryExpenseRepository>();
+      mock.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseTest));
+
+      var controller = new CategoryExpenseController(mock.Object, null);
+
+      // act
+      var okObjectResult = await controller.Get(expectedIdOfCategoryExpense) as OkObjectResult;
+      var result = okObjectResult.Value as Entities.CategoryExpense;
+
+      // assert
+      Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
+      Assert.AreEqual(testModelCategoryExpense.Id, result.Id, "Id is not equal");
     }
 
     private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
