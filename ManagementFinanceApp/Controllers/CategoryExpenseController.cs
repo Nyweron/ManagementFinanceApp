@@ -74,7 +74,6 @@ namespace ManagementFinanceApp.Controllers
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-
       var categoryExpense = await _categoryExpenseRepository.GetAsync(id);
 
       if (!await _categoryExpenseRepository.RemoveAsync(categoryExpense))
