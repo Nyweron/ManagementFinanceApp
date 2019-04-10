@@ -68,6 +68,38 @@ namespace ManagementFinanceApp.Test.Controllers
       Assert.AreEqual(testModelCategoryExpense.Id, result.Id, "Id is not equal");
     }
 
+    [Test]
+    public async Task DeleteByIdCategoryExpenses_ShouldDeleteOneCategoryExpense()
+    {
+      // arrange
+      var expectedIdOfCategoryExpense = 2;
+      var secondItemFromList = 1;
+      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      var categoryExpenseTest = GetTestCategoryExpenses().ToList() [secondItemFromList];
+
+      var mock2 = new Mock<ICategoryExpenseRepository>();
+      mock2.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseTest));
+
+      var controller2 = new CategoryExpenseController(mock2.Object, null);
+
+      // act
+      var okObjectResult2 = await controller2.Get(expectedIdOfCategoryExpense) as OkObjectResult;
+      var result2 = okObjectResult2.Value as Entities.CategoryExpense;
+
+      var mock = new Mock<ICategoryExpenseRepository>();
+
+      mock.Setup(repo => repo.RemoveAsync(testModelCategoryExpense)).Returns(Task.FromResult());
+
+      var controller = new CategoryExpenseController(mock.Object, null);
+
+      // act
+      var okObjectResult = await controller.Delete(expectedIdOfCategoryExpense) as OkObjectResult;
+      var result = okObjectResult.Value as Entities.CategoryExpense;
+
+      // assert
+      Assert.AreEqual(true, result);
+    }
+
     private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
     {
       var testCategoryExpense = new List<Entities.CategoryExpense>();
