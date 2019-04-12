@@ -76,13 +76,18 @@ namespace ManagementFinanceApp.Controllers
     {
       var categoryExpense = await _categoryExpenseRepository.GetAsync(id);
 
+      if (categoryExpense == null)
+      {
+        return NotFound();
+      }
+
       if (!await _categoryExpenseRepository.RemoveAsync(categoryExpense))
       {
         //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
         return StatusCode(500, "A problem happend while handling your request.");
       }
       //TODO: Implement Realistic Implementation
-      return Ok();
+      return NoContent();
     }
   }
 }
