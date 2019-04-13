@@ -20,7 +20,6 @@ namespace ManagementFinanceApp.Test.Controllers
   [TestFixture]
   public class CategoryExpenseControllerTest
   {
-
     IMapper mapper = AutoMapperConfig.GetMapper();
 
     [Test]
@@ -109,7 +108,7 @@ namespace ManagementFinanceApp.Test.Controllers
       var notFoundResult = await controller.Delete(expectedIdOfCategoryExpense) as NotFoundResult;
 
       // assert
-      Assert.AreEqual(404, notFoundResult.StatusCode, "Not found result, not works");
+      Assert.AreEqual(404, notFoundResult.StatusCode, "Not found result, not works. Method Delete");
     }
 
     [Test]
