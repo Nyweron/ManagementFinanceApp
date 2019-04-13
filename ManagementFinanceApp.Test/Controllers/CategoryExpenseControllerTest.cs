@@ -128,8 +128,22 @@ namespace ManagementFinanceApp.Test.Controllers
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as ObjectResult;
 
       // assert
-      Assert.NotNull(noContentResult, "noContentResult is null");
-      Assert.AreEqual(noContentResult.StatusCode, 500, "Internal server error");
+      Assert.NotNull(noContentResult, "GetAsync returns null object in method Delete");
+      Assert.AreEqual(noContentResult.StatusCode, 500, "Internal server error in method Delete");
+    }
+
+    [Test]
+    public async Task PostCategoryExpenses_ShouldReturnBadRequestObjectIsNull()
+    {
+      // Arrange
+      var testModelCategoryExpense = new List<Models.CategoryExpense>();
+
+      // Act
+      var controller = new CategoryExpenseController(null, null);
+      var badRequestResult = await controller.Post(testModelCategoryExpense) as BadRequestResult;
+
+      // Assert
+      Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
     }
 
     private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
