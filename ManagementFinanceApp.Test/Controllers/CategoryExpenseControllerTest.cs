@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -144,6 +145,40 @@ namespace ManagementFinanceApp.Test.Controllers
 
       // Assert
       Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
+    }
+
+    [Test]
+    public async Task PostCategoryExpenses_ShouldCreateCategoryExpense()
+    {
+      // Arrange
+      var testModelCategoryExpense = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
+
+      // Act
+      var mock = new Mock<ICategoryExpenseService>();
+      mock.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
+
+      var controller = new CategoryExpenseController(null, mock.Object);
+      var objectResult = await controller.Post(testModelCategoryExpense) as ObjectResult;
+
+      // Assert
+      Assert.AreEqual(201, objectResult.StatusCode, "CategoryExpense Created does not works. Method post");
+    }
+
+    [Test]
+    public async Task PostCategoryExpenses_ShouldNotCreateCategoryExpense()
+    {
+      // Arrange
+      var testModelCategoryExpense = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
+
+      // Act
+      var mock = new Mock<ICategoryExpenseService>();
+      mock.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
+
+      var controller = new CategoryExpenseController(null, mock.Object);
+      var objectResult = await controller.Post(testModelCategoryExpense) as ObjectResult;
+
+      // Assert
+      Assert.AreEqual(500, objectResult.StatusCode, "CategoryExpense StatusCode500 does not works. Method post");
     }
 
     private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
