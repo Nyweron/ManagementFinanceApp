@@ -23,10 +23,11 @@ namespace ManagementFinanceApp.Test.Controllers
   {
     IMapper mapper = AutoMapperConfig.GetMapper();
     private Entities.CategoryExpense categoryExpenseObj;
-    private List<Models.CategoryExpense> categoryExpenseList;
     private Mock<ICategoryExpenseRepository> mockCategoryExpenseRepository;
     private Mock<ICategoryExpenseService> mockCategoryExpenseService;
     private int expectedIdOfCategoryExpense;
+
+    private List<Models.CategoryExpense> categoryExpenseListObj;
 
     [SetUp]
     public void Setup()
@@ -35,6 +36,7 @@ namespace ManagementFinanceApp.Test.Controllers
       mockCategoryExpenseRepository = new Mock<ICategoryExpenseRepository>();
       mockCategoryExpenseService = new Mock<ICategoryExpenseService>();
       expectedIdOfCategoryExpense = 2;
+      categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
     }
 
     [Test]
@@ -148,7 +150,6 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldCreateCategoryExpense()
     {
       // Arrange
-      var categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
 
       // Act
       mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
@@ -164,7 +165,6 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldNotCreateCategoryExpense()
     {
       // Arrange
-      var categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
 
       // Act
       mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
