@@ -25,16 +25,12 @@ namespace ManagementFinanceApp.Test.Service
       var mock = new Mock<IMapper>();
       var mockRepo = new Mock<ICategoryExpenseRepository>();
       mock.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>())).Returns(expectedCategoryExpensesList);
-      mockRepo.Setup(y => y.AddRangeAsync(expectedCategoryExpensesList)).Returns(Task.FromResult(true));
-      mockRepo.Setup(y => y.SaveAsync()).Returns(Task.FromResult(true));
-      //mock.Setup(x => x.AddAsync())
-
-      //var controller = new CategoryExpenseController(null, null);
-      // var badRequestResult = await controller.Post(categoryExpenseList) as BadRequestResult;
+      mockRepo.Setup(y => y.AddRangeAsync(expectedCategoryExpensesList)).Returns(Task.FromResult(expected)); //???
+      mockRepo.Setup(y => y.SaveAsync()).Returns(Task.FromResult(expected));
 
       // Assert
-      Assert.AreEqual(mockRepo, true);
-      // Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
+      Assert.IsFalse(true); //fake assert... TODO fix it!
+
     }
   }
 }
