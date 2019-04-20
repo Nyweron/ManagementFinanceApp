@@ -21,8 +21,8 @@ namespace ManagementFinanceApp.Service.CategoryExpense
 
     public async Task<bool> AddCategoryExpense(List<Models.CategoryExpense> categoryExpense)
     {
-      var categoryExpenseEntity = _mapper.Map<Entities.CategoryExpense>(categoryExpense);
-      await _categoryExpenseRepository.AddAsync(categoryExpenseEntity);
+      var categoryExpenseEntity = _mapper.Map<List<Entities.CategoryExpense>>(categoryExpense);
+      await _categoryExpenseRepository.AddRangeAsync(categoryExpenseEntity);
 
       if (!await _categoryExpenseRepository.SaveAsync())
       {
