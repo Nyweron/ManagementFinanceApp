@@ -22,19 +22,29 @@ namespace ManagementFinanceApp.Test.Controllers
   public class CategoryExpenseControllerTest
   {
     IMapper mapper = AutoMapperConfig.GetMapper();
+    private Entities.CategoryExpense categoryExpenseObj;
+    private List<Models.CategoryExpense> categoryExpenseList;
+    private Mock<ICategoryExpenseRepository> mockCategoryExpenseRepository;
+    private Mock<ICategoryExpenseService> mockCategoryExpenseService;
+
+    [SetUp]
+    public void Setup()
+    {
+      categoryExpenseObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      mockCategoryExpenseRepository = new Mock<ICategoryExpenseRepository>();
+      mockCategoryExpenseService = new Mock<ICategoryExpenseService>();
+    }
 
     [Test]
     public async Task GetAllCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
     {
       // arrange
       var expectedNumberOfCategoryExpensesList = 4;
-      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 };
-      var categoryExpensesListTest = GetTestCategoryExpenses();
+      var categoryExpensesList = GetCategoryExpensesList();
 
-      var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesListTest));
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesList));
 
-      var controller = new CategoryExpenseController(mock.Object, null);
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
 
       // act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
@@ -43,7 +53,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // assert
       Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
-      Assert.AreEqual(testModelCategoryExpense.Id, result[0].Id, "Id is not equal");
+      Assert.AreEqual(categoryExpenseObj.Id, result[1].Id, "Id is not equal");
     }
 
     [Test]
@@ -52,14 +62,12 @@ namespace ManagementFinanceApp.Test.Controllers
       // arrange
       var expectedIdOfCategoryExpense = 2;
       var secondItemFromList = 1;
-      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
-      var categoryExpenseTest = GetTestCategoryExpenses().ToList() [secondItemFromList];
+      var categoryExpenseTest = GetCategoryExpensesList().ToList() [secondItemFromList];
 
-      var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense))
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense))
         .Returns(Task.FromResult(categoryExpenseTest));
 
-      var controller = new CategoryExpenseController(mock.Object, null);
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
 
       // act
       var okObjectResult = await controller.Get(expectedIdOfCategoryExpense) as OkObjectResult;
@@ -67,7 +75,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       // assert
       Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
-      Assert.AreEqual(testModelCategoryExpense.Id, result.Id, "Id is not equal");
+      Assert.AreEqual(categoryExpenseObj.Id, result.Id, "Id is not equal");
     }
 
     [Test]
@@ -76,17 +84,14 @@ namespace ManagementFinanceApp.Test.Controllers
       // arrange
       var expectedIdOfCategoryExpense = 2;
       var secondItemFromList = 1;
-      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
 
-      var categoryExpenseTest = GetTestCategoryExpenses().ToList() [secondItemFromList];
+      var categoryExpenseTest = GetCategoryExpensesList().ToList() [secondItemFromList];
 
       // act
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
 
-      var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(testModelCategoryExpense));
-      mock.Setup(repo => repo.RemoveAsync(testModelCategoryExpense)).Returns(Task.FromResult(true));
-
-      var controller = new CategoryExpenseController(mock.Object, null);
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as NoContentResult;
 
       // assert
@@ -99,13 +104,11 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // arrange
       var expectedIdOfCategoryExpense = 2;
-      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
 
       // act
-      var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.RemoveAsync(testModelCategoryExpense)).Returns(Task.FromResult(true));
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
 
-      var controller = new CategoryExpenseController(mock.Object, null);
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var notFoundResult = await controller.Delete(expectedIdOfCategoryExpense) as NotFoundResult;
 
       // assert
@@ -117,15 +120,12 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // arrange
       var expectedIdOfCategoryExpense = 2;
-      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
 
       // act
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(false));
 
-      var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(testModelCategoryExpense));
-      mock.Setup(repo => repo.RemoveAsync(testModelCategoryExpense)).Returns(Task.FromResult(false));
-
-      var controller = new CategoryExpenseController(mock.Object, null);
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as ObjectResult;
 
       // assert
@@ -137,11 +137,11 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldReturnBadRequestObjectIsNull()
     {
       // Arrange
-      var testModelCategoryExpense = new List<Models.CategoryExpense>();
+      var categoryExpenseList = new List<Models.CategoryExpense>();
 
       // Act
       var controller = new CategoryExpenseController(null, null);
-      var badRequestResult = await controller.Post(testModelCategoryExpense) as BadRequestResult;
+      var badRequestResult = await controller.Post(categoryExpenseList) as BadRequestResult;
 
       // Assert
       Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
@@ -151,14 +151,13 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldCreateCategoryExpense()
     {
       // Arrange
-      var testModelCategoryExpense = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
+      var categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
 
       // Act
-      var mock = new Mock<ICategoryExpenseService>();
-      mock.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
 
-      var controller = new CategoryExpenseController(null, mock.Object);
-      var objectResult = await controller.Post(testModelCategoryExpense) as ObjectResult;
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
+      var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
 
       // Assert
       Assert.AreEqual(201, objectResult.StatusCode, "CategoryExpense Created does not works. Method post");
@@ -168,28 +167,27 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldNotCreateCategoryExpense()
     {
       // Arrange
-      var testModelCategoryExpense = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
+      var categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
 
       // Act
-      var mock = new Mock<ICategoryExpenseService>();
-      mock.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
 
-      var controller = new CategoryExpenseController(null, mock.Object);
-      var objectResult = await controller.Post(testModelCategoryExpense) as ObjectResult;
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
+      var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
 
       // Assert
       Assert.AreEqual(500, objectResult.StatusCode, "CategoryExpense StatusCode500 does not works. Method post");
     }
 
-    private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
+    private IEnumerable<Entities.CategoryExpense> GetCategoryExpensesList()
     {
-      var testCategoryExpense = new List<Entities.CategoryExpense>();
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 });
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 3, Description = "CategoryeExpense3", IsDeleted = false, Weight = 3, CategoryGroupId = 0 });
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 4, Description = "CategoryeExpense4", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+      var categoryExpenseListObj = new List<Entities.CategoryExpense>();
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 3, Description = "CategoryeExpense3", IsDeleted = false, Weight = 3, CategoryGroupId = 0 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 4, Description = "CategoryeExpense4", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
 
-      return testCategoryExpense;
+      return categoryExpenseListObj;
     }
 
   }
