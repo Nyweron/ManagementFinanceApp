@@ -26,6 +26,7 @@ namespace ManagementFinanceApp.Test.Controllers
     private List<Models.CategoryExpense> categoryExpenseList;
     private Mock<ICategoryExpenseRepository> mockCategoryExpenseRepository;
     private Mock<ICategoryExpenseService> mockCategoryExpenseService;
+    private int expectedIdOfCategoryExpense;
 
     [SetUp]
     public void Setup()
@@ -33,12 +34,13 @@ namespace ManagementFinanceApp.Test.Controllers
       categoryExpenseObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
       mockCategoryExpenseRepository = new Mock<ICategoryExpenseRepository>();
       mockCategoryExpenseService = new Mock<ICategoryExpenseService>();
+      expectedIdOfCategoryExpense = 2;
     }
 
     [Test]
     public async Task GetAllCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
     {
-      // arrange
+      // Arrange
       var expectedNumberOfCategoryExpensesList = 4;
       var categoryExpensesList = GetCategoryExpensesList();
 
@@ -46,11 +48,11 @@ namespace ManagementFinanceApp.Test.Controllers
 
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
 
-      // act
+      // Act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
       var result = okObjectResult.Value as List<Entities.CategoryExpense>;
 
-      // assert
+      // Assert
       Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
       Assert.AreEqual(categoryExpenseObj.Id, result[1].Id, "Id is not equal");
@@ -59,8 +61,7 @@ namespace ManagementFinanceApp.Test.Controllers
     [Test]
     public async Task GetByIdCategoryExpenses_ShouldReturnOneCategoryExpenseAsync()
     {
-      // arrange
-      var expectedIdOfCategoryExpense = 2;
+      // Arrange
       var secondItemFromList = 1;
       var categoryExpenseTest = GetCategoryExpensesList().ToList() [secondItemFromList];
 
@@ -69,11 +70,11 @@ namespace ManagementFinanceApp.Test.Controllers
 
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
 
-      // act
+      // Act
       var okObjectResult = await controller.Get(expectedIdOfCategoryExpense) as OkObjectResult;
       var result = okObjectResult.Value as Entities.CategoryExpense;
 
-      // assert
+      // Assert
       Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
       Assert.AreEqual(categoryExpenseObj.Id, result.Id, "Id is not equal");
     }
@@ -81,20 +82,18 @@ namespace ManagementFinanceApp.Test.Controllers
     [Test]
     public async Task DeleteByIdCategoryExpenses_ShouldDeleteOneCategoryExpense()
     {
-      // arrange
-      var expectedIdOfCategoryExpense = 2;
+      // Arrange
       var secondItemFromList = 1;
-
       var categoryExpenseTest = GetCategoryExpensesList().ToList() [secondItemFromList];
 
-      // act
+      // Act
       mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
       mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
 
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as NoContentResult;
 
-      // assert
+      // Assert
       Assert.NotNull(noContentResult, "noContentResult is null");
       Assert.AreEqual(noContentResult.StatusCode, 204, "delete is not works");
     }
@@ -102,33 +101,31 @@ namespace ManagementFinanceApp.Test.Controllers
     [Test]
     public async Task DeleteByIdCategoryExpenses_ShouldReturnNotFoundWhenGetAsync()
     {
-      // arrange
-      var expectedIdOfCategoryExpense = 2;
+      // Arrange
 
-      // act
+      // Act
       mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
 
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var notFoundResult = await controller.Delete(expectedIdOfCategoryExpense) as NotFoundResult;
 
-      // assert
+      // Assert
       Assert.AreEqual(404, notFoundResult.StatusCode, "Not found result, not works. Method Delete");
     }
 
     [Test]
     public async Task DeleteByIdCategoryExpenses_ShouldReturnInternalServerErrorCategoryExpense()
     {
-      // arrange
-      var expectedIdOfCategoryExpense = 2;
+      // Arrange
 
-      // act
+      // Act
       mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
       mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(false));
 
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as ObjectResult;
 
-      // assert
+      // Assert
       Assert.NotNull(noContentResult, "GetAsync returns null object in method Delete");
       Assert.AreEqual(noContentResult.StatusCode, 500, "Internal server error in method Delete");
     }
