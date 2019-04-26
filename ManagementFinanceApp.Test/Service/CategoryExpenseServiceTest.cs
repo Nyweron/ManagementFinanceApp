@@ -17,18 +17,28 @@ namespace ManagementFinanceApp.Test.Service
     [Test]
     public async Task AddCategoryExpense_ShouldReturnTrue()
     {
-      // Arrange
-      var expectedCategoryExpensesList = new List<Entities.CategoryExpense>();
-      var expected = true;
+      /*
+      https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
+      https://docs.microsoft.com/en-us/ef/ef6/fundamentals/testing/mocking
+      */
 
-      // Act
+      // Arrange
+      var expectedCategoryExpensesList = new List<Entities.CategoryExpense>
+      {
+        new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 }
+      );
+      var expected = true;
       var mock = new Mock<IMapper>();
       var mockRepo = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>())).Returns(expectedCategoryExpensesList);
-      mockRepo.Setup(y => y.AddRangeAsync(expectedCategoryExpensesList)).Returns(Task.FromResult(expected)); //???
-      mockRepo.Setup(y => y.SaveAsync()).Returns(Task.FromResult(expected));
+
+      // Act
+      mock.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>()))
+        .Returns(expectedCategoryExpensesList);
+      mockRepo.Setup(y => y.AddRangeAsync(expectedCategoryExpensesList)).Returns(Task.FromResult(expectedCategoryExpensesList));
+      mockRepo.Setup(y => y.SaveAsync()).Returns(() => Task.Run(() => { return expected; })).Verifiable();
 
       // Assert
+      //Assert.AreEqual()
       Assert.IsFalse(true); //fake assert... TODO fix it!
 
     }
