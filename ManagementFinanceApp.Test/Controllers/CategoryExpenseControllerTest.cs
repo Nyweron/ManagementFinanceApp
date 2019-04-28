@@ -64,8 +64,8 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task GetByIdCategoryExpenses_ShouldReturnOneCategoryExpenseAsync()
     {
       // Arrange
-      var secondItemFromList = 1;
-      var categoryExpenseTest = GetCategoryExpensesList().ToList() [secondItemFromList];
+      var categoryExpenseTestIndex = 1;
+      var categoryExpenseTest = GetCategoryExpensesList().ToList() [categoryExpenseTestIndex];
 
       mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense))
         .Returns(Task.FromResult(categoryExpenseTest));
@@ -85,8 +85,8 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task DeleteByIdCategoryExpenses_ShouldDeleteOneCategoryExpense()
     {
       // Arrange
-      var secondItemFromList = 1;
-      var categoryExpenseTest = GetCategoryExpensesList().ToList() [secondItemFromList];
+      var categoryExpenseTestIndex = 1;
+      var categoryExpenseTest = GetCategoryExpensesList().ToList() [categoryExpenseTestIndex];
 
       // Act
       mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
