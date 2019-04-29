@@ -1,9 +1,14 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Controllers;
+using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Repository.CategoryExpense;
+using ManagementFinanceApp.Service.CategoryExpense;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
 
@@ -15,31 +20,30 @@ namespace ManagementFinanceApp.Test.Service
     IMapper mapper = AutoMapperConfig.GetMapper();
 
     [Test]
-    public async Task AddCategoryExpense_ShouldReturnTrue()
+    public async Task AddCategoryExpense_ShouldRunAddRangeAsyncOnlyOnce()
     {
-      /*
-      https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
-      https://docs.microsoft.com/en-us/ef/ef6/fundamentals/testing/mocking
-      */
-
       // Arrange
+      var mockRepo = new Mock<ICategoryExpenseRepository>();
+      var mock = new Mock<IMapper>();
+
       var expectedCategoryExpensesList = new List<Entities.CategoryExpense>
       {
         new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 }
-      );
-      var expected = true;
-      var mock = new Mock<IMapper>();
-      var mockRepo = new Mock<ICategoryExpenseRepository>();
+      };
+
+      mock.Setup(x => x.Map<List<Entities.CategoryExpense>>(
+        It.IsAny<List<Models.CategoryExpense>>())).Returns(expectedCategoryExpensesList);
+      mockRepo.Setup(y => y.AddRangeAsync(
+        It.IsAny<IEnumerable<Entities.CategoryExpense>>())).Returns(() => Task.Run(() => { })).Verifiable();
 
       // Act
-      mock.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>()))
-        .Returns(expectedCategoryExpensesList);
-      mockRepo.Setup(y => y.AddRangeAsync(expectedCategoryExpensesList)).Returns(Task.FromResult(expectedCategoryExpensesList));
-      mockRepo.Setup(y => y.SaveAsync()).Returns(() => Task.Run(() => { return expected; })).Verifiable();
+      var categoryExpenseService = new CategoryExpenseService(mockRepo.Object, mapper);
+      await categoryExpenseService.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>());
 
-      // Assert
-      //Assert.AreEqual()
-      Assert.IsFalse(true); //fake assert... TODO fix it!
+      mockRepo.Verify(
+        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()), Times.Once);
+      mockRepo.Verify(
+        x => x.SaveAsync(), Times.Once);
 
     }
   }
