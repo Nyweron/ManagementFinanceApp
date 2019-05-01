@@ -33,9 +33,24 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       return true;
     }
 
-    public Task<bool> EditCategoryExpense(Models.CategoryExpense categoryExpense, int id)
+    public async Task<bool> EditCategoryExpense(Models.CategoryExpense categoryExpenseRequest, int id)
     {
-      throw new System.NotImplementedException();
+      // Get stock item by id
+      var categoryExpenseFromDB = await _categoryExpenseRepository.GetAsync(id);
+
+      // Validate if entity exists
+      if (categoryExpenseFromDB == null) { return false; }
+
+      // Set changes to entity
+      categoryExpenseFromDB.Description = categoryExpenseRequest.Description;
+
+      if (!await _categoryExpenseRepository.SaveAsync())
+      {
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        return false;
+      }
+
+      return true;
     }
 
   }

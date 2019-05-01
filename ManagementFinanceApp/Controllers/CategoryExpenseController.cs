@@ -89,5 +89,34 @@ namespace ManagementFinanceApp.Controllers
       //TODO: Implement Realistic Implementation
       return NoContent();
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Edit(int id, [FromBody] Models.CategoryExpense categoryExpenseRequest)
+    {
+      try
+      {
+        // Update entity in repository
+        var isUpdated = await _categoryExpenseService.EditCategoryExpense(categoryExpenseRequest, id);
+        if (isUpdated)
+        {
+          return NoContent();
+        }
+        else
+        {
+          // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+          return StatusCode(500, "A problem happend while handling your request.");
+        }
+      }
+      catch (Exception ex)
+      {
+        //response.DidError = true;
+        //response.ErrorMessage = "There was an internal error, please contact to technical support.";
+
+        // Logger?.LogCritical("There was an error on '{0}' invocation: {1}", nameof(PutStockItemAsync), ex);
+      }
+
+      return NoContent();
+    }
+
   }
 }
