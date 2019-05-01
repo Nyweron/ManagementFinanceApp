@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Http;
 using AutoMapper;
@@ -8,6 +10,7 @@ using ManagementFinanceApp.Controllers;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Repository;
 using ManagementFinanceApp.Repository.CategoryExpense;
+using ManagementFinanceApp.Service.CategoryExpense;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -18,55 +21,170 @@ namespace ManagementFinanceApp.Test.Controllers
   [TestFixture]
   public class CategoryExpenseControllerTest
   {
-
     IMapper mapper = AutoMapperConfig.GetMapper();
+    private Entities.CategoryExpense categoryExpenseObj;
+    private Mock<ICategoryExpenseRepository> mockCategoryExpenseRepository;
+    private Mock<ICategoryExpenseService> mockCategoryExpenseService;
+    private int expectedIdOfCategoryExpense;
 
-    public class OrganizationProfile : Profile
+    private List<Models.CategoryExpense> categoryExpenseListObj;
+
+    [SetUp]
+    public void Setup()
     {
-      public OrganizationProfile()
-      {
-        CreateMap<Models.CategoryExpense, Entities.CategoryExpense>();
-        CreateMap<Entities.CategoryExpense, Models.CategoryExpense>();
-        // Use CreateMap... Etc.. here (Profile methods are the same as configuration methods)
-      }
+      categoryExpenseObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      mockCategoryExpenseRepository = new Mock<ICategoryExpenseRepository>();
+      mockCategoryExpenseService = new Mock<ICategoryExpenseService>();
+      expectedIdOfCategoryExpense = 2;
+      categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
     }
 
     [Test]
-    public async Task GetCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
+    public async Task GetAllCategoryExpenses_ShouldReturnAllCategoryExpensesAsync()
     {
-      // arrange
+      // Arrange
       var expectedNumberOfCategoryExpensesList = 4;
-      var testModelCategoryExpense = new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 };
+      var categoryExpensesList = GetCategoryExpensesList();
 
-      var mappedObject = mapper.Map<Models.CategoryExpense>(testModelCategoryExpense);
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesList));
 
-      var categoryExpensesListTest = GetTestCategoryExpenses();
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
 
-      var mock = new Mock<ICategoryExpenseRepository>();
-      mock.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesListTest));
-
-      var controller = new CategoryExpenseController(mock.Object, mapper);
-
-      //act
+      // Act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
       var result = okObjectResult.Value as List<Entities.CategoryExpense>;
 
-      //assert
-      Assert.NotNull(okObjectResult, "Ok Object Result is null");
+      // Assert
+      Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
       Assert.AreEqual(expectedNumberOfCategoryExpensesList, result.Count(), "Expected Number Of CategoryExpenses List");
-      Assert.AreEqual(testModelCategoryExpense.Id, result[0].Id, "Id doesnt equal");
-
+      Assert.AreEqual(categoryExpenseObj.Id, result[1].Id, "Id is not equal");
     }
 
-    private IEnumerable<Entities.CategoryExpense> GetTestCategoryExpenses()
+    [Test]
+    public async Task GetByIdCategoryExpenses_ShouldReturnOneCategoryExpenseAsync()
     {
-      var testCategoryExpense = new List<Entities.CategoryExpense>();
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 });
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 3, Description = "CategoryeExpense3", IsDeleted = false, Weight = 3, CategoryGroupId = 0 });
-      testCategoryExpense.Add(new Entities.CategoryExpense { Id = 4, Description = "CategoryeExpense4", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+      // Arrange
+      var categoryExpenseTestIndex = 1;
+      var categoryExpenseTest = GetCategoryExpensesList().ToList() [categoryExpenseTestIndex];
 
-      return testCategoryExpense;
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense))
+        .Returns(Task.FromResult(categoryExpenseTest));
+
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
+
+      // Act
+      var okObjectResult = await controller.Get(expectedIdOfCategoryExpense) as OkObjectResult;
+      var result = okObjectResult.Value as Entities.CategoryExpense;
+
+      // Assert
+      Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
+      Assert.AreEqual(categoryExpenseObj.Id, result.Id, "Id is not equal");
+    }
+
+    [Test]
+    public async Task DeleteByIdCategoryExpenses_ShouldDeleteOneCategoryExpense()
+    {
+      // Arrange
+      var categoryExpenseTestIndex = 1;
+      var categoryExpenseTest = GetCategoryExpensesList().ToList() [categoryExpenseTestIndex];
+
+      // Act
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
+
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
+      var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as NoContentResult;
+
+      // Assert
+      Assert.NotNull(noContentResult, "noContentResult is null");
+      Assert.AreEqual(noContentResult.StatusCode, 204, "delete is not works");
+    }
+
+    [Test]
+    public async Task DeleteByIdCategoryExpenses_ShouldReturnNotFoundWhenGetAsync()
+    {
+      // Arrange
+
+      // Act
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
+
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
+      var notFoundResult = await controller.Delete(expectedIdOfCategoryExpense) as NotFoundResult;
+
+      // Assert
+      Assert.AreEqual(404, notFoundResult.StatusCode, "Not found result, not works. Method Delete");
+    }
+
+    [Test]
+    public async Task DeleteByIdCategoryExpenses_ShouldReturnInternalServerErrorCategoryExpense()
+    {
+      // Arrange
+
+      // Act
+      mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(false));
+
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
+      var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as ObjectResult;
+
+      // Assert
+      Assert.NotNull(noContentResult, "GetAsync returns null object in method Delete");
+      Assert.AreEqual(noContentResult.StatusCode, 500, "Internal server error in method Delete");
+    }
+
+    [Test]
+    public async Task PostCategoryExpenses_ShouldReturnBadRequestObjectIsNull()
+    {
+      // Arrange
+      var categoryExpenseList = new List<Models.CategoryExpense>();
+
+      // Act
+      var controller = new CategoryExpenseController(null, null);
+      var badRequestResult = await controller.Post(categoryExpenseList) as BadRequestResult;
+
+      // Assert
+      Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
+    }
+
+    [Test]
+    public async Task PostCategoryExpenses_ShouldCreateCategoryExpense()
+    {
+      // Arrange
+
+      // Act
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
+
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
+      var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
+
+      // Assert
+      Assert.AreEqual(201, objectResult.StatusCode, "CategoryExpense Created does not works. Method post");
+    }
+
+    [Test]
+    public async Task PostCategoryExpenses_ShouldNotCreateCategoryExpense()
+    {
+      // Arrange
+
+      // Act
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
+
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
+      var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
+
+      // Assert
+      Assert.AreEqual(500, objectResult.StatusCode, "CategoryExpense StatusCode500 does not works. Method post");
+    }
+
+    private IEnumerable<Entities.CategoryExpense> GetCategoryExpensesList()
+    {
+      var categoryExpenseListObj = new List<Entities.CategoryExpense>();
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 3, Description = "CategoryeExpense3", IsDeleted = false, Weight = 3, CategoryGroupId = 0 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 4, Description = "CategoryeExpense4", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+
+      return categoryExpenseListObj;
     }
 
   }

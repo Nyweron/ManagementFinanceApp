@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.CategoryExpense;
+using ManagementFinanceApp.Service.CategoryExpense;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
@@ -13,13 +14,12 @@ namespace ManagementFinanceApp.Controllers
   public class CategoryExpenseController : ControllerBase
   {
     private ICategoryExpenseRepository _categoryExpenseRepository;
-    private IMapper _mapper;
-    public CategoryExpenseController(ICategoryExpenseRepository categoryExpenseRepository,
-      IMapper mapper
-    )
+    private ICategoryExpenseService _categoryExpenseService;
+
+    public CategoryExpenseController(ICategoryExpenseRepository categoryExpenseRepository, ICategoryExpenseService categoryExpenseService)
     {
       _categoryExpenseRepository = categoryExpenseRepository;
-      _mapper = mapper;
+      _categoryExpenseService = categoryExpenseService;
     }
 
     [HttpGet]
@@ -58,31 +58,28 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var categoryExpenseEntity = _mapper.Map<List<Entities.CategoryExpense>>(categoryExpense);
-      await _categoryExpenseRepository.AddRangeAsync(categoryExpenseEntity);
+      var isCreated = await _categoryExpenseService.AddCategoryExpense(categoryExpense);
 
-      try
+      if (isCreated)
       {
-        if (!await _categoryExpenseRepository.SaveAsync())
-        {
-          // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
-          return StatusCode(500, "A problem happend while handling your request.");
-        }
+        return Created("", null);
       }
-      catch (Exception ex)
+      else
       {
-        Console.WriteLine(ex);
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        return StatusCode(500, "A problem happend while handling your request.");
       }
-
-      //TODO: Implement Realistic Implementation
-      return Created("", null);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-
       var categoryExpense = await _categoryExpenseRepository.GetAsync(id);
+
+      if (categoryExpense == null)
+      {
+        return NotFound();
+      }
 
       if (!await _categoryExpenseRepository.RemoveAsync(categoryExpense))
       {
@@ -90,7 +87,7 @@ namespace ManagementFinanceApp.Controllers
         return StatusCode(500, "A problem happend while handling your request.");
       }
       //TODO: Implement Realistic Implementation
-      return Ok();
+      return NoContent();
     }
   }
 }
