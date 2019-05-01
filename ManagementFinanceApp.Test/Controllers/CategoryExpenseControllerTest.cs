@@ -88,11 +88,11 @@ namespace ManagementFinanceApp.Test.Controllers
       var categoryExpenseTestIndex = 1;
       var categoryExpenseTest = GetCategoryExpensesList().ToList() [categoryExpenseTestIndex];
 
-      // Act
       mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
       mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
-
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
+
+      // Act
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as NoContentResult;
 
       // Assert
@@ -104,11 +104,10 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task DeleteByIdCategoryExpenses_ShouldReturnNotFoundWhenGetAsync()
     {
       // Arrange
+      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
+      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
 
       // Act
-      mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
-
-      var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
       var notFoundResult = await controller.Delete(expectedIdOfCategoryExpense) as NotFoundResult;
 
       // Assert
@@ -119,17 +118,16 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task DeleteByIdCategoryExpenses_ShouldReturnInternalServerErrorCategoryExpense()
     {
       // Arrange
-
-      // Act
       mockCategoryExpenseRepository.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
       mockCategoryExpenseRepository.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(false));
-
       var controller = new CategoryExpenseController(mockCategoryExpenseRepository.Object, null);
+
+      // Act
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as ObjectResult;
 
       // Assert
       Assert.NotNull(noContentResult, "GetAsync returns null object in method Delete");
-      Assert.AreEqual(noContentResult.StatusCode, 500, "Internal server error in method Delete");
+      Assert.AreEqual(500, noContentResult.StatusCode, "Internal server error in method Delete");
     }
 
     [Test]
@@ -137,9 +135,9 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       var categoryExpenseList = new List<Models.CategoryExpense>();
+      var controller = new CategoryExpenseController(null, null);
 
       // Act
-      var controller = new CategoryExpenseController(null, null);
       var badRequestResult = await controller.Post(categoryExpenseList) as BadRequestResult;
 
       // Assert
@@ -150,11 +148,10 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldCreateCategoryExpense()
     {
       // Arrange
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
 
       // Act
-      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
-
-      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
       var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
 
       // Assert
@@ -165,11 +162,10 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldNotCreateCategoryExpense()
     {
       // Arrange
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
 
       // Act
-      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
-
-      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
       var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
 
       // Assert
