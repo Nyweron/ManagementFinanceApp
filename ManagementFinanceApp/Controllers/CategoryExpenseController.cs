@@ -95,6 +95,11 @@ namespace ManagementFinanceApp.Controllers
     {
       try
       {
+        if (categoryExpenseRequest == null)
+        {
+          return BadRequest("Object cannot be null");
+        }
+
         // Update entity in repository
         var isUpdated = await _categoryExpenseService.EditCategoryExpense(categoryExpenseRequest, id);
         if (isUpdated)

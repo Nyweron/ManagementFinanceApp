@@ -172,6 +172,20 @@ namespace ManagementFinanceApp.Test.Controllers
       Assert.AreEqual(500, objectResult.StatusCode, "CategoryExpense StatusCode500 does not works. Method post");
     }
 
+    [Test]
+    public async Task PutCategoryExpenses_ShouldReturnBadRequestWhenObjectIsNull()
+    {
+      // Arrange
+      expectedIdOfCategoryExpense = 1;
+      var controller = new CategoryExpenseController(null, null);
+
+      // Act
+      var objectResult = await controller.Edit(expectedIdOfCategoryExpense, null) as ObjectResult;
+
+      // Assert
+      Assert.AreEqual(400, objectResult.StatusCode, "CategoryExpense StatusCode400 does not works. Method put. Object cannot be empty");
+    }
+
     private IEnumerable<Entities.CategoryExpense> GetCategoryExpensesList()
     {
       var categoryExpenseListObj = new List<Entities.CategoryExpense>();
