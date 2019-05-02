@@ -23,16 +23,28 @@ namespace ManagementFinanceApp.Test.Controllers
   {
     IMapper mapper = AutoMapperConfig.GetMapper();
     private Entities.CategoryExpense categoryExpenseObj;
+    private Models.CategoryExpense categoryExpenseModelObj;
     private Mock<ICategoryExpenseRepository> mockCategoryExpenseRepository;
     private Mock<ICategoryExpenseService> mockCategoryExpenseService;
     private int expectedIdOfCategoryExpense;
-
     private List<Models.CategoryExpense> categoryExpenseListObj;
+
+    private IEnumerable<Entities.CategoryExpense> GetCategoryExpensesList()
+    {
+      var categoryExpenseListObj = new List<Entities.CategoryExpense>();
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 3, Description = "CategoryeExpense3", IsDeleted = false, Weight = 3, CategoryGroupId = 0 });
+      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 4, Description = "CategoryeExpense4", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+
+      return categoryExpenseListObj;
+    }
 
     [SetUp]
     public void Setup()
     {
       categoryExpenseObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      categoryExpenseModelObj = new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
       mockCategoryExpenseRepository = new Mock<ICategoryExpenseRepository>();
       mockCategoryExpenseService = new Mock<ICategoryExpenseService>();
       expectedIdOfCategoryExpense = 2;
@@ -186,15 +198,34 @@ namespace ManagementFinanceApp.Test.Controllers
       Assert.AreEqual(400, objectResult.StatusCode, "CategoryExpense StatusCode400 does not works. Method put. Object cannot be empty");
     }
 
-    private IEnumerable<Entities.CategoryExpense> GetCategoryExpensesList()
+    [Test]
+    public async Task PutCategoryExpenses_ShouldReturnStatusCode500WhenObjectIsNotUpdated()
     {
-      var categoryExpenseListObj = new List<Entities.CategoryExpense>();
-      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 1, Description = "CategoryeExpense1", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
-      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 });
-      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 3, Description = "CategoryeExpense3", IsDeleted = false, Weight = 3, CategoryGroupId = 0 });
-      categoryExpenseListObj.Add(new Entities.CategoryExpense { Id = 4, Description = "CategoryeExpense4", IsDeleted = false, Weight = 1, CategoryGroupId = 1 });
+      // Arrange
+      mockCategoryExpenseService.Setup(repo => repo.EditCategoryExpense(It.IsAny<Models.CategoryExpense>(), It.IsAny<int>())).Returns(Task.FromResult(false));
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
+      expectedIdOfCategoryExpense = 1;
 
-      return categoryExpenseListObj;
+      // Act
+      var objectResult = await controller.Edit(expectedIdOfCategoryExpense, categoryExpenseModelObj) as ObjectResult;
+
+      // Assert
+      Assert.AreEqual(500, objectResult.StatusCode, "CategoryExpense method put. Object was not updated.");
+    }
+
+    [Test]
+    public async Task PutCategoryExpenses_ShouldReturnStatusCode204WhenObjectIsUpdated()
+    {
+      // Arrange
+      mockCategoryExpenseService.Setup(repo => repo.EditCategoryExpense(It.IsAny<Models.CategoryExpense>(), It.IsAny<int>())).Returns(Task.FromResult(true));
+      var controller = new CategoryExpenseController(null, mockCategoryExpenseService.Object);
+      expectedIdOfCategoryExpense = 1;
+
+      // Act
+      var noContentResult = await controller.Edit(expectedIdOfCategoryExpense, categoryExpenseModelObj) as NoContentResult;
+
+      // Assert
+      Assert.AreEqual(204, noContentResult.StatusCode, "CategoryExpense method put. Object was not updated.");
     }
 
   }
