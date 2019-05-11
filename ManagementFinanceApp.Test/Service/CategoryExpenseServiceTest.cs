@@ -40,8 +40,9 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()))
         .Returns(() => Task.Run(() => { })).Verifiable();
 
-      // Act
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
+
+      // Act
       await sut.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>());
 
       mockRepo.Verify(
@@ -49,7 +50,7 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task AddCategoryExpense_ShouldAddAndSaveObject()
+    public async Task AddCategoryExpense_ShouldBeAbleToAddCategoryExpense()
     {
       // Arrange
       var expected = true;
@@ -70,12 +71,12 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
 
-      // Arrange
+      // Assert
       Assert.AreEqual(expected, resultOfAddCategoryExpense, "Add and Save should return true");
     }
 
     [Test]
-    public async Task AddCategoryExpense_ShouldNotSaveObject()
+    public async Task AddCategoryExpense_ShouldNotBeAbleToAddCategoryExpense()
     {
       // Arrange
       var expected = false;
@@ -96,12 +97,12 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
 
-      // Arrange
+      // Assert
       Assert.AreEqual(expected, resultOfAddCategoryExpense, "Save should return false");
     }
 
     [Test]
-    public async Task AddCategoryExpense_ShouldNotAddObject()
+    public async Task AddCategoryExpense_ShouldNotBeAbleToAddRandeAsync()
     {
       // Arrange
       var expected = false;
@@ -122,31 +123,31 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
 
-      // Arrange
+      // Assert
       Assert.AreEqual(expected, resultOfAddCategoryExpense, "Add and Save should return false");
     }
 
     [Test]
-    public async Task PutCategoryExpense_ShouldReturnFalseWhenGetAsyncReturnNull()
+    public async Task PutCategoryExpense_ShouldBeAbleToReturnFalseWhenGetAsyncReturnNull()
     {
       // Arrange
       var expected = false;
       mockRepo.Setup(y => y.GetAsync(It.IsAny<int>()))
         .Returns(Task.FromResult((Entities.CategoryExpense) null));
+      var sut = new CategoryExpenseService(mockRepo.Object, null);
 
       // Act
-      var sut = new CategoryExpenseService(mockRepo.Object, null);
       var resultOfEditCategoryExpense = await sut.EditCategoryExpense(It.IsAny<Models.CategoryExpense>(), It.IsAny<int>());
 
       mockRepo.Verify(
         x => x.GetAsync(It.IsAny<int>()), Times.Once, "GetAsync should run once");
 
-      // Arrange
+      // Assert
       Assert.AreEqual(expected, resultOfEditCategoryExpense, "GetAsync should return null.");
     }
 
     [Test]
-    public async Task PutCategoryExpense_ShouldReturnFalseWhenSaveAsyncFailed()
+    public async Task PutCategoryExpense_ShouldBeAbleToReturnFalseWhenSaveAsyncFailed()
     {
       // Arrange
       var expected = false;
@@ -155,8 +156,9 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
 
-      // Act
       var sut = new CategoryExpenseService(mockRepo.Object, null);
+
+      // Act
       var resultOfEditCategoryExpense = await sut.EditCategoryExpense(categoryExpenseModelObj, It.IsAny<int>());
 
       mockRepo.Verify(
@@ -164,12 +166,12 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
 
-      // Arrange
+      // Assert
       Assert.AreEqual(expected, resultOfEditCategoryExpense, "SaveAsync failed when edit CategoryExpense.");
     }
 
     [Test]
-    public async Task PutCategoryExpense_ShouldReturnTrueWhenSaveAsyncSuccessful()
+    public async Task PutCategoryExpense_ShouldBeAbleToReturnTrueWhenSaveAsyncSuccessful()
     {
       // Arrange
       var expected = true;
@@ -178,8 +180,9 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
 
-      // Act
       var sut = new CategoryExpenseService(mockRepo.Object, null);
+
+      // Act
       var resultOfEditCategoryExpense = await sut.EditCategoryExpense(categoryExpenseModelObj, It.IsAny<int>());
 
       mockRepo.Verify(
@@ -187,7 +190,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
 
-      // Arrange
+      // Assert
       Assert.AreEqual(expected, resultOfEditCategoryExpense, "SaveAsync should successful when edit CategoryExpense.");
     }
 
