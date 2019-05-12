@@ -16,6 +16,13 @@ namespace ManagementFinanceApp.Controllers
     private ICategoryExpenseRepository _categoryExpenseRepository;
     private ICategoryExpenseService _categoryExpenseService;
 
+    //controller -> service-> repozytorium. w service ma byc lacznikiem, w service jest cala 'logika' Encje model itp...
+    //controller nie powinnien miec dostepu do repozytorium! brak Encji(obiekt bazodanowy)
+    //nie powinno na domenie pracować
+    //Kontroller ma przyjmować dane a reszta ma sie dziac w service
+
+    //https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)
+
     public CategoryExpenseController(ICategoryExpenseRepository categoryExpenseRepository, ICategoryExpenseService categoryExpenseService)
     {
       _categoryExpenseRepository = categoryExpenseRepository;
@@ -32,16 +39,9 @@ namespace ManagementFinanceApp.Controllers
     [HttpGet("{categoryExpenseId}")]
     public async Task<IActionResult> Get(int categoryExpenseId)
     {
-      try
-      {
-        var categoryExpenseEntities = await _categoryExpenseRepository.GetAsync(categoryExpenseId);
-        return Ok(categoryExpenseEntities);
-      }
-      catch (Exception)
-      {
-        // _logger.LogCritical($"Exception {categoryExpenseId}.", ex);
-        return StatusCode(500, "A problem happend while handling your request.");
-      }
+      //tak powinien wygladac kontroller(max dwie linijki) (wyjatki try catch powinny byc obslugiwane w middelwarre)
+      var categoryExpenseEntities = await _categoryExpenseRepository.GetAsync(categoryExpenseId);
+      return Ok(categoryExpenseEntities);
     }
 
     [HttpPost]
@@ -53,7 +53,7 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest();
       }
 
-      if (!ModelState.IsValid)
+      if (!ModelState.IsValid) //przekazac do middelware obsluge zwracanaia wyjatkow itp...
       {
         return BadRequest(ModelState);
       }
