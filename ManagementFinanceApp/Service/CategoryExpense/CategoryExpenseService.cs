@@ -42,7 +42,13 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       if (categoryExpenseFromDB == null) { return false; }
 
       // Set changes to entity
-      categoryExpenseFromDB.Description = categoryExpenseRequest.Description;
+      //TODO, check this, search better approach...
+      if (categoryExpenseRequest != null &&
+        categoryExpenseRequest.Description != null &&
+        categoryExpenseRequest.Description.Trim().Length != 0)
+      {
+        categoryExpenseFromDB.Description = categoryExpenseRequest.Description;
+      }
 
       if (!await _categoryExpenseRepository.SaveAsync())
       {
