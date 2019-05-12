@@ -38,6 +38,8 @@ namespace ManagementFinanceApp.Test.Service
     [Test]
     public async Task ReturnAllObj()
     {
+      // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
+
       // Arrange
       var options = new DbContextOptionsBuilder<ManagementFinanceAppDbContext>()
         .UseInMemoryDatabase(databaseName: "ManagamentFinanceApp")
