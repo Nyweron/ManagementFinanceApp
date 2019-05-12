@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -32,6 +33,45 @@ namespace ManagementFinanceApp.Test.Service
       categoryExpenseEntityObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense1", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
       categoryExpenseModelObj = new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
       categoryExpenseModelLists.Add(categoryExpenseModelObj);
+    }
+
+    [Test]
+    public async Task ReturnAllObj()
+    {
+      // Arrange
+      var options = new DbContextOptionsBuilder<ManagementFinanceAppDbContext>()
+        .UseInMemoryDatabase(databaseName: "ManagamentFinanceApp")
+        .Options;
+
+      var context = new ManagementFinanceAppDbContext(options);
+
+      await Seed(context);
+
+      var query = new Repository.Repository<Entities.CategoryExpense>(context);
+
+      var allCategoryExpenses = await query.GetAllAsync();
+
+      Assert.AreEqual(6, allCategoryExpenses.Count());
+      // Act
+
+      // Assert
+
+    }
+
+    private async Task Seed(ManagementFinanceAppDbContext context)
+    {
+      var entityCategoryExpense = new []
+      {
+        new Entities.CategoryExpense { Description = "x1" },
+        new Entities.CategoryExpense { Description = "x2" },
+        new Entities.CategoryExpense { Description = "x3" },
+        new Entities.CategoryExpense { Description = "x4" },
+        new Entities.CategoryExpense { Description = "x5" },
+        new Entities.CategoryExpense { Description = "x6" }
+      };
+
+      await context.CategoryExpenses.AddRangeAsync(entityCategoryExpense);
+      await context.SaveChangesAsync();
     }
 
     [Test]
