@@ -21,45 +21,12 @@ namespace ManagementFinanceApp.Test.Service
     private Mock<ICategoryExpenseRepository> mockRepo;
     private Mock<IMapper> mockMapper;
     private Entities.CategoryExpense categoryExpenseEntityObj;
+    private IEnumerable<Entities.CategoryExpense> categoryExpenseEntityLists;
     private Models.CategoryExpense categoryExpenseModelObj;
     private List<Models.CategoryExpense> categoryExpenseModelLists;
-
-    [SetUp]
-    public void Setup()
-    {
-      categoryExpenseModelLists = new List<Models.CategoryExpense>();
-      mockRepo = new Mock<ICategoryExpenseRepository>();
-      mockMapper = new Mock<IMapper>();
-      categoryExpenseEntityObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense1", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
-      categoryExpenseModelObj = new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
-      categoryExpenseModelLists.Add(categoryExpenseModelObj);
-    }
-
-    [Test]
-    public async Task ReturnAllObj()
-    {
-      // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
-
-      // Arrange
-      var options = new DbContextOptionsBuilder<ManagementFinanceAppDbContext>()
-        .UseInMemoryDatabase(databaseName: "ManagamentFinanceApp")
-        .Options;
-
-      var context = new ManagementFinanceAppDbContext(options);
-
-      await Seed(context);
-
-      var query = new Repository.Repository<Entities.CategoryExpense>(context);
-
-      var allCategoryExpenses = await query.GetAllAsync();
-
-      Assert.AreEqual(6, allCategoryExpenses.Count());
-      // Act
-
-      // Assert
-
-    }
-
+    private DbContextOptions<ManagementFinanceAppDbContext> options;
+    private ManagementFinanceAppDbContext context;
+    private Repository.Repository<Entities.CategoryExpense> queryDBInMemory;
     private async Task Seed(ManagementFinanceAppDbContext context)
     {
       var entityCategoryExpense = new []
@@ -74,6 +41,48 @@ namespace ManagementFinanceApp.Test.Service
 
       await context.CategoryExpenses.AddRangeAsync(entityCategoryExpense);
       await context.SaveChangesAsync();
+    }
+
+    [OneTimeSetUp]
+    public async Task OnetimeSetup()
+    {
+      // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
+
+    }
+
+    [SetUp]
+    public async Task Setup()
+    {
+      options = new DbContextOptionsBuilder<ManagementFinanceAppDbContext>()
+        .UseInMemoryDatabase(databaseName: "ManagamentFinanceApp")
+        .Options;
+      context = new ManagementFinanceAppDbContext(options);
+      await Seed(context);
+      queryDBInMemory = new Repository.Repository<Entities.CategoryExpense>(context);
+
+      categoryExpenseModelLists = new List<Models.CategoryExpense>();
+      categoryExpenseEntityLists = new List<Entities.CategoryExpense>();
+      mockRepo = new Mock<ICategoryExpenseRepository>();
+      mockMapper = new Mock<IMapper>();
+      categoryExpenseEntityObj = new Entities.CategoryExpense { Id = 2, Description = "CategoryeExpense1", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      categoryExpenseModelObj = new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
+      categoryExpenseModelLists.Add(categoryExpenseModelObj);
+    }
+
+    [TearDown]
+    public void Teardown()
+    {
+      context.Database.EnsureDeleted();
+    }
+
+    [Test]
+    public async Task ReturnAllObj()
+    {
+      // Act
+      var allCategoryExpenses = await queryDBInMemory.GetAllAsync();
+
+      // Assert
+      Assert.AreEqual(6, allCategoryExpenses.Count());
     }
 
     [Test]
@@ -106,7 +115,7 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task AddCategoryExpense_ShouldBeAbleToAddCategoryExpense()
+    public async Task AddCategoryExpense_TryingAddNewObjectToDatabase_ShouldBeAbleReturnIdEquals8()
     {
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>()))
@@ -116,13 +125,26 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
 
+      categoryExpenseEntityLists = new List<Entities.CategoryExpense>
+      {
+        new Entities.CategoryExpense
+        {
+        Id = 8,
+        Description = "New category Expense was added"
+        }
+      };
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
       var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+      await context.CategoryExpenses.AddRangeAsync(categoryExpenseEntityLists);
+      await context.SaveChangesAsync();
+
+      var isAddedNewObject = queryDBInMemory.GetAsync(8);
 
       // Assert
-      Assert.IsTrue(resultOfAddCategoryExpense, "Add and Save should return true");
+      Assert.AreEqual(8, isAddedNewObject.Result.Id, "New object was not added, require id=8");
+      Assert.IsTrue(resultOfAddCategoryExpense, "Add and Save should return true. Object i added to Database");
       mockRepo.Verify(
         x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()), Times.Once, "AddRangeAsync should run once");
       mockRepo.Verify(
