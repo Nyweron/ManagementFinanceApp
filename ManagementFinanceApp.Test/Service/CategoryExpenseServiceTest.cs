@@ -31,34 +31,33 @@ namespace ManagementFinanceApp.Test.Service
     {
       var entityCategoryExpense = new []
       {
-        new Entities.CategoryExpense { Description = "x1" },
-        new Entities.CategoryExpense { Description = "x2" },
-        new Entities.CategoryExpense { Description = "x3" },
-        new Entities.CategoryExpense { Description = "x4" },
-        new Entities.CategoryExpense { Description = "x5" },
-        new Entities.CategoryExpense { Description = "x6" }
+        new Entities.CategoryExpense { Id = 1, Description = "x1" },
+        new Entities.CategoryExpense { Id = 2, Description = "x2" },
+        new Entities.CategoryExpense { Id = 3, Description = "x3" },
+        new Entities.CategoryExpense { Id = 4, Description = "x4" },
+        new Entities.CategoryExpense { Id = 5, Description = "x5" },
+        new Entities.CategoryExpense { Id = 6, Description = "x6" }
       };
 
       await context.CategoryExpenses.AddRangeAsync(entityCategoryExpense);
       await context.SaveChangesAsync();
     }
 
-    [OneTimeSetUp]
-    public async Task OnetimeSetup()
+    private async Task InitDatabaseInMemoryTest()
     {
       // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
-
-    }
-
-    [SetUp]
-    public async Task Setup()
-    {
       options = new DbContextOptionsBuilder<ManagementFinanceAppDbContext>()
         .UseInMemoryDatabase(databaseName: "ManagamentFinanceApp")
         .Options;
       context = new ManagementFinanceAppDbContext(options);
       await Seed(context);
       queryDBInMemory = new Repository.Repository<Entities.CategoryExpense>(context);
+    }
+
+    [SetUp]
+    public async Task Setup()
+    {
+      await InitDatabaseInMemoryTest();
 
       categoryExpenseModelLists = new List<Models.CategoryExpense>();
       categoryExpenseEntityLists = new List<Entities.CategoryExpense>();
@@ -76,7 +75,7 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task ReturnAllObj()
+    public async Task CategoryExpenses_CheckDatabaseTestObjects_ShouldReturnSixObjectsInCategoryExpenses()
     {
       // Act
       var allCategoryExpenses = await queryDBInMemory.GetAllAsync();
@@ -88,10 +87,7 @@ namespace ManagementFinanceApp.Test.Service
     [Test]
     public async Task AddCategoryExpense_ShouldRunAddRangeAsyncOnlyOnce()
     {
-      //entity framework testy dla in memory, skupić sie na biznesowej warstwie metody.
-
       // Arrange
-      //It.IsAny<List<Models.CategoryExpense>>() - ustawiać podczas arrange
       mockMapper.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>()))
         .Returns(It.IsAny<List<Entities.CategoryExpense>>());
       mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()))
@@ -100,18 +96,37 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      //W momencie ACT podawać zmienne z wartościoami lub elemeny z substituted (https://nsubstitute.github.io/)
-      //W act powinna być tylko jedna linijka, jedna metoda, ktora jest testowana
       await sut.AddCategoryExpense(categoryExpenseModelLists);
-
-      //schemat testowania wyjatkow, robie jednoczesnie ACT czyli await sut i assert
-      // Assert.ThrowsAsync<ThreadStateException>(
-      //   () => await sut.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())
-      // );
 
       // Assert
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()), Times.Once, "AddRangeAsync should run once");
+        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()),
+        Times.Once, "AddRangeAsync should run once");
+    }
+
+    [Test]
+    public async Task AddCategoryExpense_ShouldBeAbleToAddCategoryExpense()
+    {
+      // Arrange
+      mockMapper.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>()))
+        .Returns(It.IsAny<List<Entities.CategoryExpense>>());
+      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()))
+        .Returns(() => Task.Run(() => { return true; })).Verifiable();
+      mockRepo.Setup(y => y.SaveAsync())
+        .Returns(() => Task.Run(() => { return true; })).Verifiable();
+
+      var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
+
+      // Act
+      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+
+      // Assert
+      Assert.IsTrue(resultOfAddCategoryExpense, "Add and Save should return true.");
+      mockRepo.Verify(
+        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()),
+        Times.Once, "AddRangeAsync should run once");
+      mockRepo.Verify(
+        x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
 
     [Test]
@@ -124,29 +139,25 @@ namespace ManagementFinanceApp.Test.Service
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
-
       categoryExpenseEntityLists = new List<Entities.CategoryExpense>
       {
-        new Entities.CategoryExpense
-        {
-        Id = 8,
-        Description = "New category Expense was added"
-        }
+        new Entities.CategoryExpense { Id = 8, Description = "New category Expense was added" }
       };
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
       var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+
       await context.CategoryExpenses.AddRangeAsync(categoryExpenseEntityLists);
       await context.SaveChangesAsync();
-
       var isAddedNewObject = queryDBInMemory.GetAsync(8);
 
       // Assert
       Assert.AreEqual(8, isAddedNewObject.Result.Id, "New object was not added, require id=8");
       Assert.IsTrue(resultOfAddCategoryExpense, "Add and Save should return true. Object i added to Database");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()), Times.Once, "AddRangeAsync should run once");
+        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()),
+        Times.Once, "AddRangeAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -194,7 +205,8 @@ namespace ManagementFinanceApp.Test.Service
       // Assert
       Assert.IsFalse(resultOfAddCategoryExpense, "Add and Save should return false");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()), Times.Once, "AddRangeAsync should run once");
+        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryExpense>>()),
+        Times.Once, "AddRangeAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -212,7 +224,7 @@ namespace ManagementFinanceApp.Test.Service
 
       // Assert
       Assert.IsFalse(resultOfEditCategoryExpense, "GetAsync should return null.");
-      mockRepo.Verify(x => x.GetAsync(1), Times.Once, "GetAsync should run once");
+      mockRepo.Verify(x => x.GetAsync(It.IsAny<int>()), Times.Once, "GetAsync should run once");
     }
 
     [Test]
@@ -257,8 +269,36 @@ namespace ManagementFinanceApp.Test.Service
         x => x.GetAsync(1), Times.Once, "GetAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
-
     }
 
+    [Test]
+    public async Task PutCategoryExpense_TryingChangeEditingObjectInDatabase_ShouldBeAbleEditObjectAndSaveChangesToDatabase()
+    {
+      // Arrange
+      mockRepo.Setup(y => y.GetAsync(It.IsAny<int>()))
+        .Returns(Task.FromResult(categoryExpenseEntityObj));
+      mockRepo.Setup(y => y.SaveAsync())
+        .Returns(() => Task.Run(() => { return true; })).Verifiable();
+
+      var sut = new CategoryExpenseService(mockRepo.Object, null);
+      categoryExpenseModelObj = new Models.CategoryExpense { Id = 2, Description = "x2 Changed" };
+
+      var entityFromDB = queryDBInMemory.GetAsync(2);
+      entityFromDB.Result.Description = categoryExpenseModelObj.Description;
+      await context.SaveChangesAsync();
+      var isUpdatedNewObject = queryDBInMemory.GetAsync(2);
+      // Act
+      var resultOfEditCategoryExpense = await sut.EditCategoryExpense(categoryExpenseModelObj, 2);
+
+      // Assert
+      Assert.IsTrue(resultOfEditCategoryExpense, "SaveAsync should successful when edit CategoryExpense.");
+      Assert.AreEqual(2, isUpdatedNewObject.Result.Id, "Object was not updated, require id=2");
+      Assert.AreEqual("x2 Changed", isUpdatedNewObject.Result.Description, "Object was not updated, require Description=x2 Changed");
+      mockRepo.Verify(
+        x => x.GetAsync(It.IsAny<int>()), Times.Once, "GetAsync should run once");
+      mockRepo.Verify(
+        x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
+    }
   }
+
 }
