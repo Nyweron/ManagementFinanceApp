@@ -19,6 +19,7 @@ namespace ManagementFinanceApp.Test.Service
   public class CategoryExpenseServiceTest
   {
     private Mock<ICategoryExpenseRepository> mockRepo;
+    private Mock<ICategoryExpenseService> mockService;
     private Mock<IMapper> mockMapper;
     private Entities.CategoryExpense categoryExpenseEntityObj;
     private IEnumerable<Entities.CategoryExpense> categoryExpenseEntityLists;
@@ -75,13 +76,110 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task CategoryExpenses_CheckDatabaseTestObjects_ShouldReturnSixObjectsInCategoryExpenses()
+    public async Task CategoryExpenseGetAll_TryingGetAllObjectsFromDB_ShouldReturnSixObjectsInCategoryExpenses()
     {
       // Act
       var allCategoryExpenses = await queryDBInMemory.GetAllAsync();
 
       // Assert
-      Assert.AreEqual(6, allCategoryExpenses.Count());
+      Assert.AreEqual(6, allCategoryExpenses.Count(), "GetAllAsync doesn't return objects from Database");
+    }
+
+    [Test]
+    public async Task CategoryExpenseGet_TryingGetObjectFromDB_ShouldReturnOneObjectInCategoryExpenses()
+    {
+      // Act
+      var getCategoryExpense = await queryDBInMemory.GetAsync(1);
+
+      // Assert
+      Assert.AreEqual(1, getCategoryExpense.Id, "GetAsync doesn't return object from Database");
+    }
+
+    [Test]
+    public async Task CategoryExpenseRemove_TryingRemoveObjectFromDB_ShouldRemoveOneObjectInCategoryExpenses()
+    {
+      // Arrange
+      var getCategoryExpense = await queryDBInMemory.GetAsync(1);
+      var allCategoryExpenses = await queryDBInMemory.GetAllAsync();
+
+      // Act
+      var isRemoved = await queryDBInMemory.RemoveAsync(getCategoryExpense);
+      var allCategoryExpensesAfterRemoveOne = await queryDBInMemory.GetAllAsync();
+
+      // Assert
+      Assert.IsTrue(isRemoved, "RemoveAsync doesn't removed from DataBase");
+      Assert.AreEqual(6, allCategoryExpenses.Count(), "GetAllAsync doesn't return objects from Database");
+      Assert.AreEqual(5, allCategoryExpensesAfterRemoveOne.Count(), "GetAllAsync doesn't return objects from Database");
+      Assert.AreEqual(1, getCategoryExpense.Id, "GetAsync doesn't return object from Database");
+    }
+
+    [Test]
+    public async Task GetAllCategoryExpense_ShouldBeAbleToReturnTwoObjects()
+    {
+      // Arrange
+      categoryExpenseEntityLists = new List<Entities.CategoryExpense>()
+      {
+        new Entities.CategoryExpense { Id = 8, Description = "description8" },
+          new Entities.CategoryExpense { Id = 9, Description = "description9" }
+      }.AsEnumerable();
+
+      mockRepo.Setup(y => y.GetAllAsync())
+        .Returns(Task.FromResult(categoryExpenseEntityLists));
+
+      var sut = new CategoryExpenseService(mockRepo.Object, null);
+
+      // Act
+      var getAllEntities = await sut.GetAllAsync();
+
+      // Assert
+      Assert.AreEqual(2, getAllEntities.Count(), "GetAll doesn't return correct Count");
+      mockRepo.Verify(x => x.GetAllAsync(), Times.Once, "GetAllAsync should run once");
+
+    }
+
+    [Test]
+    public async Task GetCategoryExpense_ShouldBeAbleToReturnOneObjectWithIdEqualsEight()
+    {
+      // Arrange
+      categoryExpenseEntityObj = new Entities.CategoryExpense { Id = 8, Description = "description8" };
+
+      mockRepo.Setup(y => y.GetAsync(It.IsAny<int>()))
+        .Returns(Task.FromResult(categoryExpenseEntityObj));
+
+      var sut = new CategoryExpenseService(mockRepo.Object, null);
+
+      // Act
+      var getAllEntities = await sut.GetAsync(8);
+
+      // Assert
+      Assert.AreEqual(8, getAllEntities.Id, "GetAsync doesn't return correct Object");
+      mockRepo.Verify(x => x.GetAsync(8), Times.Once, "GetAsync should run once");
+    }
+
+    [Test]
+    public async Task RemoveCategoryExpense_ShouldBeAbleToRemoveOneObjectWithIdEquals1()
+    {
+      // Arrange
+      categoryExpenseEntityObj = new Entities.CategoryExpense { Id = 1, Description = "description1" };
+
+      mockRepo.Setup(y => y.GetAsync(It.IsAny<int>()))
+        .Returns(Task.FromResult(categoryExpenseEntityObj));
+      mockRepo.Setup(y => y.RemoveAsync(It.IsAny<Entities.CategoryExpense>()))
+        .Returns(Task.FromResult(true));
+
+      var sut = new CategoryExpenseService(mockRepo.Object, null);
+      var getEntity = await sut.GetAsync(1);
+
+      // Act
+
+      var isRemoved = await sut.RemoveAsync(getEntity);
+
+      // Assert
+      Assert.AreEqual(1, getEntity.Id, "GetAsync doesn't return correct Object");
+      Assert.IsTrue(isRemoved, "RemoveAsync doesn't removed correct Object");
+      mockRepo.Verify(x => x.GetAsync(1), Times.Once, "GetAsync should run once");
+      mockRepo.Verify(x => x.RemoveAsync(getEntity),
+        Times.Once, "RemoveAsync should run once");
     }
 
     [Test]
@@ -130,7 +228,7 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task AddCategoryExpense_TryingAddNewObjectToDatabase_ShouldBeAbleReturnIdEquals8()
+    public async Task CategoryExpenseAdd_TryingAddNewObjectToDB_ShouldBeAbleReturnIdEquals8()
     {
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.CategoryExpense>>(It.IsAny<List<Models.CategoryExpense>>()))
@@ -272,7 +370,7 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task PutCategoryExpense_TryingChangeEditingObjectInDatabase_ShouldBeAbleEditObjectAndSaveChangesToDatabase()
+    public async Task CategoryExpensePut_TryingChangeEditingObjectInDB_ShouldBeAbleEditObjectAndSaveChangesToDatabase()
     {
       // Arrange
       mockRepo.Setup(y => y.GetAsync(It.IsAny<int>()))
