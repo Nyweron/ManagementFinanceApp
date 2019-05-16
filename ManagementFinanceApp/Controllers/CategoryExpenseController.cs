@@ -13,7 +13,6 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class CategoryExpenseController : ControllerBase
   {
-    private ICategoryExpenseRepository _categoryExpenseRepository;
     private ICategoryExpenseService _categoryExpenseService;
 
     //controller -> service-> repozytorium. w service ma byc lacznikiem, w service jest cala 'logika' Encje model itp...
@@ -23,16 +22,15 @@ namespace ManagementFinanceApp.Controllers
 
     //https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)
 
-    public CategoryExpenseController(ICategoryExpenseRepository categoryExpenseRepository, ICategoryExpenseService categoryExpenseService)
+    public CategoryExpenseController(ICategoryExpenseService categoryExpenseService)
     {
-      _categoryExpenseRepository = categoryExpenseRepository;
       _categoryExpenseService = categoryExpenseService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-      var categoryExpenseEntities = await _categoryExpenseRepository.GetAllAsync();
+      var categoryExpenseEntities = await _categoryExpenseService.GetAllAsync();
       return Ok(categoryExpenseEntities);
     }
 
@@ -40,7 +38,7 @@ namespace ManagementFinanceApp.Controllers
     public async Task<IActionResult> Get(int categoryExpenseId)
     {
       //tak powinien wygladac kontroller(max dwie linijki) (wyjatki try catch powinny byc obslugiwane w middelwarre)
-      var categoryExpenseEntities = await _categoryExpenseRepository.GetAsync(categoryExpenseId);
+      var categoryExpenseEntities = await _categoryExpenseService.GetAsync(categoryExpenseId);
       return Ok(categoryExpenseEntities);
     }
 
@@ -74,14 +72,14 @@ namespace ManagementFinanceApp.Controllers
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-      var categoryExpense = await _categoryExpenseRepository.GetAsync(id);
+      var categoryExpense = await _categoryExpenseService.GetAsync(id);
 
       if (categoryExpense == null)
       {
         return NotFound();
       }
 
-      if (!await _categoryExpenseRepository.RemoveAsync(categoryExpense))
+      if (!await _categoryExpenseService.RemoveAsync(categoryExpense))
       {
         //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
         return StatusCode(500, "A problem happend while handling your request.");
