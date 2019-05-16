@@ -19,6 +19,16 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       _mapper = mapper;
     }
 
+    public async Task<IEnumerable<Entities.CategoryExpense>> GetAllAsync()
+    {
+      return await _categoryExpenseRepository.GetAllAsync();
+    }
+
+    public async Task<Entities.CategoryExpense> GetAsync(int categoryExpenseId)
+    {
+      return await _categoryExpenseRepository.GetAsync(categoryExpenseId);
+    }
+
     public async Task<bool> AddCategoryExpense(List<Models.CategoryExpense> categoryExpense)
     {
       var categoryExpenseEntity = _mapper.Map<List<Entities.CategoryExpense>>(categoryExpense);
@@ -31,6 +41,11 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       }
 
       return true;
+    }
+
+    public async Task<bool> RemoveAsync(Entities.CategoryExpense categoryExpense)
+    {
+      return await _categoryExpenseRepository.RemoveAsync(categoryExpense);
     }
 
     public async Task<bool> EditCategoryExpense(Models.CategoryExpense categoryExpenseRequest, int id)
