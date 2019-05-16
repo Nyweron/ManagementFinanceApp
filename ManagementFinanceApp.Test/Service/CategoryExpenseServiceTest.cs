@@ -30,7 +30,7 @@ namespace ManagementFinanceApp.Test.Service
     private Repository.Repository<Entities.CategoryExpense> queryDBInMemory;
     private async Task Seed(ManagementFinanceAppDbContext context)
     {
-      var entityCategoryExpense = new []
+      var entityCategoryExpenses = new []
       {
         new Entities.CategoryExpense { Id = 1, Description = "x1" },
         new Entities.CategoryExpense { Id = 2, Description = "x2" },
@@ -40,7 +40,7 @@ namespace ManagementFinanceApp.Test.Service
         new Entities.CategoryExpense { Id = 6, Description = "x6" }
       };
 
-      await context.CategoryExpenses.AddRangeAsync(entityCategoryExpense);
+      await context.CategoryExpenses.AddRangeAsync(entityCategoryExpenses);
       await context.SaveChangesAsync();
     }
 
@@ -48,7 +48,7 @@ namespace ManagementFinanceApp.Test.Service
     {
       // https://docs.microsoft.com/en-us/ef/core/miscellaneous/testing/in-memory
       options = new DbContextOptionsBuilder<ManagementFinanceAppDbContext>()
-        .UseInMemoryDatabase(databaseName: "ManagamentFinanceApp")
+        .UseInMemoryDatabase(databaseName: "ManagamentFinanceAppTest")
         .Options;
       context = new ManagementFinanceAppDbContext(options);
       await Seed(context);
@@ -138,7 +138,7 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task GetCategoryExpense_ShouldBeAbleToReturnOneObjectWithIdEqualsEight()
+    public async Task GetCategoryExpense_ShouldBeAbleToReturnOneObjectWithIdEquals8()
     {
       // Arrange
       categoryExpenseEntityObj = new Entities.CategoryExpense { Id = 8, Description = "description8" };
