@@ -41,6 +41,14 @@ namespace ManagementFinanceApp.Service.Expense
 
       // Set changes to entity
       //TODO, check this, search better approach...
+
+      // expenseRequest.HowMuch
+      // expenseRequest.CategorySavingId
+      // expenseRequest.CategoryExpenseId
+      // expenseRequest.Date
+      // expenseRequest.UserId
+      // expenseRequest.Comment
+
       if (expenseRequest != null &&
         expenseRequest.Comment != null &&
         expenseRequest.Comment.Trim().Length != 0)
