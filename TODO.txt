@@ -1,0 +1,45 @@
+//startup.cs
+  services.AddCors();
+    //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci,
+    // w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
+    //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
+    services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+    services.AddMemoryCache();
+
+
+//Controller
+      //https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)
+
+  //controller -> service-> repozytorium. w service ma byc lacznikiem . w service jest cala 'lohgika' Encje model itp...
+    //controller nie powinnien miec dostepu do repozytorium! brak Encji z bazodanowa
+    //nie powinno na domenie pracować
+    //Kontroller ma przyjmpować dane a reszta ma sie dziac w service
+
+[HttpGet("{categoryExpenseId}")]
+public async Task<IActionResult> Get(int categoryExpenseId)
+{
+  //tak powiinoo wygladac kontroller (wyjatki try catch powinny byc obslugiwane w middelwarre)
+  var categoryExpenseEntities = await _categoryExpenseRepository.GetAsync(categoryExpenseId);
+  return Ok(categoryExpenseEntities);
+}
+
+
+  if (!ModelState.IsValid) //przekazac do middelware obsluge zwracanaia wyjatkow itp...
+
+
+
+
+//ServiceTest
+  //It.IsAny<List<Models.CategoryExpense>>() - ustawiać podczas arrange
+  //https://nsubstitute.github.io/
+
+  // Act
+  await sut.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>());
+  //w momencie ACT podawać zmienne z wartościoami lub elementy z substituted
+
+    //entity framewerk testy dla in memeory, skupić sie na biznesowej warstwie metody.
+    //
+
+
+// Act //W act powinna być tylko jedna linijka, jedna metoda ktora jest testowana
+var resultOfAddCategoryExpense = await sut.AddCategoryExpense(ZmiennaZwartosciami);

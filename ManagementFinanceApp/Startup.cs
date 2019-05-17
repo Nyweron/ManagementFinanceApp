@@ -41,6 +41,9 @@ namespace ManagementFinanceApp
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
       services.AddCors();
+      //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
+      //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
+      //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
       services.AddMemoryCache();
       services.AddResponseCaching();

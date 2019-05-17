@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using AutoMapper;
-using ManagementFinanceApp.Repository.Expense;
+using ManagementFinanceApp.Service.Expense;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
@@ -11,36 +11,25 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class ExpenseController : ControllerBase
   {
-    private IExpenseRepository _expenseRepository;
-    private IMapper _mapper;
-    public ExpenseController(IExpenseRepository expenseRepository,
-      IMapper mapper
-    )
+    private IExpenseService _expenseService;
+
+    public ExpenseController(IExpenseService expenseService)
     {
-      _expenseRepository = expenseRepository;
-      _mapper = mapper;
+      _expenseService = expenseService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-      var expenseEntities = await _expenseRepository.GetAllAsync();
+      var expenseEntities = await _expenseService.GetAllAsync();
       return Ok(expenseEntities);
     }
 
     [HttpGet("{expenseId}")]
     public async Task<IActionResult> Get(int expenseId)
     {
-      try
-      {
-        var expenseEntities = await _expenseRepository.GetAsync(expenseId);
-        return Ok(expenseEntities);
-      }
-      catch (Exception)
-      {
-        // _logger.LogCritical($"Exception {expenseId}.", ex);
-        return StatusCode(500, "A problem happend while handling your request.");
-      }
+      var expenseEntities = await _expenseService.GetAsync(expenseId);
+      return Ok(expenseEntities);
     }
 
     [HttpPost]
@@ -57,32 +46,68 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var expenseEntity = _mapper.Map<Entities.Expense>(expense);
-      await _expenseRepository.AddAsync(expenseEntity);
+      var isCreated = await _expenseService.AddExpense(expense);
 
-      if (!await _expenseRepository.SaveAsync())
+      if (isCreated)
+      {
+        return Created("", null);
+      }
+      else
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
-
-      //TODO: Implement Realistic Implementation
-      return Created("", null);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
 
-      var expense = await _expenseRepository.GetAsync(id);
+      var expense = await _expenseService.GetAsync(id);
 
-      if (!await _expenseRepository.RemoveAsync(expense))
+      if (expense == null)
+      {
+        return NotFound();
+      }
+
+      if (!await _expenseService.RemoveAsync(expense))
       {
         //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
         return StatusCode(500, "A problem happend while handling your request.");
       }
       //TODO: Implement Realistic Implementation
-      return Ok();
+      return NoContent();
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Edit(int id, [FromBody] Models.Expense expenseRequest)
+    {
+      try
+      {
+        if (expenseRequest == null)
+        {
+          return BadRequest("Object cannot be null");
+        }
+
+        // Update entity in repository
+        var isUpdated = await _expenseService.EditExpense(expenseRequest, id);
+        if (isUpdated)
+        {
+          return NoContent();
+        }
+        else
+        {
+          // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+          return StatusCode(500, "A problem happend while handling your request.");
+        }
+      }
+      catch (Exception ex)
+      {
+        // Logger?.LogCritical("There was an error on '{0}' invocation: {1}", nameof(PutStockItemAsync), ex);
+      }
+
+      return NoContent();
+    }
+
   }
 }

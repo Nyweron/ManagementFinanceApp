@@ -8,7 +8,6 @@ namespace ManagementFinanceApp.Service.CategoryExpense
 {
   public class CategoryExpenseService : ICategoryExpenseService
   {
-
     private ICategoryExpenseRepository _categoryExpenseRepository;
     private IMapper _mapper;
     public CategoryExpenseService(ICategoryExpenseRepository categoryExpenseRepository,
@@ -42,7 +41,13 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       if (categoryExpenseFromDB == null) { return false; }
 
       // Set changes to entity
-      categoryExpenseFromDB.Description = categoryExpenseRequest.Description;
+      //TODO, check this, search better approach...
+      if (categoryExpenseRequest != null &&
+        categoryExpenseRequest.Description != null &&
+        categoryExpenseRequest.Description.Trim().Length != 0)
+      {
+        categoryExpenseFromDB.Description = categoryExpenseRequest.Description;
+      }
 
       if (!await _categoryExpenseRepository.SaveAsync())
       {
@@ -51,6 +56,21 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       }
 
       return true;
+    }
+
+    public async Task<IEnumerable<Entities.CategoryExpense>> GetAllAsync()
+    {
+      return await _categoryExpenseRepository.GetAllAsync();
+    }
+
+    public async Task<Entities.CategoryExpense> GetAsync(int categoryExpenseId)
+    {
+      return await _categoryExpenseRepository.GetAsync(categoryExpenseId);
+    }
+
+    public async Task<bool> RemoveAsync(Entities.CategoryExpense categoryExpense)
+    {
+      return await _categoryExpenseRepository.RemoveAsync(categoryExpense);
     }
 
   }
