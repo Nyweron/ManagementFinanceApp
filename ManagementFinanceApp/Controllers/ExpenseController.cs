@@ -76,7 +76,7 @@ namespace ManagementFinanceApp.Controllers
         return StatusCode(500, "A problem happend while handling your request.");
       }
       //TODO: Implement Realistic Implementation
-      return Ok();
+      return NoContent();
     }
 
     [HttpPut("{id}")]
