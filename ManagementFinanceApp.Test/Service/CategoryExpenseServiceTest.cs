@@ -19,7 +19,6 @@ namespace ManagementFinanceApp.Test.Service
   public class CategoryExpenseServiceTest
   {
     private Mock<ICategoryExpenseRepository> mockRepo;
-    private Mock<ICategoryExpenseService> mockService;
     private Mock<IMapper> mockMapper;
     private Entities.CategoryExpense categoryExpenseEntityObj;
     private IEnumerable<Entities.CategoryExpense> categoryExpenseEntityLists;

@@ -15,7 +15,6 @@ namespace ManagementFinanceApp.Test.Service
   public class ExpenseServiceTest
   {
     private Mock<IExpenseRepository> mockRepo;
-    private Mock<IExpenseService> mockService;
     private Mock<IMapper> mockMapper;
     private Entities.Expense expenseEntityObj;
     private IEnumerable<Entities.Expense> expenseEntityLists;
