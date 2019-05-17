@@ -1,35 +1,75 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Models;
+using ManagementFinanceApp.Repository.Expense;
 
 namespace ManagementFinanceApp.Service.Expense
 {
   public class ExpenseService : IExpenseService
   {
-    public Task<bool> AddExpense(Models.Expense expense)
+    private IExpenseRepository _expenseRepository;
+    private IMapper _mapper;
+    public ExpenseService(IExpenseRepository expenseRepository,
+      IMapper mapper)
     {
-      throw new System.NotImplementedException();
+      _expenseRepository = expenseRepository;
+      _mapper = mapper;
+    }
+    public async Task<bool> AddExpense(Models.Expense expense)
+    {
+      var expenseEntity = _mapper.Map<IEnumerable<Entities.Expense>>(expense);
+      await _expenseRepository.AddRangeAsync(expenseEntity);
+
+      if (!await _expenseRepository.SaveAsync())
+      {
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        return false;
+      }
+
+      return true;
     }
 
-    public Task<bool> EditExpense(Models.Expense expense, int id)
+    public async Task<bool> EditExpense(Models.Expense expenseRequest, int id)
     {
-      throw new System.NotImplementedException();
+      // Get stock item by id
+      var expenseFromDB = await _expenseRepository.GetAsync(id);
+
+      // Validate if entity exists
+      if (expenseFromDB == null) { return false; }
+
+      // Set changes to entity
+      //TODO, check this, search better approach...
+      if (expenseRequest != null &&
+        expenseRequest.Comment != null &&
+        expenseRequest.Comment.Trim().Length != 0)
+      {
+        expenseFromDB.Comment = expenseRequest.Comment;
+      }
+
+      if (!await _expenseRepository.SaveAsync())
+      {
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        return false;
+      }
+
+      return true;
     }
 
-    public Task<IEnumerable<Entities.Expense>> GetAllAsync()
+    public async Task<IEnumerable<Entities.Expense>> GetAllAsync()
     {
-      throw new System.NotImplementedException();
+      return await _expenseRepository.GetAllAsync();
     }
 
-    public Task<Entities.Expense> GetAsync(int categoryExpenseId)
+    public async Task<Entities.Expense> GetAsync(int expenseId)
     {
-      throw new System.NotImplementedException();
+      return await _expenseRepository.GetAsync(expenseId);
     }
 
-    public Task<bool> RemoveAsync(Entities.Expense expense)
+    public async Task<bool> RemoveAsync(Entities.Expense expense)
     {
-      throw new System.NotImplementedException();
+      return await _expenseRepository.RemoveAsync(expense);
     }
   }
 }
