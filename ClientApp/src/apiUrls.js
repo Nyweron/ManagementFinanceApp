@@ -1,1 +1,1 @@
-export const managementFinance = "https://localhost:5001/";
+export const managementFinance = "http://localhost:54101/";
