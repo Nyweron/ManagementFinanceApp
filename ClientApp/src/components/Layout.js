@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import { Col, Grid, Row } from 'react-bootstrap';
 import { NavMenu } from './NavMenu';
 
 export class Layout extends Component {
-  displayName = Layout.name
 
   render() {
     return (
-      <Grid fluid>
-
-          <Row>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
             <NavMenu />
-          </Row>
-          <Row>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
             {this.props.children}
-          </Row>
-
-      </Grid>
+          </div>
+        </div>
+      </div>
     );
   }
 }
