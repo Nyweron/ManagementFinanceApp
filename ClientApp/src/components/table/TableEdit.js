@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal } from "../modal/Modal";
-import PersonFormEdit from "./PersonFormEdit";
+import PersonFormEdit from "./personForm/PersonFormEdit";
 
 class TableEdit extends Component {
   constructor(props) {

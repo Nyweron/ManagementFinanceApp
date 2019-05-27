@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal } from "../modal/Modal";
-import PersonFormAdd from "./PersonFormAdd";
+import PersonFormAdd from "./personForm/PersonFormAdd";
 
 class TableAdd extends Component {
   showModal = () => {
