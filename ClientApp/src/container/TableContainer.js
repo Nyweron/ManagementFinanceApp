@@ -208,8 +208,8 @@ class TableContainer extends Component {
     );
 
     return (
-      <div className="container">
-        <div className="row">
+      <div >
+        <div className="">
           <button className="btn" onClick={this.negationAdd}>
             Add row
           </button>
@@ -225,7 +225,7 @@ class TableContainer extends Component {
           negationAdd={this.negationAdd}
         />
 
-        <div className="row">
+        <div className="">
           <TableListRows
             rows={displayTable}
             keys={
@@ -240,7 +240,7 @@ class TableContainer extends Component {
             handleEdit={this.handleEdit}
           />
         </div>
-        <div className="container mb-5">
+        <div className="">
           <div className="d-flex flex-row py-4 align-items-center justify-content-center">
             <Pagination
               totalRecords={this.state.rowsFromDbJson.length}
@@ -250,7 +250,7 @@ class TableContainer extends Component {
             />
           </div>
         </div>
-      </div>
+     </div>
     );
   }
 }

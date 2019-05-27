@@ -8,7 +8,7 @@ export const TableRow = props => {
   }
   let rowsToReturn = props.rows.map(row => {
     return (
-      <tr style={{ height: "115px" }} key={row.id}>
+      <tr style={{ height: "" }} key={row.id}>
         {props.keys.map((key, i) => {
           if (row[key] !== undefined && row[key] !== null) {
             return (

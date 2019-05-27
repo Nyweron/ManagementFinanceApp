@@ -26,6 +26,9 @@ export class NavMenu extends Component {
                 <Link className="nav-link" to={'/Counter'}>Counter</Link>
               </li>
               <li class="nav-item">
+                <Link className="nav-link" to={'/Expense'}>Expense</Link>
+              </li>
+              <li class="nav-item">
                 <Link className="nav-link" to={'/FetchData'}>FetchData</Link>
               </li>
               <li class="nav-item dropdown">

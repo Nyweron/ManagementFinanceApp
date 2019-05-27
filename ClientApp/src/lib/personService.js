@@ -1,4 +1,4 @@
-import { personUrl } from "../apiUrl";
+import { personUrl } from "../apiUrls";
 
 export const getAll = () => {
   return fetch(personUrl).then(res => res.json());
