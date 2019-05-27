@@ -33,12 +33,12 @@ class TableAdd extends Component {
 
     return (
       <Modal show={this.props.show}>
-        <PersonFormAdd
+        {/* <PersonFormAdd
           handleChange={this.handleChange}
           submitAddForm={this.submitAddForm}
           hideModal={this.hideModal}
           data={this.props.row}
-        />
+        /> */}
       </Modal>
     );
   }
