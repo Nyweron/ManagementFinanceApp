@@ -52,6 +52,13 @@
       "type": "coreclr",
       "request": "attach",
       "processId": "${command:pickProcess}"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/ClientApp"
     }
   ]
 }
