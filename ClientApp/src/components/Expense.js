@@ -17,6 +17,9 @@ import {
   sortIds,
   generateNewId
 } from "../lib/personHelpers";
+import { createObject } from "../lib/crudService";
+import { apiUrlExpense } from "../apiUrls";
+
 
 export class Expense extends Component {
   displayName = Expense.name;
@@ -94,20 +97,16 @@ export class Expense extends Component {
     }
     const newId = generateNewId(sortedIds);
 
-    const newPerson = {
-      id: newId,
-      firstName: addObj.firstName,
-      lastName: addObj.lastName,
-      age: addObj.age,
-      isActive: true,
-      hobby: addObj.hobby
+    const newObj = {
+      //Id: newId,
+      Comment: "TEST234"
     };
 
-    createPerson(newPerson).then(
-      () => this.showTempMessage("person created"),
+    createObject(newObj, apiUrlExpense).then(
+      () => this.showTempMessage("objcet created"),
       this.setState(
         {
-          rowsFromDbJson: [...this.state.rowsFromDbJson, newPerson]
+          rowsFromDbJson: [...this.state.rowsFromDbJson, newObj]
         },
         () => {
           this.invokePaginationOnPageChanged();

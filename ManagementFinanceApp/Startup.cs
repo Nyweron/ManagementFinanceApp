@@ -40,7 +40,21 @@ namespace ManagementFinanceApp
       services.AddDbContext<ManagementFinanceAppDbContext>(options =>
         options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
-      services.AddCors();
+      services.AddCors(options =>
+      {
+        options.AddPolicy("test3",
+          builder2 =>
+          {
+            builder2.WithOrigins(
+                "http://localhost:3000",
+                "https://localhost:3000",
+                "http://localhost:54101/api/expense",
+                "https://localhost:54101/api/expense",
+                "http://localhost:5001",
+                "https://localhost:5001")
+              .AllowAnyHeader();
+          });
+      });
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
@@ -96,9 +110,14 @@ namespace ManagementFinanceApp
       app.UseStaticFiles();
       app.UseSpaStaticFiles();
 
-      app.UseCors(builder => builder
-        .WithOrigins("http://localhost:3000")
-        .WithOrigins("https://localhost:5001"));
+      app.UseCors("test3");
+      // builder => builder
+      // .WithOrigins("http://localhost:3000")
+      // .WithOrigins("https://localhost:3000")
+      // .WithOrigins("http://localhost:54101/api/expense")
+      // .WithOrigins("https://localhost:54101/api/expense")
+      // .WithOrigins("http://localhost:5001")
+      // .WithOrigins("https://localhost:5001"));
 
       app.UseMvc(routes =>
       {
