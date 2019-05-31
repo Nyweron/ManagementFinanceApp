@@ -60,6 +60,7 @@ export class Expense extends Component {
   };
 
   invokePaginationOnPageChanged = () => {
+    console.log("this.state",this.state)
     const data = {};
     data.totalRecords = this.state.rowsFromDbJson.length;
     data.pageLimit = this.state.pageLimit;
@@ -98,15 +99,30 @@ export class Expense extends Component {
     const newId = generateNewId(sortedIds);
 
     const newObj = {
-      //Id: newId,
-      Comment: "TEST234"
+      Id: newId,
+      HowMuch: 5.25,
+      Date: new Date(),
+      Comment: "Comment 1",
+      Attachment: null,
+      StandingOrder: false,
+      UserId: 1,
+      CategoryExpenseId: 1,
+      CategorySavingId: 3
     };
 
     createObject(newObj, apiUrlExpense).then(
       () => this.showTempMessage("objcet created"),
       this.setState(
         {
-          rowsFromDbJson: [...this.state.rowsFromDbJson, newObj]
+          rowsFromDbJson: [...this.state.rowsFromDbJson, newObj],
+          keysFromDbJson: this.state.keysFromDbJson,
+          currentRows: this.state.currentRows,
+          columnName:  this.state.columnName,
+          sort:  this.state.sort,
+          currentPage:  this.state.currentPage,
+          pageLimit: this.state.pageLimit,
+          pageNeighbours: this.state.pageNeighbours,
+          previousColumnName: this.state.previousColumnName
         },
         () => {
           this.invokePaginationOnPageChanged();
