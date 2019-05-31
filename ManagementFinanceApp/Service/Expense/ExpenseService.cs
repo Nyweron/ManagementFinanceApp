@@ -19,8 +19,8 @@ namespace ManagementFinanceApp.Service.Expense
     }
     public async Task<bool> AddExpense(Models.Expense expense)
     {
-      var expenseEntity = _mapper.Map<IEnumerable<Entities.Expense>>(expense);
-      await _expenseRepository.AddRangeAsync(expenseEntity);
+      var expenseEntity = _mapper.Map<Entities.Expense>(expense);
+      await _expenseRepository.AddAsync(expenseEntity);
 
       if (!await _expenseRepository.SaveAsync())
       {
