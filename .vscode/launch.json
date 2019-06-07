@@ -9,9 +9,9 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/bin/Debug/netcoreapp2.2/ManagementFinanceApp.dll",
+      "program": "${workspaceFolder}/ManagementFinanceApp/bin/Debug/netcoreapp2.2/ManagementFinanceApp.dll",
       "args": [],
-      "cwd": "${workspaceFolder}",
+      "cwd": "${workspaceFolder}/ManagementFinanceApp",
       "stopAtEntry": false,
       "console": "internalConsole"
     },
@@ -21,7 +21,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/bin/Debug/netcoreapp2.2/ManagementFinanceApp.dll",
+      "program": "${workspaceFolder}/ManagementFinanceApp/bin/Debug/netcoreapp2.2/ManagementFinanceApp.dll",
       "args": [],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
@@ -52,6 +52,13 @@
       "type": "coreclr",
       "request": "attach",
       "processId": "${command:pickProcess}"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Launch Chrome against localhost",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}/ClientApp"
     }
   ]
 }

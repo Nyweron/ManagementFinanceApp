@@ -8,7 +8,7 @@ export class FetchData extends Component {
     super(props);
     this.state = { forecasts: [], loading: true };
 
-    fetch(managementFinance +'api/SampleData/WeatherForecasts')
+    fetch(managementFinance +'api/expense/')
       .then(response => response.json())
       .then(data => {
         this.setState({ forecasts: data, loading: false });
@@ -20,20 +20,23 @@ export class FetchData extends Component {
       <table className='table'>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Temp. (C)</th>
-            <th>Temp. (F)</th>
-            <th>Summary</th>
+            <th>id</th>
+            <th>howMuch</th>
+            <th>date</th>
+            <th>categorySavingId</th>
+            <th>categoryExpenseId</th>
           </tr>
         </thead>
         <tbody>
           {forecasts.map(forecast =>
-            <tr key={forecast.dateFormatted}>
-              <td>{forecast.dateFormatted}</td>
-              <td>{forecast.temperatureC}</td>
-              <td>{forecast.temperatureF}</td>
-              <td>{forecast.summary}</td>
+            <tr key={forecast.id}>
+              <td>{forecast.id}</td>
+              <td>{forecast.howMuch}</td>
+              <td>{forecast.date}</td>
+              <td>{forecast.categorySavingId}</td>
+              <td>{forecast.categoryExpenseId}</td>
             </tr>
+
           )}
         </tbody>
       </table>
