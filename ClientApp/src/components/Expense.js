@@ -7,7 +7,6 @@ import {
   getAll,
   getKeyFromJson,
   filterTable,
-  createPerson,
   deleteRow,
   updateRow
 } from "../lib/personService";
@@ -99,19 +98,19 @@ export class Expense extends Component {
     const newId = generateNewId(sortedIds);
 
     const newObj = {
-      Id: newId,
-      HowMuch: 5.25,
-      Date: new Date(),
-      Comment: "Comment 1",
-      Attachment: null,
-      StandingOrder: false,
-      UserId: 1,
-      CategoryExpenseId: 1,
-      CategorySavingId: 3
+      id: newId,
+      howMuch: 5.25,
+      date: new Date(),
+      comment: "Comment " + newId,
+      attachment: null,
+      standingOrder: false,
+      userId: 1,
+      categoryExpenseId: 1,
+      categorySavingId: 3
     };
 
     createObject(newObj, apiUrlExpense).then(
-      () => this.showTempMessage("objcet created"),
+      () => this.showTempMessage("object created"),
       this.setState(
         {
           rowsFromDbJson: [...this.state.rowsFromDbJson, newObj],
@@ -184,7 +183,7 @@ export class Expense extends Component {
   };
 
   onPageChanged = data => {
-    console.log("data", data);
+    // console.log("data", data);
     const offset = (data.currentPage - 1) * data.pageLimit;
     const currentRows = this.state.rowsFromDbJson.slice(
       offset,
@@ -223,9 +222,10 @@ export class Expense extends Component {
 
 
   render() {
-    if (this.state.rowsFromDbJson.length === 0) {
+    if (this.state.rowsFromDbJson.length === 0 ||  this.state.keysFromDbJson.length === 0) {
       return null;
     }
+    console.log(Math.floor(Math.random() * Math.floor(99)));
 
     const displayTable = filterTable(
       this.state.keysFromDbJson,
