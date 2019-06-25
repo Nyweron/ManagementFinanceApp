@@ -8,5 +8,7 @@ export const createObject = (object, url) => {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(object)
-  }).then(res => res.json());
+  })
+  .then(res => res.json())
+  .catch(error => console.error(error));
 };
