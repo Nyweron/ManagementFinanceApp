@@ -9,6 +9,11 @@ export const createObject = (object, url) => {
     },
     body: JSON.stringify(object)
   })
-  .then(res => res.json())
+  .then(response => {
+      if (response.status !== 201) {
+        console.log('Looks like there was a problem. Status Code: ' + response.status);
+        return;
+      }
+    })
   .catch(error => console.error(error));
 };
