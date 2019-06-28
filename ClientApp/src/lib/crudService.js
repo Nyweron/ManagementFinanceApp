@@ -1,10 +1,8 @@
 export const createObject = (object, url) => {
-  console.log("object",object);
-  console.log("JSON.stringify(object)",JSON.stringify(object));
   return fetch(url, {
     method: "POST",
     headers: {
-      Accept: "application/json",
+      "Accept": "application/json",
       "Content-Type": "application/json"
     },
     body: JSON.stringify(object)
@@ -17,3 +15,18 @@ export const createObject = (object, url) => {
     })
   .catch(error => console.error(error));
 };
+
+export const deleteRow = (id, url) => {
+  return fetch(url + "/" + id, {
+    method: 'DELETE',
+    headers: {
+     "Access-Control-Allow-Origin": "*",
+     "Access-Control-Allow-Methods": "GET, PUT, OPTIONS, POST, DELETE",
+     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    }
+  }).then(() => {
+     console.log('removed');
+  }).catch(err => {
+    console.error("XXX:"+err)
+  })
+}
