@@ -52,7 +52,8 @@ namespace ManagementFinanceApp
                 "https://localhost:54101/api/expense",
                 "http://localhost:5001",
                 "https://localhost:5001")
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowAnyMethod();
           });
       });
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
