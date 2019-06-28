@@ -7,7 +7,6 @@ import {
   getAll,
   getKeyFromJson,
   filterTable,
-  deleteRow,
   updateRow
 } from "../lib/personService";
 import {
@@ -16,7 +15,7 @@ import {
   sortIds,
   generateNewId
 } from "../lib/personHelpers";
-import { createObject } from "../lib/crudService";
+import { createObject, deleteRow } from "../lib/crudService";
 import { apiUrlExpense } from "../apiUrls";
 
 
@@ -50,11 +49,16 @@ export class Expense extends Component {
     let listOfRows = this.state.rowsFromDbJson;
     const newListWithoutRemovedItem = removeRowById(listOfRows, id);
 
-    deleteRow(id).then(
+    deleteRow(id, apiUrlExpense).then(
       () => this.showTempMessage("row deleted"),
-      this.setState({ rowsFromDbJson: newListWithoutRemovedItem }, () => {
-        this.invokePaginationOnPageChanged();
-      })
+      this.setState(
+        {
+          rowsFromDbJson: newListWithoutRemovedItem
+        },
+        () => {
+          this.invokePaginationOnPageChanged();
+        }
+      )
     );
   };
 
@@ -234,6 +238,7 @@ export class Expense extends Component {
       this.state.sort
     );
 
+    setTimeout(function(){ alert("Hello"); }, 1);
 
     return (
       <div className="row">
