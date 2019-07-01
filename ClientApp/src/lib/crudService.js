@@ -18,12 +18,7 @@ export const createObject = (object, url) => {
 
 export const deleteRow = (id, url) => {
   return fetch(url + "/" + id, {
-    method: 'DELETE',
-    headers: {
-     "Access-Control-Allow-Origin": "*",
-     "Access-Control-Allow-Methods": "GET, PUT, OPTIONS, POST, DELETE",
-     "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    }
+    method: 'DELETE'
   }).then(() => {
      console.log('removed');
   }).catch(err => {

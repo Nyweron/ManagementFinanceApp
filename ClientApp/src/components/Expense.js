@@ -37,7 +37,6 @@ export class Expense extends Component {
   };
 
   componentDidMount() {
-    console.log("12");
     getAll().then(rows => {
       this.setState({ rowsFromDbJson: rows });
       const keys = getKeyFromJson(rows);
@@ -129,7 +128,7 @@ export class Expense extends Component {
           pageLimit: this.state.pageLimit,
           pageNeighbours: this.state.pageNeighbours,
           previousColumnName: this.state.previousColumnName,
-          loading: false
+          loading: true
         },
         () => {
           this.invokePaginationOnPageChanged();
@@ -229,7 +228,9 @@ export class Expense extends Component {
   };
 
   render() {
-    console.log(Math.floor(Math.random() * Math.floor(10000)));
+    if(this.state.rowsFromDbJson === null || this.state.rowsFromDbJson === undefined || this.state.rowsFromDbJson.length === 0){
+      return null;
+    }
 
     const displayTable = this.state.loading
       ? filterTable(
@@ -244,6 +245,7 @@ export class Expense extends Component {
       return null;
     }
 
+    console.log(Math.floor(Math.random() * Math.floor(10000)));
 
 
     return (
