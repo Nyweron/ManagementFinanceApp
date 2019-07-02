@@ -44,6 +44,7 @@ export class Expense extends Component {
       }
     });
   }
+
   handleRemove = id => {
     let listOfRows = this.state.rowsFromDbJson;
     const newListWithoutRemovedItem = removeRowById(listOfRows, id);
@@ -256,7 +257,6 @@ export class Expense extends Component {
           <Modal show={this.state.add}>
             <ExpenseAdd
               show={this.state.add}
-              handleSubmitAddRow={this.handleSubmitAddRow}
               handleChange={this.handleChange}
               negationAdd={this.negationAdd}
               expenseAdd={this.expenseAdd}
@@ -265,13 +265,6 @@ export class Expense extends Component {
             />
           </Modal>
 
-          {/* <TableAdd
-            show={this.state.add}
-            handleSubmitAddRow={this.handleSubmitAddRow}
-            handleChange={this.handleChange}
-            negationAdd={this.negationAdd}
-            expenseAdd={this.expenseAdd}
-          /> */}
         </div>
 
         <div className="col-12">
