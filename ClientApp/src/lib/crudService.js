@@ -25,3 +25,7 @@ export const deleteRow = (id, url) => {
     console.error("XXX:"+err)
   })
 }
+
+export const getAll = (url) => {
+  return fetch(url).then(res => res.json());
+};
