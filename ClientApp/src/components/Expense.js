@@ -4,7 +4,6 @@ import ExpenseAdd from "../components/table/expenseForm/ExpenseAdd";
 import Pagination from "../components/pagination/Pagination";
 import { Modal } from "../components/modal/Modal";
 import {
-  getAll,
   getKeyFromJson,
   filterTable,
   updateRow
@@ -15,7 +14,7 @@ import {
   sortIds,
   generateNewId
 } from "../lib/personHelpers";
-import { createObject, deleteRow } from "../lib/crudService";
+import { createObject, deleteRow, getAll } from "../lib/crudService";
 import { apiUrlExpense } from "../apiUrls";
 
 export class Expense extends Component {
@@ -37,7 +36,7 @@ export class Expense extends Component {
   };
 
   componentDidMount() {
-    getAll().then(rows => {
+    getAll(apiUrlExpense).then(rows => {
       this.setState({ rowsFromDbJson: rows });
       const keys = getKeyFromJson(rows);
       if (keys !== null) {
@@ -127,8 +126,7 @@ export class Expense extends Component {
           currentPage: this.state.currentPage,
           pageLimit: this.state.pageLimit,
           pageNeighbours: this.state.pageNeighbours,
-          previousColumnName: this.state.previousColumnName,
-          loading: true
+          previousColumnName: this.state.previousColumnName
         },
         () => {
           this.invokePaginationOnPageChanged();
@@ -228,24 +226,21 @@ export class Expense extends Component {
   };
 
   render() {
-    if(this.state.rowsFromDbJson === null || this.state.rowsFromDbJson === undefined || this.state.rowsFromDbJson.length === 0){
-      return null;
-    }
-
-    const displayTable = this.state.loading
-      ? filterTable(
-          this.state.keysFromDbJson,
-          this.state.currentRows,
-          this.state.columnName,
-          this.state.sort
-        )
-      : false;
 
     if (this.state.loading === false) {
       return null;
     }
 
-    console.log(Math.floor(Math.random() * Math.floor(10000)));
+    const displayTable = filterTable(
+          this.state.keysFromDbJson,
+          this.state.currentRows,
+          this.state.columnName,
+          this.state.sort
+        )
+
+        // console.log(displayTable)
+
+    // console.log(Math.floor(Math.random() * Math.floor(10000)));
 
 
     return (
@@ -284,11 +279,7 @@ export class Expense extends Component {
         <div className="col-12">
           <TableListRows
             rows={displayTable}
-            keys={
-              this.state.keysFromDbJson === null
-                ? null
-                : this.state.keysFromDbJson
-            }
+            keys={this.state.keysFromDbJson === null ? null : this.state.keysFromDbJson}
             classCss="table table-striped table-bordered"
             handleChange={this.handleChange}
             sortColumn={this.sortColumn}

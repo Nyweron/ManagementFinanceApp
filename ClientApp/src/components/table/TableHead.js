@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 
 export const TableHead = props => {
+  console.log("TableHead", props);
+
   return (
     <tr style={{ color: "blue", cursor: "default" }}>
       {props.keys.map(item => (

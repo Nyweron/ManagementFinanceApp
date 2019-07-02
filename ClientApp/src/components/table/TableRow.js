@@ -3,9 +3,12 @@ import PropTypes from "prop-types";
 import TableEdit from "./TableEdit";
 
 export const TableRow = props => {
-  if (props.rows === undefined) {
+  if (props.rows === undefined || props.rows === null || props.rows.length === 0) {
     return null;
   }
+
+  console.log("TableRow");
+
   let rowsToReturn = props.rows.map(row => {
     return (
       <tr style={{ height: "" }} key={row.id}>
