@@ -4,6 +4,12 @@ import { TableRow } from "./TableRow";
 import { TableHead } from "./TableHead";
 
 export const TableListRows = props => {
+  if(props.rows === undefined || props.rows === null || props.rows.length === 0) {
+    return null;
+  }
+
+  console.log("TableListRows", props);
+
   return (
     <table className={props.classCss}>
       <thead>

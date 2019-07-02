@@ -4,11 +4,8 @@ import ExpenseAdd from "../components/table/expenseForm/ExpenseAdd";
 import Pagination from "../components/pagination/Pagination";
 import { Modal } from "../components/modal/Modal";
 import {
-  getAll,
   getKeyFromJson,
   filterTable,
-  createPerson,
-  deleteRow,
   updateRow
 } from "../lib/personService";
 import {
@@ -17,9 +14,8 @@ import {
   sortIds,
   generateNewId
 } from "../lib/personHelpers";
-import { createObject } from "../lib/crudService";
+import { createObject, deleteRow, getAll } from "../lib/crudService";
 import { apiUrlExpense } from "../apiUrls";
-
 
 export class Expense extends Component {
   displayName = Expense.name;
@@ -35,32 +31,39 @@ export class Expense extends Component {
     currentRows: [],
     currentPage: 1,
     pageLimit: 5,
-    pageNeighbours: 5
+    pageNeighbours: 5,
+    loading: false
   };
 
   componentDidMount() {
-    getAll().then(rows => {
+    getAll(apiUrlExpense).then(rows => {
       this.setState({ rowsFromDbJson: rows });
       const keys = getKeyFromJson(rows);
       if (keys !== null) {
-        this.setState({ keysFromDbJson: keys });
+        this.setState({ keysFromDbJson: keys, loading: true });
       }
     });
   }
+
   handleRemove = id => {
     let listOfRows = this.state.rowsFromDbJson;
     const newListWithoutRemovedItem = removeRowById(listOfRows, id);
 
-    deleteRow(id).then(
+    deleteRow(id, apiUrlExpense).then(
       () => this.showTempMessage("row deleted"),
-      this.setState({ rowsFromDbJson: newListWithoutRemovedItem }, () => {
-        this.invokePaginationOnPageChanged();
-      })
+      this.setState(
+        {
+          rowsFromDbJson: newListWithoutRemovedItem
+        },
+        () => {
+          this.invokePaginationOnPageChanged();
+        }
+      )
     );
   };
 
   invokePaginationOnPageChanged = () => {
-    console.log("this.state",this.state)
+    //console.log("this.state", this.state);
     const data = {};
     data.totalRecords = this.state.rowsFromDbJson.length;
     data.pageLimit = this.state.pageLimit;
@@ -70,6 +73,7 @@ export class Expense extends Component {
   };
 
   negationAdd = () => {
+    console.log("9");
     this.setState({ add: !this.state.add });
   };
 
@@ -81,6 +85,7 @@ export class Expense extends Component {
   };
 
   handleSubmitAddRow = addObj => {
+    console.log("7");
     if (
       addObj.id === ""
       // addObj.firstName === null ||
@@ -99,27 +104,27 @@ export class Expense extends Component {
     const newId = generateNewId(sortedIds);
 
     const newObj = {
-      Id: newId,
-      HowMuch: 5.25,
-      Date: new Date(),
-      Comment: "Comment 1",
-      Attachment: null,
-      StandingOrder: false,
-      UserId: 1,
-      CategoryExpenseId: 1,
-      CategorySavingId: 3
+      id: newId,
+      howMuch: 5.25,
+      date: new Date(),
+      comment: "Comment " + newId,
+      attachment: null,
+      standingOrder: false,
+      userId: 1,
+      categoryExpenseId: 1,
+      categorySavingId: 3
     };
 
     createObject(newObj, apiUrlExpense).then(
-      () => this.showTempMessage("objcet created"),
+      () => this.showTempMessage("object created"),
       this.setState(
         {
           rowsFromDbJson: [...this.state.rowsFromDbJson, newObj],
           keysFromDbJson: this.state.keysFromDbJson,
           currentRows: this.state.currentRows,
-          columnName:  this.state.columnName,
-          sort:  this.state.sort,
-          currentPage:  this.state.currentPage,
+          columnName: this.state.columnName,
+          sort: this.state.sort,
+          currentPage: this.state.currentPage,
           pageLimit: this.state.pageLimit,
           pageNeighbours: this.state.pageNeighbours,
           previousColumnName: this.state.previousColumnName
@@ -184,7 +189,7 @@ export class Expense extends Component {
   };
 
   onPageChanged = data => {
-    console.log("data", data);
+    // console.log("data", data);
     const offset = (data.currentPage - 1) * data.pageLimit;
     const currentRows = this.state.rowsFromDbJson.slice(
       offset,
@@ -221,9 +226,9 @@ export class Expense extends Component {
     this.setState({ [event.target.name]: event.target.value });
   };
 
-
   render() {
-    if (this.state.rowsFromDbJson.length === 0) {
+
+    if (this.state.loading === false) {
       return null;
     }
 
@@ -233,6 +238,8 @@ export class Expense extends Component {
       this.state.columnName,
       this.state.sort
     );
+
+    // console.log(Math.floor(Math.random() * Math.floor(10000)));
 
 
     return (
@@ -250,7 +257,6 @@ export class Expense extends Component {
           <Modal show={this.state.add}>
             <ExpenseAdd
               show={this.state.add}
-              handleSubmitAddRow={this.handleSubmitAddRow}
               handleChange={this.handleChange}
               negationAdd={this.negationAdd}
               expenseAdd={this.expenseAdd}
@@ -259,25 +265,12 @@ export class Expense extends Component {
             />
           </Modal>
 
-          {/* <TableAdd
-            show={this.state.add}
-            handleSubmitAddRow={this.handleSubmitAddRow}
-            handleChange={this.handleChange}
-            negationAdd={this.negationAdd}
-            expenseAdd={this.expenseAdd}
-          /> */}
-
-
         </div>
 
         <div className="col-12">
           <TableListRows
             rows={displayTable}
-            keys={
-              this.state.keysFromDbJson === null
-                ? null
-                : this.state.keysFromDbJson
-            }
+            keys={this.state.keysFromDbJson === null ? null : this.state.keysFromDbJson}
             classCss="table table-striped table-bordered"
             handleChange={this.handleChange}
             sortColumn={this.sortColumn}
@@ -286,7 +279,7 @@ export class Expense extends Component {
           />
         </div>
 
-        <div className="col-12" >
+        <div className="col-12">
           <div className="d-flex flex-row py-4 align-items-center justify-content-center">
             <Pagination
               totalRecords={this.state.rowsFromDbJson.length}
@@ -296,9 +289,7 @@ export class Expense extends Component {
             />
           </div>
         </div>
-    </div>
-
-
+      </div>
     );
   }
 }

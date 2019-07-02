@@ -17,3 +17,8 @@ dotnet ef migrations remove
 --Add migration
  dotnet ef migrations add NameOfMigration
 
+
+--How run react in vscode
+1. npm start
+2. Close browser
+3. Run f5 in vscode
