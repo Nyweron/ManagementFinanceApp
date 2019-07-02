@@ -10,6 +10,7 @@ namespace ManagementFinanceApp.Models
     public DateTime Date { get; set; }
     public string Comment { get; set; }
     public string Attachment { get; set; }
+    /*ZlecenieStale - StandingOrder  */
     public bool StandingOrder { get; set; }
     public int UserId { get; set; }
     public int CategorySavingId { get; set; }
