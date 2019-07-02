@@ -232,13 +232,11 @@ export class Expense extends Component {
     }
 
     const displayTable = filterTable(
-          this.state.keysFromDbJson,
-          this.state.currentRows,
-          this.state.columnName,
-          this.state.sort
-        )
-
-        // console.log(displayTable)
+      this.state.keysFromDbJson,
+      this.state.currentRows,
+      this.state.columnName,
+      this.state.sort
+    );
 
     // console.log(Math.floor(Math.random() * Math.floor(10000)));
 
