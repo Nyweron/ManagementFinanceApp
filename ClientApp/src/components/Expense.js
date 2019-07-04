@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { TableListRows } from "../components/table/TableListRows";
 import ExpenseAdd from "../components/table/expenseForm/ExpenseAdd";
+import ExpenseRemove from "./table/expenseForm/ExpenseRemove";
+
 import Pagination from "../components/pagination/Pagination";
 import { Modal } from "../components/modal/Modal";
-import {
-  getKeyFromJson,
-  filterTable,
-  updateRow
-} from "../lib/personService";
+import { getKeyFromJson, filterTable, updateRow } from "../lib/personService";
 import {
   removeRowById,
   updateByObjectId,
@@ -32,7 +30,9 @@ export class Expense extends Component {
     currentPage: 1,
     pageLimit: 5,
     pageNeighbours: 5,
-    loading: false
+    loading: false,
+    isRemove: false,
+    idToRemove: -1
   };
 
   componentDidMount() {
@@ -45,7 +45,16 @@ export class Expense extends Component {
     });
   }
 
-  handleRemove = id => {
+  handleRemove = (id, remove) => {
+    if (remove) {
+      this.setState({ isRemove: true, idToRemove: id });
+    }
+
+    if (!this.state.isRemove) {
+      return null;
+    }
+
+    id = this.state.idToRemove;
     let listOfRows = this.state.rowsFromDbJson;
     const newListWithoutRemovedItem = removeRowById(listOfRows, id);
 
@@ -53,7 +62,9 @@ export class Expense extends Component {
       () => this.showTempMessage("row deleted"),
       this.setState(
         {
-          rowsFromDbJson: newListWithoutRemovedItem
+          rowsFromDbJson: newListWithoutRemovedItem,
+          isRemove: false,
+          idToRemove: -1
         },
         () => {
           this.invokePaginationOnPageChanged();
@@ -75,6 +86,14 @@ export class Expense extends Component {
   negationAdd = () => {
     console.log("9");
     this.setState({ add: !this.state.add });
+  };
+
+  negationRemove = () => {
+    this.setState({ isRemove: !this.state.isRemove });
+  };
+
+  hideModalRemove = () => {
+    this.setState({ isRemove: !this.state.isRemove });
   };
 
   showTempMessage = msg => {
@@ -227,7 +246,6 @@ export class Expense extends Component {
   };
 
   render() {
-
     if (this.state.loading === false) {
       return null;
     }
@@ -240,7 +258,6 @@ export class Expense extends Component {
     );
 
     // console.log(Math.floor(Math.random() * Math.floor(10000)));
-
 
     return (
       <div className="row">
@@ -264,13 +281,16 @@ export class Expense extends Component {
               submitAddForm={this.submitAddForm}
             />
           </Modal>
-
         </div>
 
         <div className="col-12">
           <TableListRows
             rows={displayTable}
-            keys={this.state.keysFromDbJson === null ? null : this.state.keysFromDbJson}
+            keys={
+              this.state.keysFromDbJson === null
+                ? null
+                : this.state.keysFromDbJson
+            }
             classCss="table table-striped table-bordered"
             handleChange={this.handleChange}
             sortColumn={this.sortColumn}
@@ -278,6 +298,14 @@ export class Expense extends Component {
             handleEdit={this.handleEdit}
           />
         </div>
+
+        <Modal show={this.state.isRemove}>
+          <ExpenseRemove
+            isRemove={this.state.isRemove}
+            hideModalRemove={this.hideModalRemove}
+            handleRemove={this.handleRemove}
+          />
+        </Modal>
 
         <div className="col-12">
           <div className="d-flex flex-row py-4 align-items-center justify-content-center">

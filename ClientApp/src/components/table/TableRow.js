@@ -23,7 +23,7 @@ export const TableRow = props => {
           return <td data-testid={row.id + "-" + i} key={row.id + "-" + i} />;
         })}
         <td className="delete-item">
-          <p style={{ color: "blue", cursor: "default" }} onClick={() => props.handleRemove(row.id)}>
+          <p style={{ color: "blue", cursor: "default" }} onClick={() => props.handleRemove(row.id, true)}>
             X
           </p>
         </td>
