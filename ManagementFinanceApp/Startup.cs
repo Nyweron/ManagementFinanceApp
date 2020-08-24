@@ -2,19 +2,14 @@ using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManagementFinanceApp.Data;
-using ManagementFinanceApp.Entities;
-using ManagementFinanceApp.Models;
-using ManagementFinanceApp.Repository;
-using ManagementFinanceApp.Repository.User;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ManagementFinanceApp
@@ -34,7 +29,7 @@ namespace ManagementFinanceApp
     {
       services.AddSwaggerGen(c =>
       {
-        c.SwaggerDoc("v1", new Info { Title = "Contacts API", Version = "v1" });
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
       });
 
       services.AddDbContext<ManagementFinanceAppDbContext>(options =>
@@ -42,16 +37,11 @@ namespace ManagementFinanceApp
 
       services.AddCors(options =>
       {
-        options.AddPolicy("test3",
-          builder2 =>
+        options.AddPolicy("CorsPolicy",
+          policy =>
           {
-            builder2.WithOrigins(
-                "http://localhost:3000",
-                "https://localhost:3000",
-                "http://localhost:54101/api/expense",
-                "https://localhost:54101/api/expense",
-                "http://localhost:5001",
-                "https://localhost:5001")
+            policy
+              .WithOrigins("http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod();
           });
@@ -59,7 +49,7 @@ namespace ManagementFinanceApp
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
-      services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+      services.AddControllers();
       services.AddMemoryCache();
       services.AddResponseCaching();
 
@@ -84,7 +74,7 @@ namespace ManagementFinanceApp
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
       if (env.IsDevelopment())
       {
@@ -107,38 +97,16 @@ namespace ManagementFinanceApp
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
       });
 
-      app.UseHttpsRedirection();
       app.UseStaticFiles();
-      app.UseSpaStaticFiles();
 
-      app.UseCors("test3");
-      // builder => builder
-      // .WithOrigins("http://localhost:3000")
-      // .WithOrigins("https://localhost:3000")
-      // .WithOrigins("http://localhost:54101/api/expense")
-      // .WithOrigins("https://localhost:54101/api/expense")
-      // .WithOrigins("http://localhost:5001")
-      // .WithOrigins("https://localhost:5001"));
+      app.UseRouting();
+      app.UseCors("CorsPolicy");
 
-      app.UseMvc(routes =>
+      app.UseEndpoints(endpoints =>
       {
-        routes.MapRoute(
-          name: "default",
-          template: "{controller}/{action=Index}/{id?}");
+        endpoints.MapControllers();
       });
 
-      app.UseSpa(spa =>
-      {
-        spa.Options.SourcePath = "ClientApp";
-
-        if (env.IsDevelopment())
-        {
-          spa.UseReactDevelopmentServer(npmScript: "start");
-        }
-
-      });
-
-      applicationLifetime.ApplicationStopped.Register(() => Container.Dispose());
     }
   }
 }
