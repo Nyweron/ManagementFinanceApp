@@ -53,12 +53,6 @@ namespace ManagementFinanceApp
       services.AddMemoryCache();
       services.AddResponseCaching();
 
-      // In production, the React files will be served from this directory
-      services.AddSpaStaticFiles(configuration =>
-      {
-        configuration.RootPath = "ClientApp/build";
-      });
-
       // Configute Autofac
       var builder = new ContainerBuilder();
       // Loads the already configured items from services object

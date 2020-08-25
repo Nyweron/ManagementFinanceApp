@@ -1,14 +1,8 @@
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
-using System.Web.Http;
 using AutoMapper;
 using ManagementFinanceApp.Controllers;
-using ManagementFinanceApp.Entities;
-using ManagementFinanceApp.Repository;
 using ManagementFinanceApp.Repository.CategoryIncome;
 using ManagementFinanceApp.Service.CategoryIncome;
 using ManagementFinanceApp.Settings;

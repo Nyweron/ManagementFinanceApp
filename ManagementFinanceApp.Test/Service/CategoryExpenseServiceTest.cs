@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using ManagementFinanceApp.Controllers;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Repository.CategoryExpense;
 using ManagementFinanceApp.Service.CategoryExpense;
-using ManagementFinanceApp.Settings;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
