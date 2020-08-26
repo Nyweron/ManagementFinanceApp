@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/ManagementFinanceApp/bin/Debug/netcoreapp2.2/ManagementFinanceApp.dll",
+      "program": "${workspaceFolder}/ManagementFinanceApp/bin/Debug/netcoreapp3.1/ManagementFinanceApp.dll",
       "args": [],
       "cwd": "${workspaceFolder}/ManagementFinanceApp",
       "stopAtEntry": false,
@@ -21,7 +21,7 @@
       "request": "launch",
       "preLaunchTask": "build",
       // If you have changed target frameworks, make sure to update the program path.
-      "program": "${workspaceFolder}/ManagementFinanceApp/bin/Debug/netcoreapp2.2/ManagementFinanceApp.dll",
+      "program": "${workspaceFolder}/ManagementFinanceApp/bin/Debug/netcoreapp3.1/ManagementFinanceApp.dll",
       "args": [],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
