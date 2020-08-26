@@ -1,0 +1,1 @@
+INSERT INTO public."Users"("Id", "FirstName", "LastName", "Nick", "Address", "Phone", "Weight", "Email", "IsDeleted")	VALUES (1, 'imieTest', 'nazwiskoTest', 'nickTest', 'adresTest', 'telefon', 1, 'email', false);
