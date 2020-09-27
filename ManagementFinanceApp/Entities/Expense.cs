@@ -19,6 +19,7 @@ namespace ManagementFinanceApp.Entities
     public string Comment { get; set; }
     public string Attachment { get; set; }
 
+    /*ZlecenieStale - StandingOrder  */
     [Required]
     public bool StandingOrder { get; set; }
 

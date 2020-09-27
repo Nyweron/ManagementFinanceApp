@@ -35,6 +35,7 @@ namespace ManagementFinanceApp.Controllers
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Models.Expense expense)
     {
+      //TODO: Check problems with date...
       if (expense == null)
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto expense).");
@@ -46,7 +47,7 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var isCreated = await _expenseService.AddExpense(expense);
+      var isCreated = false; //await _expenseService.AddExpense(expense);
 
       if (isCreated)
       {
