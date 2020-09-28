@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using ManagementFinanceApp.Data;
 
@@ -13,9 +14,15 @@ namespace ManagementFinanceApp.Repository.Expense
     }
     public async Task<bool> SaveAsync()
     {
-      var result = await ManagementFinanceAppDbContext.SaveChangesAsync();
-      return (result >= 0);
+      try
+      {
+        var result = await ManagementFinanceAppDbContext.SaveChangesAsync();
+        return (result >= 0);
+      }
+      catch (Exception ex)
+      {
+        throw new Exception("Error message", ex);
+      }
     }
-
   }
 }

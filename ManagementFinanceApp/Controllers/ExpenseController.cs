@@ -47,7 +47,7 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var isCreated = false; //await _expenseService.AddExpense(expense);
+      var isCreated = await _expenseService.AddExpense(expense);
 
       if (isCreated)
       {
