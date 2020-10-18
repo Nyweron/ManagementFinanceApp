@@ -1,8 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using ManagementFinanceApp.Entities;
-using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Repository.Expense;
 
 namespace ManagementFinanceApp.Service.Expense
@@ -56,6 +55,9 @@ namespace ManagementFinanceApp.Service.Expense
         expenseFromDB.Comment = expenseRequest.Comment;
       }
 
+      var dto = _mapper.Map<Entities.Expense>(expenseRequest);
+      await _expenseRepository.AddAsync(dto);
+
       if (!await _expenseRepository.SaveAsync())
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
@@ -67,7 +69,9 @@ namespace ManagementFinanceApp.Service.Expense
 
     public async Task<IEnumerable<Entities.Expense>> GetAllAsync()
     {
-      return await _expenseRepository.GetAllAsync();
+      var x = await _expenseRepository.GetAllAsync();
+      var orderByIds = x.OrderBy(o => o.Id).ToList();
+      return orderByIds;
     }
 
     public async Task<Entities.Expense> GetAsync(int expenseId)
