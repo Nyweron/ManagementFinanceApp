@@ -10,7 +10,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace ManagementFinanceApp
 {
@@ -33,7 +32,8 @@ namespace ManagementFinanceApp
       });
 
       services.AddDbContext<ManagementFinanceAppDbContext>(options =>
-        options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+        options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+      );
 
       services.AddCors(options =>
       {

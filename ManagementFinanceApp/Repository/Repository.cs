@@ -78,5 +78,20 @@ namespace ManagementFinanceApp.Repository
       var result = await Context.SaveChangesAsync();
       return (result >= 0);
     }
+
+    public void Update(TEntity entity)
+    {
+      //Context.Entry(entity).State = EntityState.Modified;
+      Context.Set<TEntity>().Update(entity);
+    }
+
+    public async Task<bool> UpdateAsync(TEntity entity)
+    {
+      //Context.Entry(entity).State = EntityState.Modified;
+      Context.Set<TEntity>().Update(entity);
+      var result = await Context.SaveChangesAsync();
+      return (result >= 0);
+    }
+
   }
 }

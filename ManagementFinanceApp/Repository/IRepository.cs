@@ -19,5 +19,7 @@ namespace ManagementFinanceApp.Repository
     void Remove(TEntity entity);
     void RemoveRange(IEnumerable<TEntity> entities);
     Task<bool> RemoveAsync(TEntity entity);
+    void Update(TEntity entity);
+    Task<bool> UpdateAsync(TEntity entity);
   }
 }

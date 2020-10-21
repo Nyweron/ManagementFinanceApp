@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.Expense;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManagementFinanceApp.Service.Expense
 {
@@ -56,7 +58,17 @@ namespace ManagementFinanceApp.Service.Expense
       }
 
       var dto = _mapper.Map<Entities.Expense>(expenseRequest);
-      await _expenseRepository.AddAsync(dto);
+
+      try
+      {
+        //await _expenseRepository.UpdateAsync(dto);
+        _expenseRepository.Update(dto);
+      }
+      catch (Exception ex)
+      {
+        var x = ex;
+        return false;
+      }
 
       if (!await _expenseRepository.SaveAsync())
       {
