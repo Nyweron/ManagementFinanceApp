@@ -54,15 +54,16 @@ namespace ManagementFinanceApp.Service.Expense
         expenseRequest.Comment != null &&
         expenseRequest.Comment.Trim().Length != 0)
       {
-        expenseFromDB.Comment = expenseRequest.Comment;
+        // expenseFromDB.Comment = expenseRequest.Comment;
       }
 
-      var dto = _mapper.Map<Entities.Expense>(expenseRequest);
+      //var dto = _mapper.Map<Entities.Expense>(expenseRequest);
+      var dto = _mapper.Map<Models.Expense, Entities.Expense>(expenseRequest, expenseFromDB);
 
       try
       {
         //await _expenseRepository.UpdateAsync(dto);
-        _expenseRepository.Update(dto);
+        //_expenseRepository.Update(dto);
       }
       catch (Exception ex)
       {
