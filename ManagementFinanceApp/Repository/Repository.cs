@@ -81,8 +81,9 @@ namespace ManagementFinanceApp.Repository
 
     public void Update(TEntity entity)
     {
-      //Context.Entry(entity).State = EntityState.Modified;
-      Context.Set<TEntity>().Update(entity);
+      //Context.Entry(group).CurrentValues.SetValues(model.Group);
+      Context.Attach(entity).State = EntityState.Modified;
+      //Context.Set<TEntity>().Update(entity);
     }
 
     public async Task<bool> UpdateAsync(TEntity entity)

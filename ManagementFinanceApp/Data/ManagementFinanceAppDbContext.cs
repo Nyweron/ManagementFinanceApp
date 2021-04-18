@@ -24,5 +24,10 @@ namespace ManagementFinanceApp.Data
     public DbSet<Plan> Plans { get; set; }
     public DbSet<Investment> Investments { get; set; }
     public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+      optionsBuilder.EnableSensitiveDataLogging();
+    }
   }
 }
