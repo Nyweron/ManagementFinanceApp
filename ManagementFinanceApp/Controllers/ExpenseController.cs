@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Service.Expense;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ManagementFinanceApp.Controllers
 {
@@ -12,10 +13,12 @@ namespace ManagementFinanceApp.Controllers
   public class ExpenseController : ControllerBase
   {
     private IExpenseService _expenseService;
+    private ILogger _logger;
 
-    public ExpenseController(IExpenseService expenseService)
+    public ExpenseController(IExpenseService expenseService, ILogger logger)
     {
       _expenseService = expenseService;
+      _logger = logger;
     }
 
     [HttpGet]
@@ -98,7 +101,7 @@ namespace ManagementFinanceApp.Controllers
         }
         else
         {
-          // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+           _logger.LogError($"Edit expense a problem happend. Error in updateExpense. When accessing to ExpenseController/Edit");
           return StatusCode(500, "A problem happend while handling your request.");
         }
       }

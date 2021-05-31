@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace ManagementFinanceApp
@@ -52,6 +53,11 @@ namespace ManagementFinanceApp
       services.AddControllers();
       services.AddMemoryCache();
       services.AddResponseCaching();
+
+      // Logger Microsoft.Extensions.Logging
+      var serviceProvider = services.BuildServiceProvider();
+      var logger = serviceProvider.GetService<ILogger<Startup>>();
+      services.AddSingleton(typeof(ILogger), logger);
 
       // Configute Autofac
       var builder = new ContainerBuilder();

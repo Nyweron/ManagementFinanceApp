@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.Expense;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace ManagementFinanceApp.Service.Expense
 {
@@ -12,16 +12,20 @@ namespace ManagementFinanceApp.Service.Expense
   {
     private IExpenseRepository _expenseRepository;
     private IMapper _mapper;
+    private ILogger _logger;
+
     public ExpenseService(IExpenseRepository expenseRepository,
-      IMapper mapper)
+      IMapper mapper,
+      ILogger logger)
     {
       _expenseRepository = expenseRepository;
       _mapper = mapper;
+      _logger = logger;
     }
     public async Task<bool> AddExpense(Models.Expense expense)
     {
       var expenseEntity = _mapper.Map<Entities.Expense>(expense);
-      await _expenseRepository.AddAsync(expenseEntity);
+      // await _expenseRepository.AddAsync(expenseEntity);
 
       if (!await _expenseRepository.SaveAsync())
       {
@@ -41,39 +45,21 @@ namespace ManagementFinanceApp.Service.Expense
       if (expenseFromDB == null) { return false; }
 
       // Set changes to entity
-      //TODO, check this, search better approach...
-
-      // expenseRequest.HowMuch
-      // expenseRequest.CategorySavingId
-      // expenseRequest.CategoryExpenseId
-      // expenseRequest.Date
-      // expenseRequest.UserId
-      // expenseRequest.Comment
-
-      if (expenseRequest != null &&
-        expenseRequest.Comment != null &&
-        expenseRequest.Comment.Trim().Length != 0)
-      {
-        // expenseFromDB.Comment = expenseRequest.Comment;
-      }
-
-      //var dto = _mapper.Map<Entities.Expense>(expenseRequest);
       var dto = _mapper.Map<Models.Expense, Entities.Expense>(expenseRequest, expenseFromDB);
 
       try
       {
-        //await _expenseRepository.UpdateAsync(dto);
-        //_expenseRepository.Update(dto);
+        _expenseRepository.Update(dto);
       }
       catch (Exception ex)
       {
-        var x = ex;
+        _logger.LogError($"Edit Expense catch exception when update row. {ex}");
         return false;
       }
 
       if (!await _expenseRepository.SaveAsync())
       {
-        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        _logger.LogError($"Edit Expense is not valid. Error in SaveAsync(). When accessing to ExpenseService/Edit");
         return false;
       }
 
