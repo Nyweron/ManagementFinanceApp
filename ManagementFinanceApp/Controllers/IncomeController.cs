@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using AutoMapper;
-using ManagementFinanceApp.Repository.Income;
+using ManagementFinanceApp.Service.Income;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ManagementFinanceApp.Controllers
 {
@@ -11,20 +11,19 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class IncomeController : ControllerBase
   {
-    private IIncomeRepository _incomeRepository;
-    private IMapper _mapper;
-    public IncomeController(IIncomeRepository incomeRepository,
-      IMapper mapper
-    )
+    private IIncomeService _incomeService;
+    private ILogger _logger;
+
+    public IncomeController(IIncomeService incomeService, ILogger logger)
     {
-      _incomeRepository = incomeRepository;
-      _mapper = mapper;
+      _incomeService = incomeService;
+      _logger = logger;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-      var incomeEntities = await _incomeRepository.GetAllAsync();
+      var incomeEntities = await _incomeService.GetAllAsync();
       return Ok(incomeEntities);
     }
 
@@ -33,7 +32,7 @@ namespace ManagementFinanceApp.Controllers
     {
       try
       {
-        var incomeEntities = await _incomeRepository.GetAsync(incomeId);
+        var incomeEntities = await _incomeService.GetAsync(incomeId);
         return Ok(incomeEntities);
       }
       catch (Exception)
@@ -46,6 +45,7 @@ namespace ManagementFinanceApp.Controllers
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Models.Income income)
     {
+      //TODO: Check problems with date...
       if (income == null)
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto income).");
@@ -57,32 +57,62 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var incomeEntity = _mapper.Map<Entities.Income>(income);
-      await _incomeRepository.AddAsync(incomeEntity);
+      var isCreated = await _incomeService.AddIncome(income);
 
-      if (!await _incomeRepository.SaveAsync())
+      if (isCreated)
+      {
+        return Created("", null);
+      }
+      else
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
-
-      //TODO: Implement Realistic Implementation
-      return Created("", null);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
 
-      var income = await _incomeRepository.GetAsync(id);
+      var income = await _incomeService.GetAsync(id);
 
-      if (!await _incomeRepository.RemoveAsync(income))
+      if (!await _incomeService.RemoveAsync(income))
       {
         //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
         return StatusCode(500, "A problem happend while handling your request.");
       }
       //TODO: Implement Realistic Implementation
       return Ok();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Edit(int id, [FromBody] Models.Income incomeRequest)
+    {
+      try
+      {
+        if (incomeRequest == null)
+        {
+          return BadRequest("Object cannot be null");
+        }
+
+        // Update entity in repository
+        var isUpdated = await _incomeService.EditIncome(incomeRequest, id);
+        if (isUpdated)
+        {
+          return NoContent();
+        }
+        else
+        {
+          _logger.LogError($"Edit income a problem happend. Error in updateExpense. When accessing to ExpenseController/Edit");
+          return StatusCode(500, "A problem happend while handling your request.");
+        }
+      }
+      catch (Exception ex)
+      {
+        // Logger?.LogCritical("There was an error on '{0}' invocation: {1}", nameof(PutStockItemAsync), ex);
+      }
+
+      return NoContent();
     }
   }
 }

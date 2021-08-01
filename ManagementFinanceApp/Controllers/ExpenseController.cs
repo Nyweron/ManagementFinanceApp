@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using AutoMapper;
 using ManagementFinanceApp.Service.Expense;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

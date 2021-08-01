@@ -6,6 +6,7 @@ using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Repository.Expense;
 using ManagementFinanceApp.Service.Expense;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -16,6 +17,7 @@ namespace ManagementFinanceApp.Test.Service
   {
     private Mock<IExpenseRepository> mockRepo;
     private Mock<IMapper> mockMapper;
+    private Mock<ILogger> mockLogger;
     private Entities.Expense expenseEntityObj;
     private IEnumerable<Entities.Expense> expenseEntityLists;
     private Models.Expense expenseModelObj;
@@ -59,6 +61,7 @@ namespace ManagementFinanceApp.Test.Service
       expenseEntityLists = new List<Entities.Expense>();
       mockRepo = new Mock<IExpenseRepository>();
       mockMapper = new Mock<IMapper>();
+      mockLogger = new Mock<ILogger>();
       expenseEntityObj = new Entities.Expense { Id = 2, Comment = "Expense1" };
       expenseModelObj = new Models.Expense { Id = 2, Comment = "Expense2" };
       expenseModelLists.Add(expenseModelObj);
@@ -121,7 +124,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.GetAllAsync())
         .Returns(Task.FromResult(expenseEntityLists));
 
-      var sut = new ExpenseService(mockRepo.Object, null);
+      var sut = new ExpenseService(mockRepo.Object, null, mockLogger.Object);
 
       // Act
       var getAllEntities = await sut.GetAllAsync();
@@ -141,7 +144,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.GetAsync(It.IsAny<int>()))
         .Returns(Task.FromResult(expenseEntityObj));
 
-      var sut = new ExpenseService(mockRepo.Object, null);
+      var sut = new ExpenseService(mockRepo.Object, null, mockLogger.Object);
 
       // Act
       var getAllEntities = await sut.GetAsync(8);
@@ -162,7 +165,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.RemoveAsync(It.IsAny<Entities.Expense>()))
         .Returns(Task.FromResult(true));
 
-      var sut = new ExpenseService(mockRepo.Object, null);
+      var sut = new ExpenseService(mockRepo.Object, null, mockLogger.Object);
       var getEntity = await sut.GetAsync(1);
 
       // Act
@@ -186,7 +189,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()))
         .Returns(() => Task.Run(() => { })).Verifiable();
 
-      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object);
+      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object);
 
       // Act
       await sut.AddExpense(expenseModelObj);
@@ -208,7 +211,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
 
-      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object);
+      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object);
 
       // Act
       var resultOfAddExpense = await sut.AddExpense(expenseModelObj);
@@ -236,7 +239,7 @@ namespace ManagementFinanceApp.Test.Service
       {
         new Entities.Expense { Id = 8, Comment = "New category Expense was added" }
       };
-      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object);
+      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object);
 
       // Act
       var resultOfAddExpense = await sut.AddExpense(expenseModelObj);
@@ -266,7 +269,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
 
-      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object);
+      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object);
 
       // Act
       var resultOfAddExpense = await sut.AddExpense(expenseModelObj);
@@ -290,7 +293,7 @@ namespace ManagementFinanceApp.Test.Service
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
 
-      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object);
+      var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object);
 
       // Act
       var resultOfAddExpense = await sut.AddExpense(expenseModelObj);

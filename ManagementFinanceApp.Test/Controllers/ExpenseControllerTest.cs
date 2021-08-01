@@ -7,6 +7,7 @@ using ManagementFinanceApp.Repository.Expense;
 using ManagementFinanceApp.Service.Expense;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 
@@ -20,8 +21,10 @@ namespace ManagementFinanceApp.Test.Controllers
     private Models.Expense expenseModelObj;
     private Mock<IExpenseRepository> mockExpenseRepository;
     private Mock<IExpenseService> mockExpenseService;
+    private Mock<ILogger> mockLogger;
     private int expectedIdOfExpense;
     private List<Models.Expense> expenseListObj;
+    
 
     private IEnumerable<Entities.Expense> GetExpensesList()
     {
@@ -41,6 +44,7 @@ namespace ManagementFinanceApp.Test.Controllers
       expenseModelObj = new Models.Expense { Id = 2, Comment = "Expense2" };
       mockExpenseRepository = new Mock<IExpenseRepository>();
       mockExpenseService = new Mock<IExpenseService>();
+      mockLogger = new Mock<ILogger>();
       expectedIdOfExpense = 2;
       expenseListObj = new List<Models.Expense>() { new Models.Expense { Id = 2, Comment = "Expense2" } };
     }
@@ -54,7 +58,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       mockExpenseService.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(expensesList));
 
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
@@ -76,7 +80,7 @@ namespace ManagementFinanceApp.Test.Controllers
       mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense))
         .Returns(Task.FromResult(expenseTest));
 
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var okObjectResult = await controller.Get(expectedIdOfExpense) as OkObjectResult;
@@ -96,7 +100,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
       mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var noContentResult = await controller.Delete(expectedIdOfExpense) as NoContentResult;
@@ -111,7 +115,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var notFoundResult = await controller.Delete(expectedIdOfExpense) as NotFoundResult;
@@ -126,7 +130,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
       mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(false));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var noContentResult = await controller.Delete(expectedIdOfExpense) as ObjectResult;
@@ -142,7 +146,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       var expenseObj = new Models.Expense();
       expenseObj = null;
-      var controller = new ExpenseController(null);
+      var controller = new ExpenseController(null, null);
 
       // Act
       var badRequestResult = await controller.Post(expenseObj) as BadRequestResult;
@@ -157,7 +161,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
         .Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var objectResult = await controller.Post(expenseModelObj) as ObjectResult;
@@ -172,7 +176,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
         .Returns(Task.FromResult(false));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var objectResult = await controller.Post(expenseModelObj) as ObjectResult;
@@ -186,7 +190,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       expectedIdOfExpense = 1;
-      var controller = new ExpenseController(null);
+      var controller = new ExpenseController(null, null);
 
       // Act
       var objectResult = await controller.Edit(expectedIdOfExpense, null) as ObjectResult;
@@ -200,7 +204,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockExpenseService.Setup(repo => repo.EditExpense(It.IsAny<Models.Expense>(), It.IsAny<int>())).Returns(Task.FromResult(false));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
       expectedIdOfExpense = 1;
 
       // Act
@@ -215,7 +219,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockExpenseService.Setup(repo => repo.EditExpense(It.IsAny<Models.Expense>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object);
+      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
       expectedIdOfExpense = 1;
 
       // Act
