@@ -13,6 +13,7 @@ namespace ManagementFinanceApp.Models
     /*ZlecenieStale - StandingOrder  */
     public bool StandingOrder { get; set; }
     public int UserId { get; set; }
+    public string UserDescription { get; set; }
     public int CategorySavingId { get; set; }
     public string CategorySavingDescription { get; set; }
     public int CategoryExpenseId { get; set; }
