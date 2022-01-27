@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.Expense;
 using Microsoft.Extensions.Logging;
 
@@ -11,21 +12,24 @@ namespace ManagementFinanceApp.Service.Expense
   public class ExpenseService : IExpenseService
   {
     private IExpenseRepository _expenseRepository;
+    private IExpenseAdapter _expenseAdapter;
     private IMapper _mapper;
     private ILogger _logger;
 
     public ExpenseService(IExpenseRepository expenseRepository,
       IMapper mapper,
-      ILogger logger)
+      ILogger logger, 
+      IExpenseAdapter expenseAdapter)
     {
       _expenseRepository = expenseRepository;
       _mapper = mapper;
       _logger = logger;
+      _expenseAdapter = expenseAdapter;
     }
     public async Task<bool> AddExpense(Models.Expense expense)
     {
       var expenseEntity = _mapper.Map<Entities.Expense>(expense);
-      // await _expenseRepository.AddAsync(expenseEntity);
+      await _expenseRepository.AddAsync(expenseEntity);
 
       if (!await _expenseRepository.SaveAsync())
       {
@@ -72,6 +76,14 @@ namespace ManagementFinanceApp.Service.Expense
       var orderByIds = x.OrderBy(o => o.Id).ToList();
       return orderByIds;
     }
+
+    public async Task<IEnumerable<Models.Expense>> GetAllAdaptAsync()
+    {
+      var expense = await _expenseAdapter.AdaptExpense();
+      var orderByIds = expense.OrderBy(o => o.Id).ToList();
+      return orderByIds;
+    }
+
 
     public async Task<Entities.Expense> GetAsync(int expenseId)
     {

@@ -14,6 +14,8 @@ namespace ManagementFinanceApp.Models
     public bool StandingOrder { get; set; }
     public int UserId { get; set; }
     public int CategorySavingId { get; set; }
+    public string CategorySavingDescription { get; set; }
     public int CategoryExpenseId { get; set; }
+    public string CategoryExpenseDescription { get; set; }
   }
 }

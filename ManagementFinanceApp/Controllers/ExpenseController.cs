@@ -23,8 +23,8 @@ namespace ManagementFinanceApp.Controllers
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-      var expenseEntities = await _expenseService.GetAllAsync();
-      return Ok(expenseEntities);
+      var expenseModels = await _expenseService.GetAllAdaptAsync();
+      return Ok(expenseModels);
     }
 
     [HttpGet("{expenseId}")]
