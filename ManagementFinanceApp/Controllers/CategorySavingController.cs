@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.CategorySaving;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +14,16 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class CategorySavingController : ControllerBase
   {
+    private ICategorySavingAdapter _categorySavingAdapter;
     private ICategorySavingRepository _categorySavingRepository;
     private IMapper _mapper;
     public CategorySavingController(ICategorySavingRepository categorySavingRepository,
-      IMapper mapper
-    )
+      IMapper mapper, 
+      ICategorySavingAdapter categorySavingAdapter)
     {
       _categorySavingRepository = categorySavingRepository;
       _mapper = mapper;
+      _categorySavingAdapter = categorySavingAdapter;
     }
 
     [HttpGet]
@@ -28,6 +31,13 @@ namespace ManagementFinanceApp.Controllers
     {
       var categorySavingEntities = await _categorySavingRepository.GetAllAsync();
       return Ok(categorySavingEntities);
+    }
+
+    [HttpGet("GetCategorySavingsForSelect")]
+    public async Task<IActionResult> GetCategoryExpensesForSelect()
+    {
+      var categorySavingViewList = await _categorySavingAdapter.GetCategorySavingList();
+      return Ok(categorySavingViewList);
     }
 
     [HttpGet("{categorySavingId}")]
