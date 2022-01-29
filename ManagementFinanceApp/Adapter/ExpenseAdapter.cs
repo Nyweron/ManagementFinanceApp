@@ -70,7 +70,6 @@ namespace ManagementFinanceApp.Adapter
           UserId = expense.UserId,
           UserDescription = user.FirstName + " " + user.LastName,
           StandingOrder = expense.StandingOrder,
-   
         });
 
       }

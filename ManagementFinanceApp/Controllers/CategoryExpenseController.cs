@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.CategoryExpense;
 using ManagementFinanceApp.Service.CategoryExpense;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace ManagementFinanceApp.Controllers
   public class CategoryExpenseController : ControllerBase
   {
     private ICategoryExpenseService _categoryExpenseService;
+    private ICategoryExpenseAdapter _categoryExpenseAdapter;
 
     //controller -> service-> repozytorium. w service ma byc lacznikiem, w service jest cala 'logika' Encje model itp...
     //controller nie powinnien miec dostepu do repozytorium! brak Encji(obiekt bazodanowy)
@@ -22,9 +24,11 @@ namespace ManagementFinanceApp.Controllers
 
     //https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)
 
-    public CategoryExpenseController(ICategoryExpenseService categoryExpenseService)
+    public CategoryExpenseController(ICategoryExpenseService categoryExpenseService,
+                                     ICategoryExpenseAdapter categoryExpenseAdapter)
     {
       _categoryExpenseService = categoryExpenseService;
+      _categoryExpenseAdapter = categoryExpenseAdapter;
     }
 
     [HttpGet]
@@ -34,6 +38,15 @@ namespace ManagementFinanceApp.Controllers
       return Ok(categoryExpenseEntities);
     }
 
+
+    [HttpGet("GetCategoryExpensesForSelect")]
+    public async Task<IActionResult> GetCategoryExpensesForSelect()
+    {
+      var categoryExpenseViewList = await _categoryExpenseAdapter.GetCategoryExpenseList();
+      return Ok(categoryExpenseViewList);
+    }
+
+    
     [HttpGet("{categoryExpenseId}")]
     public async Task<IActionResult> Get(int categoryExpenseId)
     {
