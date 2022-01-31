@@ -77,7 +77,7 @@ namespace ManagementFinanceApp.Service.Expense
       return orderByIds;
     }
 
-    public async Task<IEnumerable<Models.Expense>> GetAllAdaptAsync()
+    public async Task<IEnumerable<Models.ExpenseList>> GetAllAdaptAsync()
     {
       var expense = await _expenseAdapter.AdaptExpense();
       var orderByIds = expense.OrderBy(o => o.Id).ToList();

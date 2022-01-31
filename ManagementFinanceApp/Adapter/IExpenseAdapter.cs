@@ -5,6 +5,6 @@ namespace ManagementFinanceApp.Adapter
 {
   public interface IExpenseAdapter
   {
-    public Task<IEnumerable<Models.Expense>> AdaptExpense();
+    public Task<IEnumerable<Models.ExpenseList>> AdaptExpense();
   }
 }

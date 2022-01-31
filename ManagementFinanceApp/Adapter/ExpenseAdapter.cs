@@ -31,9 +31,9 @@ namespace ManagementFinanceApp.Adapter
       _userRepository = userRepository;
     }
 
-    public async Task<IEnumerable<Models.Expense>> AdaptExpense()
+    public async Task<IEnumerable<Models.ExpenseList>> AdaptExpense()
     {
-      var expensesModelList = new List<Models.Expense>();
+      var expensesModelList = new List<Models.ExpenseList>();
 
       var expenses = await _expenseRepository.GetAllAsync();
       foreach (var expense in expenses)
@@ -56,7 +56,7 @@ namespace ManagementFinanceApp.Adapter
           continue; 
         }
 
-        expensesModelList.Add(new Models.Expense
+        expensesModelList.Add(new Models.ExpenseList
         {
           Id = expense.Id,
           Attachment = expense.Attachment,

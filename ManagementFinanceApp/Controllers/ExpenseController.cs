@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using ManagementFinanceApp.Service.Expense;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,10 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
+      var expenses = await _expenseService.GetAllAsync();
+
+      var highestId = expenses.Max(x => x.Id);
+      expense.Id = highestId + 1;
       var isCreated = await _expenseService.AddExpense(expense);
 
       if (isCreated)
