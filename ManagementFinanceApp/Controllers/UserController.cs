@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Models;
@@ -18,11 +19,13 @@ namespace ManagementFinanceApp.Controllers
   {
     private IUserRepository _userRepository;
     private IUserService _userService;
+    private IUserAdapter _userAdapter;
 
-    public UserController(IUserRepository userRepository, IUserService userService)
+    public UserController(IUserRepository userRepository, IUserService userService, IUserAdapter userAdapter)
     {
       _userRepository = userRepository;
       _userService = userService;
+      _userAdapter = userAdapter;
     }
 
     [HttpGet]
@@ -30,6 +33,13 @@ namespace ManagementFinanceApp.Controllers
     {
       var userEntities = await _userRepository.GetAllAsync();
       return Ok(userEntities);
+    }
+
+    [HttpGet("GetUsersForSelect")]
+    public async Task<IActionResult> GetUsersForSelect()
+    {
+      var userViewList = await _userAdapter.GetUserList();
+      return Ok(userViewList);
     }
 
     [HttpGet("{userId}")]

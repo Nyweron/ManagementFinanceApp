@@ -1,8 +1,8 @@
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.User;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Service.User
 {
@@ -55,6 +55,13 @@ namespace ManagementFinanceApp.Service.User
       }
 
       return true;
+    }
+
+    public async Task<IEnumerable<Entities.User>> GetAllAsync()
+    {
+      var x = await _userRepository.GetAllAsync();
+      var orderByIds = x.OrderBy(o => o.Id).ToList();
+      return orderByIds;
     }
   }
 }

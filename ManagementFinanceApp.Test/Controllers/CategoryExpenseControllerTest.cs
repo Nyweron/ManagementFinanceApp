@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Controllers;
 using ManagementFinanceApp.Repository.CategoryExpense;
 using ManagementFinanceApp.Service.CategoryExpense;
@@ -19,6 +20,7 @@ namespace ManagementFinanceApp.Test.Controllers
     private Entities.CategoryExpense categoryExpenseObj;
     private Models.CategoryExpense categoryExpenseModelObj;
     private Mock<ICategoryExpenseRepository> mockCategoryExpenseRepository;
+    private Mock<ICategoryExpenseAdapter> mockiCategoryExpenseAdapter;
     private Mock<ICategoryExpenseService> mockCategoryExpenseService;
     private int expectedIdOfCategoryExpense;
     private List<Models.CategoryExpense> categoryExpenseListObj;
@@ -41,6 +43,7 @@ namespace ManagementFinanceApp.Test.Controllers
       categoryExpenseModelObj = new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
       mockCategoryExpenseRepository = new Mock<ICategoryExpenseRepository>();
       mockCategoryExpenseService = new Mock<ICategoryExpenseService>();
+      mockiCategoryExpenseAdapter = new Mock<ICategoryExpenseAdapter>();
       expectedIdOfCategoryExpense = 2;
       categoryExpenseListObj = new List<Models.CategoryExpense>() { new Models.CategoryExpense { Id = 2, Description = "CategoryeExpense2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
     }
@@ -54,7 +57,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       mockCategoryExpenseService.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryExpensesList));
 
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
@@ -76,7 +79,7 @@ namespace ManagementFinanceApp.Test.Controllers
       mockCategoryExpenseService.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense))
         .Returns(Task.FromResult(categoryExpenseTest));
 
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var okObjectResult = await controller.Get(expectedIdOfCategoryExpense) as OkObjectResult;
@@ -96,7 +99,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       mockCategoryExpenseService.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
       mockCategoryExpenseService.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as NoContentResult;
@@ -111,7 +114,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryExpenseService.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(true));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var notFoundResult = await controller.Delete(expectedIdOfCategoryExpense) as NotFoundResult;
@@ -126,7 +129,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       mockCategoryExpenseService.Setup(repo => repo.GetAsync(expectedIdOfCategoryExpense)).Returns(Task.FromResult(categoryExpenseObj));
       mockCategoryExpenseService.Setup(repo => repo.RemoveAsync(categoryExpenseObj)).Returns(Task.FromResult(false));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var noContentResult = await controller.Delete(expectedIdOfCategoryExpense) as ObjectResult;
@@ -141,7 +144,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       var categoryExpenseList = new List<Models.CategoryExpense>();
-      var controller = new CategoryExpenseController(null);
+      var controller = new CategoryExpenseController(null,null);
 
       // Act
       var badRequestResult = await controller.Post(categoryExpenseList) as BadRequestResult;
@@ -155,7 +158,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
@@ -169,7 +172,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
       var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
@@ -183,7 +186,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       expectedIdOfCategoryExpense = 1;
-      var controller = new CategoryExpenseController(null);
+      var controller = new CategoryExpenseController(null,null);
 
       // Act
       var objectResult = await controller.Edit(expectedIdOfCategoryExpense, null) as ObjectResult;
@@ -197,7 +200,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryExpenseService.Setup(repo => repo.EditCategoryExpense(It.IsAny<Models.CategoryExpense>(), It.IsAny<int>())).Returns(Task.FromResult(false));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
       expectedIdOfCategoryExpense = 1;
 
       // Act
@@ -212,7 +215,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryExpenseService.Setup(repo => repo.EditCategoryExpense(It.IsAny<Models.CategoryExpense>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object);
+      var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
       expectedIdOfCategoryExpense = 1;
 
       // Act

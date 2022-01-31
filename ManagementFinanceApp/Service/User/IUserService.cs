@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ManagementFinanceApp.Service.User
@@ -6,5 +7,6 @@ namespace ManagementFinanceApp.Service.User
   {
     Task<bool> AddUser(Models.UserDto user);
     Task<bool> EditUser(Models.UserDto user, int userId);
+    Task<IEnumerable<Entities.User>> GetAllAsync();
   }
 }
