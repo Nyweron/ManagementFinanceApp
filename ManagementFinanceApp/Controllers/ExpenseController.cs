@@ -105,7 +105,7 @@ namespace ManagementFinanceApp.Controllers
         }
         else
         {
-           _logger.LogError($"Edit expense a problem happend. Error in updateExpense. When accessing to ExpenseController/Edit");
+          _logger.LogError($"Edit expense a problem happend. Error in updateExpense. When accessing to ExpenseController/Edit");
           return StatusCode(500, "A problem happend while handling your request.");
         }
       }

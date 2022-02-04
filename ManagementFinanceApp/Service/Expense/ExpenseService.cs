@@ -70,13 +70,6 @@ namespace ManagementFinanceApp.Service.Expense
       return true;
     }
 
-    public async Task<IEnumerable<Entities.Expense>> GetAllAsync()
-    {
-      var x = await _expenseRepository.GetAllAsync();
-      var orderByIds = x.OrderBy(o => o.Id).ToList();
-      return orderByIds;
-    }
-
     public async Task<IEnumerable<Models.ExpenseList>> GetAllAdaptAsync()
     {
       var expense = await _expenseAdapter.AdaptExpense();
@@ -84,6 +77,12 @@ namespace ManagementFinanceApp.Service.Expense
       return orderByIds;
     }
 
+    public async Task<IEnumerable<Entities.Expense>> GetAllAsync()
+    {
+      var expenses = await _expenseRepository.GetAllAsync();
+      var orderByIds = expenses.OrderBy(o => o.Id).ToList();
+      return orderByIds;
+    }
 
     public async Task<Entities.Expense> GetAsync(int expenseId)
     {
