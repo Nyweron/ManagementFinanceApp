@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ManagementFinanceApp.Service.Income
@@ -12,5 +10,6 @@ namespace ManagementFinanceApp.Service.Income
     Task<bool> AddIncome(Models.Income income);
     Task<bool> RemoveAsync(Entities.Income income);
     Task<bool> EditIncome(Models.Income income, int id);
+    Task<IEnumerable<Models.IncomeList>> GetAllAdaptAsync();
   }
 }

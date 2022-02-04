@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.Income;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,21 +12,24 @@ namespace ManagementFinanceApp.Service.Income
   public class IncomeService : IIncomeService
   {
     private IIncomeRepository _incomeRepository;
+    private IIncomeAdapter _incomeAdapter;
     private IMapper _mapper;
     private ILogger _logger;
 
     public IncomeService(IIncomeRepository incomeRepository,
-      IMapper mapper,
-      ILogger logger)
+                         IMapper mapper,
+                         ILogger logger,
+                         IIncomeAdapter incomeAdapter)
     {
       _incomeRepository = incomeRepository;
       _mapper = mapper;
       _logger = logger;
+      _incomeAdapter = incomeAdapter;
     }
     public async Task<bool> AddIncome(Models.Income income)
     {
       var incomeEntity = _mapper.Map<Entities.Income>(income);
-      // await _incomeRepository.AddAsync(incomeEntity);
+      await _incomeRepository.AddAsync(incomeEntity);
 
       if (!await _incomeRepository.SaveAsync())
       {
@@ -64,6 +68,13 @@ namespace ManagementFinanceApp.Service.Income
       }
 
       return true;
+    }
+
+    public async Task<IEnumerable<Models.IncomeList>> GetAllAdaptAsync()
+    {
+      var income = await _incomeAdapter.AdaptIncome();
+      var orderByIds = income.OrderBy(o => o.Id).ToList();
+      return orderByIds;
     }
 
     public async Task<IEnumerable<Entities.Income>> GetAllAsync()
