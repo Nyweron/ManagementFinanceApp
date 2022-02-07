@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.CategoryIncome;
 using ManagementFinanceApp.Service.CategoryIncome;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +16,13 @@ namespace ManagementFinanceApp.Controllers
   public class CategoryIncomeController : ControllerBase
   {
     private ICategoryIncomeService _categoryIncomeService;
+    private ICategoryIncomeAdapter _categoryIncomeAdapter;
 
-    public CategoryIncomeController(ICategoryIncomeService categoryIncomeService)
+    public CategoryIncomeController(ICategoryIncomeService categoryIncomeService,
+                                    ICategoryIncomeAdapter categoryIncomeAdapter)
     {
       _categoryIncomeService = categoryIncomeService;
+      _categoryIncomeAdapter = categoryIncomeAdapter;
     }
 
     [HttpGet]
@@ -33,6 +37,13 @@ namespace ManagementFinanceApp.Controllers
     {
       var categoryIncomeEntities = await _categoryIncomeService.GetAsync(categoryIncomeId);
       return Ok(categoryIncomeEntities);
+    }
+
+    [HttpGet("GetCategoryIncomesForSelect")]
+    public async Task<IActionResult> GetCategoryExpensesForSelect()
+    {
+      var categoryIncomeViewList = await _categoryIncomeAdapter.GetCategoryIncomeList();
+      return Ok(categoryIncomeViewList);
     }
 
     [HttpPost]
