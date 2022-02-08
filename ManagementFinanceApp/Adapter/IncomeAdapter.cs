@@ -34,9 +34,9 @@ namespace ManagementFinanceApp.Adapter
       _logger = logger;
     }
 
-    public async Task<IEnumerable<IncomeList>> AdaptIncome()
+    public async Task<IEnumerable<Models.List.IncomeList>> AdaptIncome()
     {
-      var incomesModelList = new List<Models.IncomeList>();
+      var incomesModelList = new List<Models.List.IncomeList>();
 
       var incomes = await _incomeRepository.GetAllAsync();
 
@@ -60,7 +60,7 @@ namespace ManagementFinanceApp.Adapter
           continue;
         }
 
-        incomesModelList.Add(new Models.IncomeList
+        incomesModelList.Add(new Models.List.IncomeList
         {
           Id = income.Id,
           Attachment = income.Attachment,

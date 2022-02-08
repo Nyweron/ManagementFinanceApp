@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ManagementFinanceApp.Models
+namespace ManagementFinanceApp.Models.List
 {
   /* Wydatki - Expense */
   public class ExpenseList

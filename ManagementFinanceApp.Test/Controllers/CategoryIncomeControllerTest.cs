@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Controllers;
 using ManagementFinanceApp.Repository.CategoryIncome;
 using ManagementFinanceApp.Service.CategoryIncome;
@@ -20,6 +21,7 @@ namespace ManagementFinanceApp.Test.Controllers
     private Models.CategoryIncome categoryIncomeModelObj;
     private Mock<ICategoryIncomeRepository> mockCategoryIncomeRepository;
     private Mock<ICategoryIncomeService> mockCategoryIncomeService;
+    private Mock<ICategoryIncomeAdapter> mockCategoryIncomeAdapter;
     private int expectedIdOfCategoryIncome;
     private List<Models.CategoryIncome> categoryIncomeListObj;
 
@@ -41,6 +43,7 @@ namespace ManagementFinanceApp.Test.Controllers
       categoryIncomeModelObj = new Models.CategoryIncome { Id = 2, Description = "CategoryIncome2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 };
       mockCategoryIncomeRepository = new Mock<ICategoryIncomeRepository>();
       mockCategoryIncomeService = new Mock<ICategoryIncomeService>();
+      mockCategoryIncomeAdapter = new Mock<ICategoryIncomeAdapter>();
       expectedIdOfCategoryIncome = 2;
       categoryIncomeListObj = new List<Models.CategoryIncome>() { new Models.CategoryIncome { Id = 2, Description = "CategoryIncome2", IsDeleted = false, Weight = 2, CategoryGroupId = 2 } };
     }
@@ -54,7 +57,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       mockCategoryIncomeService.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(categoryIncomesList));
 
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
@@ -76,7 +79,7 @@ namespace ManagementFinanceApp.Test.Controllers
       mockCategoryIncomeService.Setup(repo => repo.GetAsync(expectedIdOfCategoryIncome))
         .Returns(Task.FromResult(categoryIncomeTest));
 
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var okObjectResult = await controller.Get(expectedIdOfCategoryIncome) as OkObjectResult;
@@ -96,7 +99,7 @@ namespace ManagementFinanceApp.Test.Controllers
 
       mockCategoryIncomeService.Setup(repo => repo.GetAsync(expectedIdOfCategoryIncome)).Returns(Task.FromResult(categoryIncomeObj));
       mockCategoryIncomeService.Setup(repo => repo.RemoveAsync(categoryIncomeObj)).Returns(Task.FromResult(true));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var noContentResult = await controller.Delete(expectedIdOfCategoryIncome) as NoContentResult;
@@ -111,7 +114,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryIncomeService.Setup(repo => repo.RemoveAsync(categoryIncomeObj)).Returns(Task.FromResult(true));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var notFoundResult = await controller.Delete(expectedIdOfCategoryIncome) as NotFoundResult;
@@ -126,7 +129,7 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       mockCategoryIncomeService.Setup(repo => repo.GetAsync(expectedIdOfCategoryIncome)).Returns(Task.FromResult(categoryIncomeObj));
       mockCategoryIncomeService.Setup(repo => repo.RemoveAsync(categoryIncomeObj)).Returns(Task.FromResult(false));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var noContentResult = await controller.Delete(expectedIdOfCategoryIncome) as ObjectResult;
@@ -141,7 +144,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       var categoryIncomeList = new List<Models.CategoryIncome>();
-      var controller = new CategoryIncomeController(null);
+      var controller = new CategoryIncomeController(null, null);
 
       // Act
       var badRequestResult = await controller.Post(categoryIncomeList) as BadRequestResult;
@@ -155,7 +158,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryIncomeService.Setup(repo => repo.AddCategoryIncome(It.IsAny<List<Models.CategoryIncome>>())).Returns(Task.FromResult(true));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var objectResult = await controller.Post(categoryIncomeListObj) as ObjectResult;
@@ -169,7 +172,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryIncomeService.Setup(repo => repo.AddCategoryIncome(It.IsAny<List<Models.CategoryIncome>>())).Returns(Task.FromResult(false));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
       var objectResult = await controller.Post(categoryIncomeListObj) as ObjectResult;
@@ -183,7 +186,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       expectedIdOfCategoryIncome = 1;
-      var controller = new CategoryIncomeController(null);
+      var controller = new CategoryIncomeController(null, mockCategoryIncomeAdapter.Object);
 
       // Act
       var objectResult = await controller.Edit(expectedIdOfCategoryIncome, null) as ObjectResult;
@@ -197,7 +200,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryIncomeService.Setup(repo => repo.EditCategoryIncome(It.IsAny<Models.CategoryIncome>(), It.IsAny<int>())).Returns(Task.FromResult(false));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
       expectedIdOfCategoryIncome = 1;
 
       // Act
@@ -212,7 +215,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       mockCategoryIncomeService.Setup(repo => repo.EditCategoryIncome(It.IsAny<Models.CategoryIncome>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object);
+      var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
       expectedIdOfCategoryIncome = 1;
 
       // Act

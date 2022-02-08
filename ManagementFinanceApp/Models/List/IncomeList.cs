@@ -1,6 +1,6 @@
 using System;
 
-namespace ManagementFinanceApp.Models
+namespace ManagementFinanceApp.Models.List
 {
   /* Przychód - Income */
   public class IncomeList

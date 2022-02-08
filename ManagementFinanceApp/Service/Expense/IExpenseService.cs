@@ -10,6 +10,6 @@ namespace ManagementFinanceApp.Service.Expense
     Task<bool> AddExpense(Models.Expense expense);
     Task<bool> RemoveAsync(Entities.Expense expense);
     Task<bool> EditExpense(Models.Expense expense, int id);
-    Task<IEnumerable<Models.ExpenseList>> GetAllAdaptAsync();
+    Task<IEnumerable<Models.List.ExpenseList>> GetAllAdaptAsync();
   }
 }

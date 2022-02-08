@@ -10,6 +10,6 @@ namespace ManagementFinanceApp.Service.Income
     Task<bool> AddIncome(Models.Income income);
     Task<bool> RemoveAsync(Entities.Income income);
     Task<bool> EditIncome(Models.Income income, int id);
-    Task<IEnumerable<Models.IncomeList>> GetAllAdaptAsync();
+    Task<IEnumerable<Models.List.IncomeList>> GetAllAdaptAsync();
   }
 }

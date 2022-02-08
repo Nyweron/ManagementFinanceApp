@@ -72,7 +72,7 @@ namespace ManagementFinanceApp.Service.Income
       return true;
     }
 
-    public async Task<IEnumerable<Models.IncomeList>> GetAllAdaptAsync()
+    public async Task<IEnumerable<Models.List.IncomeList>> GetAllAdaptAsync()
     {
       var income = await _incomeAdapter.AdaptIncome();
       var orderByIds = income.OrderBy(o => o.Id).ToList();

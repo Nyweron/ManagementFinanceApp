@@ -5,6 +5,6 @@ namespace ManagementFinanceApp.Adapter
 {
   public interface IIncomeAdapter
   {
-    public Task<IEnumerable<Models.IncomeList>> AdaptIncome();
+    public Task<IEnumerable<Models.List.IncomeList>> AdaptIncome();
   }
 }
