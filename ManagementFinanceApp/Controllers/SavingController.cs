@@ -59,17 +59,20 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var savingEntity = _mapper.Map<Entities.Saving>(saving);
-      await _savingRepository.AddAsync(savingEntity);
+      var isCreated = await _savingService.AddSaving(saving);
 
-      if (!await _savingRepository.SaveAsync())
+      if (isCreated)
+      {
+        //TODO: Implement Realistic Implementation
+        return Created("", null);
+      }
+      else
       {
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
         return StatusCode(500, "A problem happend while handling your request.");
       }
 
-      //TODO: Implement Realistic Implementation
-      return Created("", null);
+
     }
 
     [HttpDelete("{id}")]
