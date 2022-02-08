@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Repository.Saving;
+using ManagementFinanceApp.Service.Saving;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
@@ -10,20 +11,22 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class SavingController : ControllerBase
   {
+    private ISavingService _savingService;
     private ISavingRepository _savingRepository;
     private IMapper _mapper;
     public SavingController(ISavingRepository savingRepository,
-      IMapper mapper
-    )
+                            IMapper mapper,
+                            ISavingService savingService)
     {
       _savingRepository = savingRepository;
       _mapper = mapper;
+      _savingService = savingService;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-      var savingEntities = await _savingRepository.GetAllAsync();
+      var savingEntities = await _savingService.GetAllAdaptAsync();
       return Ok(savingEntities);
     }
 
