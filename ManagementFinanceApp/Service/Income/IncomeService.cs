@@ -28,6 +28,8 @@ namespace ManagementFinanceApp.Service.Income
     }
     public async Task<bool> AddIncome(Models.Income income)
     {
+      income.Id = GenerateNextId().Result;
+
       var incomeEntity = _mapper.Map<Entities.Income>(income);
       await _incomeRepository.AddAsync(incomeEntity);
 
@@ -93,5 +95,13 @@ namespace ManagementFinanceApp.Service.Income
     {
       return await _incomeRepository.RemoveAsync(income);
     }
+  
+    private async Task<int> GenerateNextId()
+    {
+      var incomes = await _incomeRepository.GetAllAsync();
+      var highestId = incomes.Max(x => x.Id);
+      return highestId + 1;
+    }
+  
   }
 }
