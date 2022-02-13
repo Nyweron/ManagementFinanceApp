@@ -4,6 +4,7 @@ using AutoMapper;
 using ManagementFinanceApp.Repository.Saving;
 using ManagementFinanceApp.Service.Saving;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace ManagementFinanceApp.Controllers
 {
@@ -14,13 +15,16 @@ namespace ManagementFinanceApp.Controllers
     private ISavingService _savingService;
     private ISavingRepository _savingRepository;
     private IMapper _mapper;
+    private ILogger _logger;
     public SavingController(ISavingRepository savingRepository,
                             IMapper mapper,
-                            ISavingService savingService)
+                            ISavingService savingService, 
+                            ILogger logger)
     {
       _savingRepository = savingRepository;
       _mapper = mapper;
       _savingService = savingService;
+      _logger = logger;
     }
 
     [HttpGet]
@@ -89,5 +93,37 @@ namespace ManagementFinanceApp.Controllers
       //TODO: Implement Realistic Implementation
       return Ok();
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Edit(int id, [FromBody] Models.Saving savingRequest)
+    {
+      try
+      {
+        if (savingRequest == null)
+        {
+          return BadRequest("Object cannot be null");
+        }
+
+        // Update entity in repository
+        var isUpdated = await _savingService.EditSaving(savingRequest, id);
+        if (isUpdated)
+        {
+          return NoContent();
+        }
+        else
+        {
+          _logger.LogError($"Edit saving a problem happend. Error in updateSaving. When accessing to SavingController/Edit");
+          return StatusCode(500, "A problem happend while handling your request.");
+        }
+      }
+      catch (Exception ex)
+      {
+        // Logger?.LogCritical("There was an error on '{0}' invocation: {1}", nameof(PutStockItemAsync), ex);
+      }
+
+      return NoContent();
+    }
+
+
   }
 }
