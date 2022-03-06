@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.CategorySaving;
+using ManagementFinanceApp.Service.CategorySaving;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
@@ -14,16 +15,18 @@ namespace ManagementFinanceApp.Controllers
   [ApiController]
   public class CategorySavingController : ControllerBase
   {
+    private readonly ICategorySavingService _categorySavingService;
     private ICategorySavingAdapter _categorySavingAdapter;
     private ICategorySavingRepository _categorySavingRepository;
     private IMapper _mapper;
     public CategorySavingController(ICategorySavingRepository categorySavingRepository,
-      IMapper mapper, 
-      ICategorySavingAdapter categorySavingAdapter)
+      IMapper mapper,
+      ICategorySavingAdapter categorySavingAdapter, ICategorySavingService categorySavingService)
     {
       _categorySavingRepository = categorySavingRepository;
       _mapper = mapper;
       _categorySavingAdapter = categorySavingAdapter;
+      _categorySavingService = categorySavingService;
     }
 
     [HttpGet]
@@ -56,9 +59,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] List<Models.CategorySaving> categorySaving)
+    public async Task<IActionResult> Post([FromBody] Models.CategorySaving categorySaving)
     {
-      if (!categorySaving.Any())
+      if (categorySaving==null)
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto categorySaving).");
         return BadRequest();
@@ -69,21 +72,17 @@ namespace ManagementFinanceApp.Controllers
         return BadRequest(ModelState);
       }
 
-      var categorySavingEntity = _mapper.Map<List<Entities.CategorySaving>>(categorySaving);
-      await _categorySavingRepository.AddRangeAsync(categorySavingEntity);
-      try
+      var isCreated = await _categorySavingService.AddCategorySaving(categorySaving);
+
+      if (isCreated)
       {
-        if (!await _categorySavingRepository.SaveAsync())
-        {
-          // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
-          return StatusCode(500, "A problem happend while handling your request.");
-        }
+        //TODO: Implement Realistic Implementation
+        return Created("", null);
       }
-      catch (Exception ex)
+      else
       {
-        Console.WriteLine(ex);
-        Debug.WriteLine("\n\tError Message", ex);
-        return BadRequest(ex.InnerException.Message);
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        return StatusCode(500, "A problem happend while handling your request.");
       }
 
       //TODO: Implement Realistic Implementation

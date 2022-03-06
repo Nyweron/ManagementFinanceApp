@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ManagementFinanceApp.Repository.CategorySaving;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ManagementFinanceApp.Service.CategorySaving
@@ -9,6 +10,7 @@ namespace ManagementFinanceApp.Service.CategorySaving
   {
 
     private ICategorySavingRepository _categorySavingRepository;
+
     private IMapper _mapper;
 
     public CategorySavingService(ICategorySavingRepository categorySavingRepository,
@@ -18,9 +20,20 @@ namespace ManagementFinanceApp.Service.CategorySaving
       _mapper = mapper;
     }
 
-    public Task<bool> AddCategorySaving(List<Models.CategorySaving> categorySaving)
+    public async Task<bool> AddCategorySaving(Models.CategorySaving categorySaving)
     {
-      throw new System.NotImplementedException();
+      categorySaving.Id = GenerateNextId().Result;
+
+      var savingEntity = _mapper.Map<Entities.CategorySaving>(categorySaving);
+      await _categorySavingRepository.AddAsync(savingEntity);
+
+      if (!await _categorySavingRepository.SaveAsync())
+      {
+        // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
+        return false;
+      }
+
+      return true;
     }
 
     public Task<bool> EditCategorySaving(Models.CategorySaving categorySaving, int id)
@@ -41,6 +54,13 @@ namespace ManagementFinanceApp.Service.CategorySaving
     public Task<bool> RemoveAsync(Entities.CategorySaving categorySaving)
     {
       throw new System.NotImplementedException();
+    }
+
+    private async Task<int> GenerateNextId()
+    {
+      var savings = await _categorySavingRepository.GetAllAsync();
+      var highestId = savings.Max(x => x.Id);
+      return highestId + 1;
     }
   }
 }
