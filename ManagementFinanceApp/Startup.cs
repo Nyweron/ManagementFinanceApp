@@ -2,6 +2,7 @@ using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManagementFinanceApp.Data;
+using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -50,7 +51,8 @@ namespace ManagementFinanceApp
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
-      services.AddControllers();
+      services.AddControllers(options =>
+        options.Filters.Add(new HttpResponseExceptionFilter()));
       services.AddMemoryCache();
       services.AddResponseCaching();
 
