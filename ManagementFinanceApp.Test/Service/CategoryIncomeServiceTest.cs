@@ -25,7 +25,7 @@ namespace ManagementFinanceApp.Test.Service
     private Repository.Repository<Entities.CategoryIncome> queryDBInMemory;
     private async Task Seed(ManagementFinanceAppDbContext context)
     {
-      var entityCategoryIncomes = new []
+      var entityCategoryIncomesLists = new []
       {
         new Entities.CategoryIncome { Id = 1, Description = "x1" },
         new Entities.CategoryIncome { Id = 2, Description = "x2" },
@@ -35,7 +35,7 @@ namespace ManagementFinanceApp.Test.Service
         new Entities.CategoryIncome { Id = 6, Description = "x6" }
       };
 
-      await context.CategoryIncomes.AddRangeAsync(entityCategoryIncomes);
+      await context.CategoryIncomes.AddRangeAsync(entityCategoryIncomesLists);
       await context.SaveChangesAsync();
     }
 
@@ -178,46 +178,47 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task AddCategoryIncome_ShouldRunAddRangeAsyncOnlyOnce()
+    public async Task AddCategoryIncome_ShouldRunAddAsyncOnlyOnce()
     {
       // Arrange
-      mockMapper.Setup(x => x.Map<List<Entities.CategoryIncome>>(It.IsAny<List<Models.CategoryIncome>>()))
-        .Returns(It.IsAny<List<Entities.CategoryIncome>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()))
+      mockMapper.Setup(x => x.Map<Entities.CategoryIncome>(It.IsAny<Models.CategoryIncome>()))
+        .Returns(It.IsAny<Entities.CategoryIncome>());
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.CategoryIncome>()))
         .Returns(() => Task.Run(() => { })).Verifiable();
 
       var sut = new CategoryIncomeService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      await sut.AddCategoryIncome(categoryIncomeModelLists);
+      await sut.AddCategoryIncome(categoryIncomeModelObj);
 
       // Assert
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.CategoryIncome>()),
+        Times.Once, "AddAsync should run once");
     }
 
     [Test]
     public async Task AddCategoryIncome_ShouldBeAbleToAddCategoryIncome()
     {
       // Arrange
-      mockMapper.Setup(x => x.Map<List<Entities.CategoryIncome>>(It.IsAny<List<Models.CategoryIncome>>()))
-        .Returns(It.IsAny<List<Entities.CategoryIncome>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()))
+      mockMapper.Setup(x => x.Map<Entities.CategoryIncome>(It.IsAny<Models.CategoryIncome>()))
+        .Returns(It.IsAny<Entities.CategoryIncome>());
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.CategoryIncome>()))
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
+      
 
       var sut = new CategoryIncomeService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelLists);
+      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelObj);
 
       // Assert
       Assert.IsTrue(resultOfAddCategoryIncome, "Add and Save should return true.");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.CategoryIncome>()),
+        Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -226,22 +227,19 @@ namespace ManagementFinanceApp.Test.Service
     public async Task CategoryIncomeAdd_TryingAddNewObjectToDB_ShouldBeAbleReturnIdEquals8()
     {
       // Arrange
-      mockMapper.Setup(x => x.Map<List<Entities.CategoryIncome>>(It.IsAny<List<Models.CategoryIncome>>()))
-        .Returns(It.IsAny<List<Entities.CategoryIncome>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()))
+      mockMapper.Setup(x => x.Map<Entities.CategoryIncome>(It.IsAny<Models.CategoryIncome>()))
+        .Returns(It.IsAny<Entities.CategoryIncome>());
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.CategoryIncome>()))
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
-      categoryIncomeEntityLists = new List<Entities.CategoryIncome>
-      {
-        new Entities.CategoryIncome { Id = 8, Description = "New category Expense was added" }
-      };
+      categoryIncomeModelObj = new Models.CategoryIncome() { Id = 8, Description = "New category Income was added" };
       var sut = new CategoryIncomeService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelLists);
+      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelObj);
 
-      await context.CategoryIncomes.AddRangeAsync(categoryIncomeEntityLists);
+      await context.CategoryIncomes.AddAsync(categoryIncomeEntityObj);
       await context.SaveChangesAsync();
       var isAddedNewObject = queryDBInMemory.GetAsync(8);
 
@@ -249,8 +247,8 @@ namespace ManagementFinanceApp.Test.Service
       Assert.AreEqual(8, isAddedNewObject.Result.Id, "New object was not added, require id=8");
       Assert.IsTrue(resultOfAddCategoryIncome, "Add and Save should return true. Object i added to Database");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.CategoryIncome>()),
+        Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -259,9 +257,9 @@ namespace ManagementFinanceApp.Test.Service
     public async Task AddCategoryIncome_ShouldNotBeAbleToAddCategoryIncome()
     {
       // Arrange
-      mockMapper.Setup(x => x.Map<List<Entities.CategoryIncome>>(It.IsAny<List<Models.CategoryIncome>>()))
-        .Returns(It.IsAny<List<Entities.CategoryIncome>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()))
+      mockMapper.Setup(x => x.Map<Entities.CategoryIncome>(It.IsAny<Models.CategoryIncome>()))
+        .Returns(It.IsAny<Entities.CategoryIncome>());
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.CategoryIncome>()))
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
@@ -269,12 +267,12 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryIncomeService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelLists);
+      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelObj);
 
       // Assert
       Assert.IsFalse(resultOfAddCategoryIncome, "Save should return false");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()), Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.CategoryIncome>()), Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -283,9 +281,9 @@ namespace ManagementFinanceApp.Test.Service
     public async Task AddCategoryIncome_ShouldNotBeAbleToAddRandeAsync()
     {
       // Arrange
-      mockMapper.Setup(x => x.Map<List<Entities.CategoryIncome>>(It.IsAny<List<Models.CategoryIncome>>()))
-        .Returns(It.IsAny<List<Entities.CategoryIncome>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()))
+      mockMapper.Setup(x => x.Map<Entities.CategoryIncome>(It.IsAny<Models.CategoryIncome>()))
+        .Returns(It.IsAny<Entities.CategoryIncome>());
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.CategoryIncome>()))
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
@@ -293,13 +291,13 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryIncomeService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelLists);
+      var resultOfAddCategoryIncome = await sut.AddCategoryIncome(categoryIncomeModelObj);
 
       // Assert
       Assert.IsFalse(resultOfAddCategoryIncome, "Add and Save should return false");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.CategoryIncome>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.CategoryIncome>()),
+        Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }

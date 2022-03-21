@@ -29,7 +29,7 @@ namespace ManagementFinanceApp.Test.Service
     private Repository.Repository<Entities.Expense> queryDBInMemory;
     private async Task Seed(ManagementFinanceAppDbContext context)
     {
-      var entityExpenses = new []
+      var entityExpenses = new[]
       {
         new Entities.Expense { Id = 1, Comment = "x1" },
         new Entities.Expense { Id = 2, Comment = "x2" },
@@ -184,12 +184,12 @@ namespace ManagementFinanceApp.Test.Service
     }
 
     [Test]
-    public async Task AddExpense_ShouldRunAddRangeAsyncOnlyOnce()
+    public async Task AddExpense_ShouldRunAddAsyncOnlyOnce()
     {
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.Expense>>(It.IsAny<List<Models.Expense>>()))
         .Returns(It.IsAny<List<Entities.Expense>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()))
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.Expense>()))
         .Returns(() => Task.Run(() => { })).Verifiable();
 
       var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object, mockExpenseAdapter.Object);
@@ -199,8 +199,8 @@ namespace ManagementFinanceApp.Test.Service
 
       // Assert
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.Expense>()),
+        Times.Once, "AddAsync should run once");
     }
 
     [Test]
@@ -209,7 +209,7 @@ namespace ManagementFinanceApp.Test.Service
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.Expense>>(It.IsAny<List<Models.Expense>>()))
         .Returns(It.IsAny<List<Entities.Expense>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()))
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.Expense>()))
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
@@ -222,8 +222,8 @@ namespace ManagementFinanceApp.Test.Service
       // Assert
       Assert.IsTrue(resultOfAddExpense, "Add and Save should return true.");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.Expense>()),
+        Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -234,20 +234,17 @@ namespace ManagementFinanceApp.Test.Service
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.Expense>>(It.IsAny<List<Models.Expense>>()))
         .Returns(It.IsAny<List<Entities.Expense>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()))
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.Expense>()))
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
-      expenseEntityLists = new List<Entities.Expense>
-      {
-        new Entities.Expense { Id = 8, Comment = "New category Expense was added" }
-      };
+      expenseEntityObj = new Entities.Expense { Id = 8, Comment = "New category Expense was added" };
       var sut = new ExpenseService(mockRepo.Object, mockMapper.Object, mockLogger.Object, mockExpenseAdapter.Object);
 
       // Act
       var resultOfAddExpense = await sut.AddExpense(expenseModelObj);
 
-      await context.Expenses.AddRangeAsync(expenseEntityLists);
+      await context.Expenses.AddAsync(expenseEntityObj);
       await context.SaveChangesAsync();
       var isAddedNewObject = queryDBInMemory.GetAsync(8);
 
@@ -255,8 +252,8 @@ namespace ManagementFinanceApp.Test.Service
       Assert.AreEqual(8, isAddedNewObject.Result.Id, "New object was not added, require id=8");
       Assert.IsTrue(resultOfAddExpense, "Add and Save should return true. Object i added to Database");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.Expense>()),
+        Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
@@ -267,7 +264,7 @@ namespace ManagementFinanceApp.Test.Service
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.Expense>>(It.IsAny<List<Models.Expense>>()))
         .Returns(It.IsAny<List<Entities.Expense>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()))
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.Expense>()))
         .Returns(() => Task.Run(() => { return true; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
@@ -280,18 +277,18 @@ namespace ManagementFinanceApp.Test.Service
       // Assert
       Assert.IsFalse(resultOfAddExpense, "Save should return false");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()), Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.Expense>()), Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }
 
     [Test]
-    public async Task AddExpense_ShouldNotBeAbleToAddRandeAsync()
+    public async Task AddExpense_ShouldNotBeAbleToAddAsync()
     {
       // Arrange
       mockMapper.Setup(x => x.Map<List<Entities.Expense>>(It.IsAny<List<Models.Expense>>()))
         .Returns(It.IsAny<List<Entities.Expense>>());
-      mockRepo.Setup(y => y.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()))
+      mockRepo.Setup(y => y.AddAsync(It.IsAny<Entities.Expense>()))
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
       mockRepo.Setup(y => y.SaveAsync())
         .Returns(() => Task.Run(() => { return false; })).Verifiable();
@@ -304,8 +301,8 @@ namespace ManagementFinanceApp.Test.Service
       // Assert
       Assert.IsFalse(resultOfAddExpense, "Add and Save should return false");
       mockRepo.Verify(
-        x => x.AddRangeAsync(It.IsAny<IEnumerable<Entities.Expense>>()),
-        Times.Once, "AddRangeAsync should run once");
+        x => x.AddAsync(It.IsAny<Entities.Expense>()),
+        Times.Once, "AddAsync should run once");
       mockRepo.Verify(
         x => x.SaveAsync(), Times.Once, "SaveAsync should run once");
     }

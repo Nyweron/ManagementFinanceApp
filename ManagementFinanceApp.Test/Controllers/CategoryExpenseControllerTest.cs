@@ -147,7 +147,7 @@ namespace ManagementFinanceApp.Test.Controllers
       var controller = new CategoryExpenseController(null,null);
 
       // Act
-      var badRequestResult = await controller.Post(categoryExpenseList) as BadRequestResult;
+      var badRequestResult = await controller.Post(categoryExpenseModelObj) as BadRequestResult;
 
       // Assert
       Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
@@ -157,11 +157,11 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldCreateCategoryExpense()
     {
       // Arrange
-      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(true));
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<Models.CategoryExpense>())).Returns(Task.FromResult(true));
       var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
-      var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
+      var objectResult = await controller.Post(categoryExpenseModelObj) as ObjectResult;
 
       // Assert
       Assert.AreEqual(201, objectResult.StatusCode, "CategoryExpense Created does not works. Method post");
@@ -171,11 +171,11 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryExpenses_ShouldNotCreateCategoryExpense()
     {
       // Arrange
-      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<List<Models.CategoryExpense>>())).Returns(Task.FromResult(false));
+      mockCategoryExpenseService.Setup(repo => repo.AddCategoryExpense(It.IsAny<Models.CategoryExpense>())).Returns(Task.FromResult(false));
       var controller = new CategoryExpenseController(mockCategoryExpenseService.Object, mockiCategoryExpenseAdapter.Object);
 
       // Act
-      var objectResult = await controller.Post(categoryExpenseListObj) as ObjectResult;
+      var objectResult = await controller.Post(categoryExpenseModelObj) as ObjectResult;
 
       // Assert
       Assert.AreEqual(500, objectResult.StatusCode, "CategoryExpense StatusCode500 does not works. Method post");

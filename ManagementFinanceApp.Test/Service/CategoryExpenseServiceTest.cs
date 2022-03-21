@@ -189,7 +189,7 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      await sut.AddCategoryExpense(categoryExpenseModelLists);
+      await sut.AddCategoryExpense(categoryExpenseModelObj);
 
       // Assert
       mockRepo.Verify(
@@ -211,7 +211,7 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelObj);
 
       // Assert
       Assert.IsTrue(resultOfAddCategoryExpense, "Add and Save should return true.");
@@ -239,7 +239,7 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelObj);
 
       await context.CategoryExpenses.AddRangeAsync(categoryExpenseEntityLists);
       await context.SaveChangesAsync();
@@ -269,7 +269,7 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelObj);
 
       // Assert
       Assert.IsFalse(resultOfAddCategoryExpense, "Save should return false");
@@ -293,7 +293,7 @@ namespace ManagementFinanceApp.Test.Service
       var sut = new CategoryExpenseService(mockRepo.Object, mockMapper.Object);
 
       // Act
-      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelLists);
+      var resultOfAddCategoryExpense = await sut.AddCategoryExpense(categoryExpenseModelObj);
 
       // Assert
       Assert.IsFalse(resultOfAddCategoryExpense, "Add and Save should return false");
