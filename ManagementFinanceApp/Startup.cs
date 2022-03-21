@@ -1,11 +1,14 @@
 using System;
+using System.Net.Mime;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Exceptions;
+using ManagementFinanceApp.Middleware;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -53,6 +56,25 @@ namespace ManagementFinanceApp
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));
+
+      services.AddControllers(options =>
+      {
+        options.Filters.Add(new HttpResponseExceptionFilter());
+      })
+        .ConfigureApiBehaviorOptions(options =>
+        {
+          options.InvalidModelStateResponseFactory = context =>
+          {
+            var result = new BadRequestObjectResult(context.ModelState);
+
+            // TODO: add `using System.Net.Mime;` to resolve MediaTypeNames
+            result.ContentTypes.Add(MediaTypeNames.Application.Json);
+            result.ContentTypes.Add(MediaTypeNames.Application.Xml);
+
+            return result;
+          };
+        });
+
       services.AddMemoryCache();
       services.AddResponseCaching();
 
@@ -103,6 +125,8 @@ namespace ManagementFinanceApp
 
       app.UseRouting();
       app.UseCors("CorsPolicy");
+
+      app.UseMyMiddleware();
 
       app.UseEndpoints(endpoints =>
       {
