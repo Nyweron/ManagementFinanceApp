@@ -61,7 +61,7 @@ namespace ManagementFinanceApp.Controllers
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] Models.CategorySaving categorySaving)
     {
-      if (categorySaving==null)
+      if (categorySaving == null)
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto categorySaving).");
         return BadRequest();

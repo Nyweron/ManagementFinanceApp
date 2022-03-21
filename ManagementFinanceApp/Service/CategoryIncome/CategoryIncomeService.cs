@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Entities;
@@ -19,10 +20,12 @@ namespace ManagementFinanceApp.Service.CategoryIncome
       _mapper = mapper;
     }
 
-    public async Task<bool> AddCategoryIncome(List<Models.CategoryIncome> categoryIncome)
+    public async Task<bool> AddCategoryIncome(Models.CategoryIncome categoryIncome)
     {
-      var categoryIncomeEntity = _mapper.Map<List<Entities.CategoryIncome>>(categoryIncome);
-      await _categoryIncomeRepository.AddRangeAsync(categoryIncomeEntity);
+      categoryIncome.Id = GenerateNextId().Result;
+
+      var categoryIncomeEntity = _mapper.Map<Entities.CategoryIncome>(categoryIncome);
+      await _categoryIncomeRepository.AddAsync(categoryIncomeEntity);
 
       if (!await _categoryIncomeRepository.SaveAsync())
       {
@@ -72,6 +75,13 @@ namespace ManagementFinanceApp.Service.CategoryIncome
     public async Task<bool> RemoveAsync(Entities.CategoryIncome categoryIncome)
     {
       return await _categoryIncomeRepository.RemoveAsync(categoryIncome);
+    }
+
+    private async Task<int> GenerateNextId()
+    {
+      var incomes = await _categoryIncomeRepository.GetAllAsync();
+      var highestId = incomes.Max(x => x.Id);
+      return highestId + 1;
     }
 
   }

@@ -60,20 +60,7 @@ namespace ManagementFinanceApp
       services.AddControllers(options =>
       {
         options.Filters.Add(new HttpResponseExceptionFilter());
-      })
-        .ConfigureApiBehaviorOptions(options =>
-        {
-          options.InvalidModelStateResponseFactory = context =>
-          {
-            var result = new BadRequestObjectResult(context.ModelState);
-
-            // TODO: add `using System.Net.Mime;` to resolve MediaTypeNames
-            result.ContentTypes.Add(MediaTypeNames.Application.Json);
-            result.ContentTypes.Add(MediaTypeNames.Application.Xml);
-
-            return result;
-          };
-        });
+      });
 
       services.AddMemoryCache();
       services.AddResponseCaching();

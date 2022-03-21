@@ -143,7 +143,7 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryIncomes_ShouldReturnBadRequestObjectIsNull()
     {
       // Arrange
-      var categoryIncomeList = new List<Models.CategoryIncome>();
+      var categoryIncomeList = new Models.CategoryIncome();
       var controller = new CategoryIncomeController(null, null);
 
       // Act
@@ -157,11 +157,11 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryIncomes_ShouldCreateCategoryIncome()
     {
       // Arrange
-      mockCategoryIncomeService.Setup(repo => repo.AddCategoryIncome(It.IsAny<List<Models.CategoryIncome>>())).Returns(Task.FromResult(true));
+      mockCategoryIncomeService.Setup(repo => repo.AddCategoryIncome(It.IsAny<Models.CategoryIncome>())).Returns(Task.FromResult(true));
       var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
-      var objectResult = await controller.Post(categoryIncomeListObj) as ObjectResult;
+      var objectResult = await controller.Post(categoryIncomeModelObj) as ObjectResult;
 
       // Assert
       Assert.AreEqual(201, objectResult.StatusCode, "CategoryIncome Created does not works. Method post");
@@ -171,11 +171,11 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryIncomes_ShouldNotCreateCategoryIncome()
     {
       // Arrange
-      mockCategoryIncomeService.Setup(repo => repo.AddCategoryIncome(It.IsAny<List<Models.CategoryIncome>>())).Returns(Task.FromResult(false));
+      mockCategoryIncomeService.Setup(repo => repo.AddCategoryIncome(It.IsAny<Models.CategoryIncome>())).Returns(Task.FromResult(false));
       var controller = new CategoryIncomeController(mockCategoryIncomeService.Object, mockCategoryIncomeAdapter.Object);
 
       // Act
-      var objectResult = await controller.Post(categoryIncomeListObj) as ObjectResult;
+      var objectResult = await controller.Post(categoryIncomeModelObj) as ObjectResult;
 
       // Assert
       Assert.AreEqual(500, objectResult.StatusCode, "CategoryIncome StatusCode500 does not works. Method post");

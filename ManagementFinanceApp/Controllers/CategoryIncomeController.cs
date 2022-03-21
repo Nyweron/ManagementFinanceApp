@@ -47,9 +47,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] List<Models.CategoryIncome> categoryIncome)
+    public async Task<IActionResult> Post([FromBody] Models.CategoryIncome categoryIncome)
     {
-      if (!categoryIncome.Any())
+      if (categoryIncome == null)
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto categoryIncome).");
         return BadRequest();
