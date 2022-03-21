@@ -46,7 +46,7 @@ namespace ManagementFinanceApp.Controllers
       return Ok(categoryExpenseViewList);
     }
 
-    
+
     [HttpGet("{categoryExpenseId}")]
     public async Task<IActionResult> Get(int categoryExpenseId)
     {
@@ -56,9 +56,9 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] List<Models.CategoryExpense> categoryExpense)
+    public async Task<IActionResult> Post([FromBody] Models.CategoryExpense categoryExpense)
     {
-      if (!categoryExpense.Any())
+      if (categoryExpense == null)
       {
         //_logger.LogInformation($"User is empty when accessing to UserController/Post(UserDto categoryExpense).");
         return BadRequest();

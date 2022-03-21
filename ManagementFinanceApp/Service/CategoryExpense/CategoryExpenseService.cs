@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using ManagementFinanceApp.Models;
@@ -18,10 +19,12 @@ namespace ManagementFinanceApp.Service.CategoryExpense
       _mapper = mapper;
     }
 
-    public async Task<bool> AddCategoryExpense(List<Models.CategoryExpense> categoryExpense)
+    public async Task<bool> AddCategoryExpense(Models.CategoryExpense categoryExpense)
     {
-      var categoryExpenseEntity = _mapper.Map<List<Entities.CategoryExpense>>(categoryExpense);
-      await _categoryExpenseRepository.AddRangeAsync(categoryExpenseEntity);
+      categoryExpense.Id = GenerateNextId().Result;
+
+      var categoryExpenseEntity = _mapper.Map<Entities.CategoryExpense>(categoryExpense);
+      await _categoryExpenseRepository.AddAsync(categoryExpenseEntity);
 
       if (!await _categoryExpenseRepository.SaveAsync())
       {
@@ -71,6 +74,13 @@ namespace ManagementFinanceApp.Service.CategoryExpense
     public async Task<bool> RemoveAsync(Entities.CategoryExpense categoryExpense)
     {
       return await _categoryExpenseRepository.RemoveAsync(categoryExpense);
+    }
+
+    private async Task<int> GenerateNextId()
+    {
+      var expenses = await _categoryExpenseRepository.GetAllAsync();
+      var highestId = expenses.Max(x => x.Id);
+      return highestId + 1;
     }
 
   }
