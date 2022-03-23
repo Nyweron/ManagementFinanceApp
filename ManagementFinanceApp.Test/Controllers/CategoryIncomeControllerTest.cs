@@ -143,11 +143,10 @@ namespace ManagementFinanceApp.Test.Controllers
     public async Task PostCategoryIncomes_ShouldReturnBadRequestObjectIsNull()
     {
       // Arrange
-      var categoryIncomeList = new Models.CategoryIncome();
       var controller = new CategoryIncomeController(null, null);
 
       // Act
-      var badRequestResult = await controller.Post(categoryIncomeList) as BadRequestResult;
+      var badRequestResult = await controller.Post(null) as BadRequestResult;
 
       // Assert
       Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");

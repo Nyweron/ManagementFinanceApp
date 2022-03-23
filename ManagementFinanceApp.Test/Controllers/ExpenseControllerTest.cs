@@ -24,7 +24,7 @@ namespace ManagementFinanceApp.Test.Controllers
     private Mock<ILogger> mockLogger;
     private int expectedIdOfExpense;
     private List<Models.Expense> expenseListObj;
-    
+
 
     private IEnumerable<Entities.Expense> GetExpensesList()
     {
@@ -33,6 +33,17 @@ namespace ManagementFinanceApp.Test.Controllers
       expenseListObj.Add(new Entities.Expense { Id = 2, Comment = "Expense2" });
       expenseListObj.Add(new Entities.Expense { Id = 3, Comment = "Expense3" });
       expenseListObj.Add(new Entities.Expense { Id = 4, Comment = "Expense4" });
+
+      return expenseListObj;
+    }
+
+    private IEnumerable<Models.List.ExpenseList> GetModelExpensesList()
+    {
+      var expenseListObj = new List<Models.List.ExpenseList>();
+      expenseListObj.Add(new Models.List.ExpenseList { Id = 1, Comment = "Expense1" });
+      expenseListObj.Add(new Models.List.ExpenseList { Id = 2, Comment = "Expense2" });
+      expenseListObj.Add(new Models.List.ExpenseList { Id = 3, Comment = "Expense3" });
+      expenseListObj.Add(new Models.List.ExpenseList { Id = 4, Comment = "Expense4" });
 
       return expenseListObj;
     }
@@ -54,15 +65,15 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       var expectedNumberOfExpensesList = 4;
-      var expensesList = GetExpensesList();
+      var expensesList = GetModelExpensesList();
 
-      mockExpenseService.Setup(repo => repo.GetAllAsync()).Returns(Task.FromResult(expensesList));
+      mockExpenseService.Setup(repo => repo.GetAllAdaptAsync()).Returns(Task.FromResult(expensesList));
 
       var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
       var okObjectResult = await controller.GetAll() as OkObjectResult;
-      var result = okObjectResult.Value as List<Entities.Expense>;
+      var result = okObjectResult.Value as List<Models.List.ExpenseList>;
 
       // Assert
       Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
@@ -75,7 +86,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       var expenseTestIndex = 1;
-      var expenseTest = GetExpensesList().ToList() [expenseTestIndex];
+      var expenseTest = GetExpensesList().ToList()[expenseTestIndex];
 
       mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense))
         .Returns(Task.FromResult(expenseTest));
@@ -96,7 +107,7 @@ namespace ManagementFinanceApp.Test.Controllers
     {
       // Arrange
       var expenseTestIndex = 1;
-      var expenseTest = GetExpensesList().ToList() [expenseTestIndex];
+      var expenseTest = GetExpensesList().ToList()[expenseTestIndex];
 
       mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
       mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
@@ -161,6 +172,9 @@ namespace ManagementFinanceApp.Test.Controllers
       // Arrange
       mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
         .Returns(Task.FromResult(true));
+      mockExpenseService.Setup(repo => repo.GetAllAsync())
+      .Returns(Task.FromResult(GetExpensesList()));
+
       var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
       // Act
