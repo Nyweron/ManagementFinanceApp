@@ -2,21 +2,25 @@
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
+#nullable disable
+
 namespace ManagementFinanceApp.Migrations
 {
-    public partial class Init : Migration
+    /// <inheritdoc />
+    public partial class init : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
                 name: "CategoryGroups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    CategoryType = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CategoryType = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -27,9 +31,9 @@ namespace ManagementFinanceApp.Migrations
                 name: "Frequencies",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Description = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,23 +44,23 @@ namespace ManagementFinanceApp.Migrations
                 name: "InvestmentSchedules",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Bank = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    PeriodDeposit = table.Column<int>(nullable: false),
-                    UnitDeposit = table.Column<int>(nullable: false),
-                    InterestRateInAllPerdiodInvestment = table.Column<bool>(nullable: false),
-                    InterestRateOnScaleOfYear = table.Column<double>(nullable: false),
-                    Capitalization = table.Column<int>(nullable: false),
-                    MinAmount = table.Column<double>(nullable: false),
-                    MaxAmount = table.Column<double>(nullable: false),
-                    RequiredPersonalAccountInCurrentBank = table.Column<bool>(nullable: false),
-                    PossibilityEarlyTerminationInvestment = table.Column<bool>(nullable: false),
-                    ConditionEarlyTerminationInvestment = table.Column<string>(nullable: true),
-                    RestInformation = table.Column<string>(nullable: true),
-                    AddedScheduleFromUser = table.Column<bool>(nullable: false),
-                    AddedDate = table.Column<DateTime>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Bank = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PeriodDeposit = table.Column<int>(type: "integer", nullable: false),
+                    UnitDeposit = table.Column<int>(type: "integer", nullable: false),
+                    InterestRateInAllPerdiodInvestment = table.Column<bool>(type: "boolean", nullable: false),
+                    InterestRateOnScaleOfYear = table.Column<double>(type: "double precision", nullable: false),
+                    Capitalization = table.Column<int>(type: "integer", nullable: false),
+                    MinAmount = table.Column<double>(type: "double precision", nullable: false),
+                    MaxAmount = table.Column<double>(type: "double precision", nullable: false),
+                    RequiredPersonalAccountInCurrentBank = table.Column<bool>(type: "boolean", nullable: false),
+                    PossibilityEarlyTerminationInvestment = table.Column<bool>(type: "boolean", nullable: false),
+                    ConditionEarlyTerminationInvestment = table.Column<string>(type: "text", nullable: true),
+                    RestInformation = table.Column<string>(type: "text", nullable: true),
+                    AddedScheduleFromUser = table.Column<bool>(type: "boolean", nullable: false),
+                    AddedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,16 +71,16 @@ namespace ManagementFinanceApp.Migrations
                 name: "Plans",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    IsDone = table.Column<bool>(nullable: false),
-                    IsAddedToQueue = table.Column<bool>(nullable: false),
-                    PlanType = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Comment = table.Column<string>(nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    IsDone = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAddedToQueue = table.Column<bool>(type: "boolean", nullable: false),
+                    PlanType = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -87,10 +91,10 @@ namespace ManagementFinanceApp.Migrations
                 name: "SavingStates",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    State = table.Column<double>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    State = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -101,16 +105,16 @@ namespace ManagementFinanceApp.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    FirstName = table.Column<string>(maxLength: 30, nullable: false),
-                    LastName = table.Column<string>(maxLength: 40, nullable: true),
-                    Nick = table.Column<string>(maxLength: 20, nullable: true),
-                    Address = table.Column<string>(nullable: true),
-                    Phone = table.Column<string>(nullable: true),
-                    Weight = table.Column<int>(nullable: false),
-                    Email = table.Column<string>(maxLength: 50, nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
+                    Nick = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Address = table.Column<string>(type: "text", nullable: true),
+                    Phone = table.Column<string>(type: "text", nullable: true),
+                    Weight = table.Column<int>(type: "integer", nullable: false),
+                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -121,12 +125,12 @@ namespace ManagementFinanceApp.Migrations
                 name: "CategoryExpenses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Description = table.Column<string>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Weight = table.Column<int>(nullable: false),
-                    CategoryGroupId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Weight = table.Column<int>(type: "integer", nullable: false),
+                    CategoryGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -143,12 +147,12 @@ namespace ManagementFinanceApp.Migrations
                 name: "CategoryIncomes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Description = table.Column<string>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    Weight = table.Column<int>(nullable: false),
-                    CategoryGroupId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Weight = table.Column<int>(type: "integer", nullable: false),
+                    CategoryGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -165,14 +169,14 @@ namespace ManagementFinanceApp.Migrations
                 name: "CategorySavings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Description = table.Column<string>(nullable: false),
-                    IsDeleted = table.Column<bool>(nullable: false),
-                    CanPay = table.Column<bool>(nullable: false),
-                    Debt = table.Column<bool>(nullable: false),
-                    Weight = table.Column<int>(nullable: false),
-                    CategoryGroupId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    CanPay = table.Column<bool>(type: "boolean", nullable: false),
+                    Debt = table.Column<bool>(type: "boolean", nullable: false),
+                    Weight = table.Column<int>(type: "integer", nullable: false),
+                    CategoryGroupId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,15 +193,15 @@ namespace ManagementFinanceApp.Migrations
                 name: "Investments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    StartDate = table.Column<DateTime>(nullable: false),
-                    PeriodInvestment = table.Column<int>(nullable: false),
-                    UnitInvestment = table.Column<int>(nullable: false),
-                    IsActive = table.Column<int>(nullable: false),
-                    InvestmentScheduleId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    PeriodInvestment = table.Column<int>(type: "integer", nullable: false),
+                    UnitInvestment = table.Column<int>(type: "integer", nullable: false),
+                    IsActive = table.Column<int>(type: "integer", nullable: false),
+                    InvestmentScheduleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,13 +218,13 @@ namespace ManagementFinanceApp.Migrations
                 name: "Restrictions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    MaxMonth = table.Column<double>(nullable: false),
-                    MaxYear = table.Column<double>(nullable: false),
-                    RestrictionYear = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    CategoryExpenseId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    MaxMonth = table.Column<double>(type: "double precision", nullable: false),
+                    MaxYear = table.Column<double>(type: "double precision", nullable: false),
+                    RestrictionYear = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CategoryExpenseId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -237,16 +241,16 @@ namespace ManagementFinanceApp.Migrations
                 name: "Expenses",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    HowMuch = table.Column<double>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    Attachment = table.Column<string>(nullable: true),
-                    StandingOrder = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    CategorySavingId = table.Column<int>(nullable: false),
-                    CategoryExpenseId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    Attachment = table.Column<string>(type: "text", nullable: true),
+                    StandingOrder = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryExpenseId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -275,16 +279,16 @@ namespace ManagementFinanceApp.Migrations
                 name: "Incomes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    HowMuch = table.Column<double>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    StandingOrder = table.Column<bool>(nullable: false),
-                    Attachment = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
-                    CategoryIncomeId = table.Column<int>(nullable: false),
-                    CategorySavingId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    StandingOrder = table.Column<bool>(type: "boolean", nullable: false),
+                    Attachment = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryIncomeId = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -313,13 +317,13 @@ namespace ManagementFinanceApp.Migrations
                 name: "Savings",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    HowMuch = table.Column<double>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    SavingType = table.Column<int>(nullable: false),
-                    CategorySavingId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    SavingType = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -336,14 +340,14 @@ namespace ManagementFinanceApp.Migrations
                 name: "TransferHistories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    HowMuch = table.Column<double>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    CategorySavingId = table.Column<int>(nullable: false),
-                    CategorySavingIdFrom = table.Column<int>(nullable: false),
-                    CategorySavingIdTo = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    CategorySavingId = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingIdFrom = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingIdTo = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -360,17 +364,17 @@ namespace ManagementFinanceApp.Migrations
                 name: "StandingOrders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    Name = table.Column<string>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    Frequency = table.Column<int>(nullable: false),
-                    TypeStandingOrder = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    IsActive = table.Column<bool>(nullable: false),
-                    CategoryId = table.Column<int>(nullable: false),
-                    SavingId = table.Column<int>(nullable: false),
-                    FrequencyId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    Frequency = table.Column<int>(type: "integer", nullable: false),
+                    TypeStandingOrder = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    SavingId = table.Column<int>(type: "integer", nullable: false),
+                    FrequencyId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -393,16 +397,16 @@ namespace ManagementFinanceApp.Migrations
                 name: "StandingOrderHistories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
-                    CategoryId = table.Column<int>(nullable: false),
-                    Amount = table.Column<double>(nullable: false),
-                    TypeStandingOrder = table.Column<int>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    SavingId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    StandingOrderId = table.Column<int>(nullable: false),
-                    FrequencyId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    Amount = table.Column<double>(type: "double precision", nullable: false),
+                    TypeStandingOrder = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    SavingId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    StandingOrderId = table.Column<int>(type: "integer", nullable: false),
+                    FrequencyId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -529,6 +533,7 @@ namespace ManagementFinanceApp.Migrations
                 column: "CategorySavingId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

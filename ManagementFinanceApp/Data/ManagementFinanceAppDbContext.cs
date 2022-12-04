@@ -28,6 +28,12 @@ namespace ManagementFinanceApp.Data
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.EnableSensitiveDataLogging();
+    } 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      modelBuilder.Entity<Expense>()
+        .Property(proper => proper.Id)
+        .HasDefaultValue();
     }
   }
 }
