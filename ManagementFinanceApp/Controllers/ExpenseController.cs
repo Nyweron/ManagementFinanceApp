@@ -54,64 +54,69 @@ namespace ManagementFinanceApp.Controllers
 
       if (isCreated)
       {
-        return Created("", null);
+         return Created("", null);
       }
       else
       {
+
+        dynamic city = new System.Dynamic.ExpandoObject();
+        city.Text = "Problem with backend api";
+        city.TextTwo = "Bug sTatsu 0992";
+
         // _logger.LogError($"Add User is not valid. Error in SaveAsync(). When accessing to UserController/Post");
-        return StatusCode(500, "A problem happend while handling your request.");
+        return StatusCode(500, city);
       }
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-
-      var expense = await _expenseService.GetAsync(id);
-
-      if (expense == null)
-      {
-        return NotFound();
-      }
-
-      if (!await _expenseService.RemoveAsync(expense))
-      {
-        //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
-        return StatusCode(500, "A problem happend while handling your request.");
-      }
-      //TODO: Implement Realistic Implementation
-      return NoContent();
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Edit(int id, [FromBody] Models.Expense expenseRequest)
-    {
-      try
-      {
-        if (expenseRequest == null)
-        {
-          return BadRequest("Object cannot be null");
-        }
-
-        // Update entity in repository
-        var isUpdated = await _expenseService.EditExpense(expenseRequest, id);
-        if (isUpdated)
-        {
-          return NoContent();
-        }
-        else
-        {
-          _logger.LogError($"Edit expense a problem happend. Error in updateExpense. When accessing to ExpenseController/Edit");
-          return StatusCode(500, "A problem happend while handling your request.");
-        }
-      }
-      catch (Exception ex)
-      {
-        // Logger?.LogCritical("There was an error on '{0}' invocation: {1}", nameof(PutStockItemAsync), ex);
-      }
-
-      return NoContent();
-    }
-
   }
+
+  [HttpDelete("{id}")]
+  public async Task<IActionResult> Delete(int id)
+  {
+
+    var expense = await _expenseService.GetAsync(id);
+
+    if (expense == null)
+    {
+      return NotFound();
+    }
+
+    if (!await _expenseService.RemoveAsync(expense))
+    {
+      //_logger.LogError($"Delete User is not valid. Error in SaveAsync(). When accessing to UserController/Delete");
+      return StatusCode(500, "A problem happend while handling your request.");
+    }
+    //TODO: Implement Realistic Implementation
+    return NoContent();
+  }
+
+  [HttpPut("{id}")]
+  public async Task<IActionResult> Edit(int id, [FromBody] Models.Expense expenseRequest)
+  {
+    try
+    {
+      if (expenseRequest == null)
+      {
+        return BadRequest("Object cannot be null");
+      }
+
+      // Update entity in repository
+      var isUpdated = await _expenseService.EditExpense(expenseRequest, id);
+      if (isUpdated)
+      {
+        return NoContent();
+      }
+      else
+      {
+        _logger.LogError($"Edit expense a problem happend. Error in updateExpense. When accessing to ExpenseController/Edit");
+        return StatusCode(500, "A problem happend while handling your request.");
+      }
+    }
+    catch (Exception ex)
+    {
+      // Logger?.LogCritical("There was an error on '{0}' invocation: {1}", nameof(PutStockItemAsync), ex);
+    }
+
+    return NoContent();
+  }
+
+}
 }
