@@ -19,6 +19,7 @@ namespace ManagementFinanceApp.Models
     [Required]
     [EmailAddress(ErrorMessage = "Bad email")]
     public string Email { get; set; }
-
+    public int RoleId { get; set; }
+    public string PasswordHash { get; set; }
   }
 }
