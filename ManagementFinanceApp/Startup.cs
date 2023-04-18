@@ -1,14 +1,14 @@
 using System;
-using System.Net.Mime;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Middleware;
+using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -57,6 +57,7 @@ namespace ManagementFinanceApp
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));
 
+      services.AddScoped<IPasswordHasher<RegisterUserDto>, PasswordHasher<RegisterUserDto>>();
 
       services.AddMemoryCache();
       services.AddResponseCaching();
