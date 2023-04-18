@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ManagementFinanceApp.Migrations
 {
     [DbContext(typeof(ManagementFinanceAppDbContext))]
-    [Migration("20221204171317_init")]
+    [Migration("20230418161857_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace ManagementFinanceApp.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.0")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -142,9 +142,8 @@ namespace ManagementFinanceApp.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                        .HasColumnType("integer")
+                        .HasDefaultValue(1);
 
                     b.Property<string>("Attachment")
                         .HasColumnType("text");
@@ -405,6 +404,23 @@ namespace ManagementFinanceApp.Migrations
                     b.ToTable("Restrictions");
                 });
 
+            modelBuilder.Entity("ManagementFinanceApp.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("ManagementFinanceApp.Entities.Saving", b =>
                 {
                     b.Property<int>("Id")
@@ -609,48 +625,56 @@ namespace ManagementFinanceApp.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
                     b.Property<string>("Phone")
                         .HasColumnType("text");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("Weight")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryExpense", b =>
                 {
-                    b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroup")
+                    b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroups")
                         .WithMany("CategoryExpense")
                         .HasForeignKey("CategoryGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CategoryGroup");
+                    b.Navigation("CategoryGroups");
                 });
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryIncome", b =>
                 {
-                    b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroup")
+                    b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroups")
                         .WithMany("CategoryIncomes")
                         .HasForeignKey("CategoryGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CategoryGroup");
+                    b.Navigation("CategoryGroups");
                 });
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategorySaving", b =>
                 {
-                    b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroup")
+                    b.HasOne("ManagementFinanceApp.Entities.CategoryGroup", "CategoryGroups")
                         .WithMany("CategorySavings")
                         .HasForeignKey("CategoryGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CategoryGroup");
+                    b.Navigation("CategoryGroups");
                 });
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.Expense", b =>
@@ -803,6 +827,17 @@ namespace ManagementFinanceApp.Migrations
                         .IsRequired();
 
                     b.Navigation("CategorySaving");
+                });
+
+            modelBuilder.Entity("ManagementFinanceApp.Entities.User", b =>
+                {
+                    b.HasOne("ManagementFinanceApp.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("ManagementFinanceApp.Entities.CategoryGroup", b =>

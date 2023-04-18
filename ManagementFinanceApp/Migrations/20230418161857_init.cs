@@ -88,6 +88,19 @@ namespace ManagementFinanceApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SavingStates",
                 columns: table => new
                 {
@@ -99,26 +112,6 @@ namespace ManagementFinanceApp.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SavingStates", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
-                    Nick = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    Address = table.Column<string>(type: "text", nullable: true),
-                    Phone = table.Column<string>(type: "text", nullable: true),
-                    Weight = table.Column<int>(type: "integer", nullable: false),
-                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,6 +208,34 @@ namespace ManagementFinanceApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "character varying(30)", maxLength: 30, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: true),
+                    Nick = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    Address = table.Column<string>(type: "text", nullable: true),
+                    Phone = table.Column<string>(type: "text", nullable: true),
+                    Weight = table.Column<int>(type: "integer", nullable: false),
+                    Email = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Restrictions",
                 columns: table => new
                 {
@@ -238,11 +259,57 @@ namespace ManagementFinanceApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Expenses",
+                name: "Savings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    SavingType = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Savings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Savings_CategorySavings_CategorySavingId",
+                        column: x => x.CategorySavingId,
+                        principalTable: "CategorySavings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransferHistories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Comment = table.Column<string>(type: "text", nullable: true),
+                    CategorySavingId = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingIdFrom = table.Column<int>(type: "integer", nullable: false),
+                    CategorySavingIdTo = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransferHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransferHistories_CategorySavings_CategorySavingId",
+                        column: x => x.CategorySavingId,
+                        principalTable: "CategorySavings",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Expenses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false, defaultValue: 1),
                     HowMuch = table.Column<double>(type: "double precision", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Comment = table.Column<string>(type: "text", nullable: true),
@@ -309,53 +376,6 @@ namespace ManagementFinanceApp.Migrations
                         name: "FK_Incomes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Savings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Comment = table.Column<string>(type: "text", nullable: true),
-                    SavingType = table.Column<int>(type: "integer", nullable: false),
-                    CategorySavingId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Savings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Savings_CategorySavings_CategorySavingId",
-                        column: x => x.CategorySavingId,
-                        principalTable: "CategorySavings",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TransferHistories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    HowMuch = table.Column<double>(type: "double precision", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Comment = table.Column<string>(type: "text", nullable: true),
-                    CategorySavingId = table.Column<int>(type: "integer", nullable: false),
-                    CategorySavingIdFrom = table.Column<int>(type: "integer", nullable: false),
-                    CategorySavingIdTo = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransferHistories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TransferHistories_CategorySavings_CategorySavingId",
-                        column: x => x.CategorySavingId,
-                        principalTable: "CategorySavings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -531,6 +551,11 @@ namespace ManagementFinanceApp.Migrations
                 name: "IX_TransferHistories_CategorySavingId",
                 table: "TransferHistories",
                 column: "CategorySavingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_RoleId",
+                table: "Users",
+                column: "RoleId");
         }
 
         /// <inheritdoc />
@@ -580,6 +605,9 @@ namespace ManagementFinanceApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "Savings");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
 
             migrationBuilder.DropTable(
                 name: "CategorySavings");

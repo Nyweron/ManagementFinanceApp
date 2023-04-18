@@ -24,6 +24,7 @@ namespace ManagementFinanceApp.Data
     public DbSet<Plan> Plans { get; set; }
     public DbSet<Investment> Investments { get; set; }
     public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
+    public DbSet<Role> Roles{ get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -33,7 +34,15 @@ namespace ManagementFinanceApp.Data
     {
       modelBuilder.Entity<Expense>()
         .Property(proper => proper.Id)
-        .HasDefaultValue();
+        .HasDefaultValue(1);
+
+      modelBuilder.Entity<User>()
+        .Property(u => u.Email)
+        .IsRequired();
+
+      modelBuilder.Entity<Role>()
+        .Property(u=>u.Name)
+        .IsRequired();
     }
   }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -30,6 +29,11 @@ namespace ManagementFinanceApp.Entities
 
     [Required]
     public bool IsDeleted { get; set; } = false;
+
+    public string PasswordHash { get; set; }
+    public int RoleId { get; set; }
+
+    public virtual Role Role { get; set; }
 
   }
 }

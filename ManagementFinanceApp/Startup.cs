@@ -57,10 +57,6 @@ namespace ManagementFinanceApp
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));
 
-      services.AddControllers(options =>
-      {
-        options.Filters.Add(new HttpResponseExceptionFilter());
-      });
 
       services.AddMemoryCache();
       services.AddResponseCaching();
