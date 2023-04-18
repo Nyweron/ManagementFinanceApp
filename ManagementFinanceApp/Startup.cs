@@ -1,11 +1,14 @@
 using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Middleware;
 using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Settings;
+using ManagementFinanceApp.Validators;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -54,10 +57,14 @@ namespace ManagementFinanceApp
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
+      
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));
 
+      services.AddFluentValidationAutoValidation().AddFluentValidationClientsideAdapters();
+
       services.AddScoped<IPasswordHasher<RegisterUserDto>, PasswordHasher<RegisterUserDto>>();
+      services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 
       services.AddMemoryCache();
       services.AddResponseCaching();
