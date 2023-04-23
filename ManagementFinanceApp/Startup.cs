@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace ManagementFinanceApp
@@ -34,6 +36,31 @@ namespace ManagementFinanceApp
     // This method gets called by the runtime. Use this method to add services to the container.
     public IServiceProvider ConfigureServices(IServiceCollection services)
     {
+      var authenticationSettings = new AuthenticationSettings();
+
+      Configuration.GetSection("Authentication").Bind(authenticationSettings);
+
+      services.AddSingleton(authenticationSettings);
+
+      services.AddAuthentication(option =>
+      {
+        option.DefaultAuthenticateScheme = "Bearer";
+        option.DefaultScheme = "Bearer";
+        option.DefaultChallengeScheme = "Bearer";
+      }).AddJwtBearer(cfg =>
+      {
+        cfg.RequireHttpsMetadata = false;
+        cfg.SaveToken = true;
+        cfg.TokenValidationParameters = new TokenValidationParameters
+        {
+          ValidIssuer = authenticationSettings.JwtIssuer,
+          ValidAudience = authenticationSettings.JwtIssuer,
+          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
+        };
+      });
+
+
+
       services.AddSwaggerGen(c =>
       {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -101,6 +128,11 @@ namespace ManagementFinanceApp
         app.UseHsts();
       }
 
+      app.UseMyMiddleware();
+
+      app.UseAuthentication();
+      app.UseHttpsRedirection();
+
       // Enable middleware to serve generated Swagger as a JSON endpoint.
       app.UseSwagger();
 
@@ -117,7 +149,7 @@ namespace ManagementFinanceApp
       app.UseRouting();
       app.UseCors("CorsPolicy");
 
-      app.UseMyMiddleware();
+      
 
       app.UseEndpoints(endpoints =>
       {

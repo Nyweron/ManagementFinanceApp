@@ -8,7 +8,7 @@ namespace ManagementFinanceApp.Settings
   {
     public static IMapper GetMapper() => new MapperConfiguration(cfg =>
     {
-      cfg.CreateMap<RegisterUserDto, User>().ForMember(d => d.PasswordHash, opt => opt.MapFrom(src => src.Password));
+      cfg.CreateMap<RegisterUserDto, User>().ForMember(d => d.PasswordHash, opt => opt.MapFrom(src => src.Password)).ReverseMap();
       cfg.CreateMap<UserDto, User>();
       cfg.CreateMap<User, UserDto>();
       cfg.CreateMap<Entities.CategoryGroup, Models.CategoryGroup>();
