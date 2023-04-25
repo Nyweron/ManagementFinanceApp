@@ -59,11 +59,47 @@ namespace ManagementFinanceApp
         };
       });
 
+      services.AddAuthorization(options =>
+      {
+        options.AddPolicy("HasNick", builder =>
+        {
+          builder.RequireClaim("Nick");
+        });
+      });
+
 
 
       services.AddSwaggerGen(c =>
       {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+        {
+          c.SwaggerDoc("v1", new OpenApiInfo
+          {
+            Title = "My API",
+            Version = "v1"
+          });
+          c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+          {
+            In = ParameterLocation.Header,
+            Description = "Please insert JWT with Bearer into field",
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey
+          });
+          c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+           {
+             new OpenApiSecurityScheme
+             {
+               Reference = new OpenApiReference
+               {
+                 Type = ReferenceType.SecurityScheme,
+                 Id = "Bearer"
+               }
+              },
+              new string[] { }
+            }
+          });
+        }
+
       });
 
       services.AddDbContext<ManagementFinanceAppDbContext>(options =>
@@ -84,7 +120,7 @@ namespace ManagementFinanceApp
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
-      
+
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));
 
@@ -147,9 +183,10 @@ namespace ManagementFinanceApp
       app.UseStaticFiles();
 
       app.UseRouting();
-      app.UseCors("CorsPolicy");
 
-      
+      app.UseAuthorization();
+
+      app.UseCors("CorsPolicy");
 
       app.UseEndpoints(endpoints =>
       {

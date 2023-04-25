@@ -1,13 +1,13 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using ManagementFinanceApp.Service.Expense;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace ManagementFinanceApp.Controllers
 {
-
+  [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class ExpenseController : ControllerBase
@@ -22,6 +22,7 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpGet]
+    [Authorize(Policy = "HasNick")]
     public async Task<IActionResult> GetAll()
     {
       var expenseModels = await _expenseService.GetAllAdaptAsync();
@@ -29,6 +30,7 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpGet("{expenseId}")]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(int expenseId)
     {
       var expenseEntities = await _expenseService.GetAsync(expenseId);
@@ -36,6 +38,7 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Post([FromBody] Models.Expense expense)
     {
       //TODO: Check problems with date...

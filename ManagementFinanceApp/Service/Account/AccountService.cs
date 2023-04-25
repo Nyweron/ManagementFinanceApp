@@ -60,6 +60,7 @@ namespace ManagementFinanceApp.Service.Account
       var registerUserDto = _mapper.Map<RegisterUserDto>(user);
 
       var result = _passwordHasher.VerifyHashedPassword(registerUserDto, registerUserDto.Password, dto.Password);
+
       if (result == PasswordVerificationResult.Failed)
       {
         throw new BadRequestException("Invalid username or passowrd");
@@ -70,12 +71,18 @@ namespace ManagementFinanceApp.Service.Account
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
         new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
-        new Claim("Nick", $"{user.Nick}"),
       };
+
+      if (!string.IsNullOrEmpty(user.Nick))
+      {
+        claims.Add(
+          new Claim("Nick", user.Nick)
+          );
+      }
 
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
       var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-      var expires = DateTime.Now.AddDays(_authenticationSettings.JwtExpireDays);
+      var expires = DateTime.Now.AddMinutes(_authenticationSettings.JwtExpireMinutes);
 
       var token = new JwtSecurityToken(
         _authenticationSettings.JwtIssuer,
