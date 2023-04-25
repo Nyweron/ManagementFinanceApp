@@ -4,12 +4,14 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using ManagementFinanceApp.Authorization;
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Middleware;
 using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Settings;
 using ManagementFinanceApp.Validators;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -65,6 +67,7 @@ namespace ManagementFinanceApp
         {
           builder.RequireClaim("Nick");
         });
+        options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
       });
 
 
@@ -120,6 +123,9 @@ namespace ManagementFinanceApp
       //middelwery try cache, w middelrwareze mozna dodac logowanie i przekazywanie wiadomosci
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
+
+      services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+
 
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));

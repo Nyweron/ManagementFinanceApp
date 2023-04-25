@@ -71,7 +71,8 @@ namespace ManagementFinanceApp.Service.Account
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
         new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
         new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
-      };
+        new Claim("Weight", $"{user.Weight}")
+    };
 
       if (!string.IsNullOrEmpty(user.Nick))
       {

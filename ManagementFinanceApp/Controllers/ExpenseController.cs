@@ -22,7 +22,7 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpGet]
-    [Authorize(Policy = "HasNick")]
+    [Authorize(Policy = "Atleast20")]
     public async Task<IActionResult> GetAll()
     {
       var expenseModels = await _expenseService.GetAllAdaptAsync();
