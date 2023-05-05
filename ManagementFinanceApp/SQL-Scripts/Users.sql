@@ -1,1 +1,1 @@
-INSERT INTO public."Users"("Id", "FirstName", "LastName", "Nick", "Address", "Phone", "Weight", "Email", "IsDeleted")	VALUES (1, 'imieTest', 'nazwiskoTest', 'nickTest', 'adresTest', 'telefon', 1, 'email', false);
+INSERT INTO public."Users"("Id", "FirstName", "LastName", "Nick", "Address", "Phone", "Weight", "Email", "IsDeleted", "PasswordHash", "RoleId")	VALUES (1, 'imieTest', 'nazwiskoTest', 'nickTest', 'adresTest', 'telefon', 1, 'email', false, '1234567!@#$%^&asdfghj', 1);

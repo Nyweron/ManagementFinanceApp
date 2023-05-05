@@ -2,11 +2,11 @@
 
 namespace ManagementFinanceApp.Authorization
 {
-  public class MinimumAgeRequirement : IAuthorizationRequirement
+  public class MinimumWeightRequirement : IAuthorizationRequirement
   {
     public int MinimumAge { get; }
 
-    public MinimumAgeRequirement(int minimumAge)
+    public MinimumWeightRequirement(int minimumAge)
     {
       MinimumAge = minimumAge;
     }

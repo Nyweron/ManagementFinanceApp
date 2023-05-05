@@ -9,6 +9,7 @@ using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Middleware;
 using ManagementFinanceApp.Models;
+using ManagementFinanceApp.Service.UserContextService;
 using ManagementFinanceApp.Settings;
 using ManagementFinanceApp.Validators;
 using Microsoft.AspNetCore.Authorization;
@@ -67,7 +68,7 @@ namespace ManagementFinanceApp
         {
           builder.RequireClaim("Nick");
         });
-        options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
+        options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumWeightRequirement(20)));
       });
 
 
@@ -124,8 +125,9 @@ namespace ManagementFinanceApp
       //w sensie middelrwerey dodać logike szczegolna, powinnien zmapowac wiadomosc do przegladarki
       //https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-2.2
 
-      services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
-
+      services.AddScoped<IAuthorizationHandler, MinimumWeighRequirementHandler>();
+      services.AddScoped<IUserContextService, UserContextService>();
+      services.AddHttpContextAccessor();
 
       services.AddControllers(options =>
         options.Filters.Add(new HttpResponseExceptionFilter()));
@@ -190,9 +192,9 @@ namespace ManagementFinanceApp
 
       app.UseRouting();
 
-      app.UseAuthorization();
-
       app.UseCors("CorsPolicy");
+
+      app.UseAuthorization();
 
       app.UseEndpoints(endpoints =>
       {
