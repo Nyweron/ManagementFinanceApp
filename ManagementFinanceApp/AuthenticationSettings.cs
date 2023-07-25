@@ -6,5 +6,6 @@
     public int JwtExpireDays { get; set; }
     public int JwtExpireMinutes { get; set; }
     public string JwtIssuer { get; set; }
+    public string JWtRefreshTokenValidityInMinutes { get; set; }
   }
 }

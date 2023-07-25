@@ -26,6 +26,8 @@ namespace ManagementFinanceApp.Data
     public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
     public DbSet<Role> Roles{ get; set; }
 
+    public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
+  
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.EnableSensitiveDataLogging();

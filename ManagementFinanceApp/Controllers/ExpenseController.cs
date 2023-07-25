@@ -25,7 +25,8 @@ namespace ManagementFinanceApp.Controllers
     }
 
     [HttpGet]
-   // [Authorize(Policy = "Atleast20")]
+    // [Authorize(Policy = "Atleast20")]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
 

@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using FluentValidation;
@@ -12,6 +13,7 @@ using ManagementFinanceApp.Models;
 using ManagementFinanceApp.Service.UserContextService;
 using ManagementFinanceApp.Settings;
 using ManagementFinanceApp.Validators;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -60,8 +62,18 @@ namespace ManagementFinanceApp
           ValidAudience = authenticationSettings.JwtIssuer,
           IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authenticationSettings.JwtKey))
         };
+        cfg.Events = new JwtBearerEvents
+        {
+          OnAuthenticationFailed = context => {
+            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+            {
+              context.Response.Headers.Add("IS-TOKEN-EXPIRED", "true");
+            }
+            return Task.CompletedTask;
+          }
+        };
       });
-
+   
       services.AddAuthorization(options =>
       {
         options.AddPolicy("HasNick", builder =>

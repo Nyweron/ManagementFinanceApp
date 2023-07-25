@@ -2,7 +2,6 @@
 using ManagementFinanceApp.Data;
 using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Models;
-using ManagementFinanceApp.Repository.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +10,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ManagementFinanceApp.Service.Account
@@ -48,7 +48,7 @@ namespace ManagementFinanceApp.Service.Account
       _context.SaveChanges();
     }
 
-    public string GenerateJwt(LoginDto dto)
+    public Tokens GenerateJwtWhenLogin(LoginDto dto)
     {
       var user = _context.Users.Include(r => r.Role).FirstOrDefault(u => u.Email == dto.Email);
 
@@ -69,12 +69,13 @@ namespace ManagementFinanceApp.Service.Account
       var claims = new List<Claim>
       {
         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+        new Claim(ClaimTypes.Name, $"{user.Email}"),
         new Claim(ClaimTypes.Role, $"{user.Role.Name}"),
         new Claim("RoleId", $"{user.RoleId}"),
         new Claim("Weight", $"{user.Weight}"),
-        new Claim("IsLogin", $"{true}")
-    };
+        new Claim("IsLogin", $"{true}"),
+        new Claim(ClaimTypes.Email, $"{user.Email}")
+      };
 
       if (!string.IsNullOrEmpty(user.Nick))
       {
@@ -83,9 +84,63 @@ namespace ManagementFinanceApp.Service.Account
           );
       }
 
+      return GenerateJwtToken(claims);
+    }
+
+    public Tokens GenerateRefreshToken(string username)
+    {
+      return GenerateJwtWhenRefreshTokens(username);
+    }
+
+    public Tokens GenerateJwtWhenRefreshTokens(string userName)
+    {
+      try
+      {
+        var claims = new List<Claim>
+        {
+          new Claim(ClaimTypes.Name, $"{userName}"),
+        };
+
+        return GenerateJwtToken(claims);
+      }
+      catch (Exception ex)
+      {
+        return null;
+      }
+    }
+
+    public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+    {
+      var Key = Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey);
+
+      var tokenValidationParameters = new TokenValidationParameters
+      {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Key),
+        ClockSkew = TimeSpan.Zero
+      };
+
+      var tokenHandler = new JwtSecurityTokenHandler();
+      var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+      JwtSecurityToken jwtSecurityToken = securityToken as JwtSecurityToken;
+      if (jwtSecurityToken == null || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+      {
+        throw new SecurityTokenException("Invalid token");
+      }
+
+
+      return principal;
+    }
+
+    private Tokens GenerateJwtToken(List<Claim> claims)
+    {
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
       var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-      var expires = DateTime.Now.AddMinutes(_authenticationSettings.JwtExpireMinutes);
+      var expires = DateTime.Now.AddSeconds(60);
+     // var expires = DateTime.Now.AddMinutes(_authenticationSettings.JwtExpireMinutes);
 
       var token = new JwtSecurityToken(
         _authenticationSettings.JwtIssuer,
@@ -94,9 +149,27 @@ namespace ManagementFinanceApp.Service.Account
         expires: expires,
         signingCredentials: cred
       );
+      var refreshToken = GenerateRefreshToken();
 
       var tokenHandler = new JwtSecurityTokenHandler();
-      return tokenHandler.WriteToken(token);
+      var tokenResult = tokenHandler.WriteToken(token);
+
+      return new Tokens
+      {
+        Token = tokenResult,
+        RefreshToken = refreshToken,
+      };
     }
+
+    private string GenerateRefreshToken()
+    {
+      var randomNumber = new byte[32];
+      using (var rng = RandomNumberGenerator.Create())
+      {
+        rng.GetBytes(randomNumber);
+        return Convert.ToBase64String(randomNumber);
+      }
+    }
+
   }
 }
