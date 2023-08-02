@@ -6,6 +6,7 @@ using AutoMapper;
 using ManagementFinanceApp.Adapter;
 using ManagementFinanceApp.Repository.CategoryExpense;
 using ManagementFinanceApp.Service.CategoryExpense;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ManagementFinanceApp.Controllers
@@ -31,6 +32,7 @@ namespace ManagementFinanceApp.Controllers
       _categoryExpenseAdapter = categoryExpenseAdapter;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {

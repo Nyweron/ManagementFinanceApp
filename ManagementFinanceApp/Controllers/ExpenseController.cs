@@ -33,6 +33,7 @@ namespace ManagementFinanceApp.Controllers
 
       var bar = _userContextService.GetUserId;
       var foo = _userContextService.User;
+      var isLog = _userContextService.IsLogin;
       var expenseModels = await _expenseService.GetAllAdaptAsync();
       return Ok(expenseModels);
     }

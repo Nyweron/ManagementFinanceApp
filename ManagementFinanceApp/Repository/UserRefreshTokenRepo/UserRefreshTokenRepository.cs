@@ -24,11 +24,21 @@ namespace ManagementFinanceApp.Repository.UserRefreshTokenRepo
 
     public void DeleteUserRefreshTokens(string email, string refreshToken)
     {
-      var item = ManagementFinanceAppDbContext.UserRefreshTokens.FirstOrDefault(x => x.UserName == email && x.RefreshToken == refreshToken);
-      if (item != null)
+      var userRefreshTokens = ManagementFinanceAppDbContext.UserRefreshTokens.Select(x=>x).ToList();
+      var userWithRefreshTokenInDb = userRefreshTokens.FirstOrDefault(x => x.UserName == email && x.RefreshToken == refreshToken);
+
+      if (userWithRefreshTokenInDb != null)
       {
-        ManagementFinanceAppDbContext.UserRefreshTokens.Remove(item);
+        ManagementFinanceAppDbContext.UserRefreshTokens.Remove(userWithRefreshTokenInDb);
       }
+
+      var user = userRefreshTokens.FirstOrDefault(y => y.UserName == email);
+
+      if (user != null)
+      {
+        ManagementFinanceAppDbContext.UserRefreshTokens.Remove(user);
+      }
+      
     }
 
     public UserRefreshToken GetSavedRefreshTokens(string email, string refreshToken)

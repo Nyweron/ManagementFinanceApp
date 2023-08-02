@@ -1,4 +1,5 @@
 ﻿using ManagementFinanceApp.Exceptions;
+using ManagementFinanceApp.Service.UserContextService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -11,16 +12,20 @@ namespace ManagementFinanceApp.Middleware
   {
     private readonly RequestDelegate _next;
     private readonly ILogger _logger;
+    private readonly IUserContextService _userContextService;
 
-    public MyMiddleware(RequestDelegate next, ILoggerFactory logFactory)
+    public MyMiddleware(RequestDelegate next, ILoggerFactory logFactory, IUserContextService userContextService)
     {
       _next = next;
+      _userContextService = userContextService;
 
       _logger = logFactory.CreateLogger("MyMiddleware");
     }
 
     public async Task Invoke(HttpContext httpContext)
     {
+      var user = _userContextService.User;
+      var isLogin = _userContextService.IsLogin;
       _logger.LogInformation("MyMiddleware executing..");
       try
       {
