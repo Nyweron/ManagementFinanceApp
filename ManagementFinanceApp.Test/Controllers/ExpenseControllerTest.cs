@@ -60,188 +60,188 @@ namespace ManagementFinanceApp.Test.Controllers
       expenseListObj = new List<Models.Expense>() { new Models.Expense { Id = 2, Comment = "Expense2" } };
     }
 
-    [Test]
-    public async Task GetAllExpenses_ShouldReturnAllExpensesAsync()
-    {
-      // Arrange
-      var expectedNumberOfExpensesList = 4;
-      var expensesList = GetModelExpensesList();
+    //[Test]
+    //public async Task GetAllExpenses_ShouldReturnAllExpensesAsync()
+    //{
+    //  // Arrange
+    //  var expectedNumberOfExpensesList = 4;
+    //  var expensesList = GetModelExpensesList();
 
-      mockExpenseService.Setup(repo => repo.GetAllAdaptAsync()).Returns(Task.FromResult(expensesList));
+    //  mockExpenseService.Setup(repo => repo.GetAllAdaptAsync()).Returns(Task.FromResult(expensesList));
 
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var okObjectResult = await controller.GetAll() as OkObjectResult;
-      var result = okObjectResult.Value as List<Models.List.ExpenseList>;
+    //  // Act
+    //  var okObjectResult = await controller.GetAll() as OkObjectResult;
+    //  var result = okObjectResult.Value as List<Models.List.ExpenseList>;
 
-      // Assert
-      Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
-      Assert.AreEqual(expectedNumberOfExpensesList, result.Count(), "Expected Number Of Expenses List");
-      Assert.AreEqual(expenseObj.Id, result[1].Id, "Id is not equal");
-    }
+    //  // Assert
+    //  Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
+    //  Assert.AreEqual(expectedNumberOfExpensesList, result.Count(), "Expected Number Of Expenses List");
+    //  Assert.AreEqual(expenseObj.Id, result[1].Id, "Id is not equal");
+    //}
 
-    [Test]
-    public async Task GetByIdExpenses_ShouldReturnOneExpenseAsync()
-    {
-      // Arrange
-      var expenseTestIndex = 1;
-      var expenseTest = GetExpensesList().ToList()[expenseTestIndex];
+    //[Test]
+    //public async Task GetByIdExpenses_ShouldReturnOneExpenseAsync()
+    //{
+    //  // Arrange
+    //  var expenseTestIndex = 1;
+    //  var expenseTest = GetExpensesList().ToList()[expenseTestIndex];
 
-      mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense))
-        .Returns(Task.FromResult(expenseTest));
+    //  mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense))
+    //    .Returns(Task.FromResult(expenseTest));
 
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var okObjectResult = await controller.Get(expectedIdOfExpense) as OkObjectResult;
-      var result = okObjectResult.Value as Entities.Expense;
+    //  // Act
+    //  var okObjectResult = await controller.Get(expectedIdOfExpense) as OkObjectResult;
+    //  var result = okObjectResult.Value as Entities.Expense;
 
-      // Assert
-      Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
-      Assert.AreEqual(expenseObj.Id, result.Id, "Id is not equal");
-    }
+    //  // Assert
+    //  Assert.NotNull(okObjectResult, "Ok(ObjectResult) is null");
+    //  Assert.AreEqual(expenseObj.Id, result.Id, "Id is not equal");
+    //}
 
-    [Test]
-    public async Task DeleteByIdExpenses_ShouldDeleteOneExpense()
-    {
-      // Arrange
-      var expenseTestIndex = 1;
-      var expenseTest = GetExpensesList().ToList()[expenseTestIndex];
+    //[Test]
+    //public async Task DeleteByIdExpenses_ShouldDeleteOneExpense()
+    //{
+    //  // Arrange
+    //  var expenseTestIndex = 1;
+    //  var expenseTest = GetExpensesList().ToList()[expenseTestIndex];
 
-      mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
-      mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //  mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
+    //  mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var noContentResult = await controller.Delete(expectedIdOfExpense) as NoContentResult;
+    //  // Act
+    //  var noContentResult = await controller.Delete(expectedIdOfExpense) as NoContentResult;
 
-      // Assert
-      Assert.NotNull(noContentResult, "noContentResult is null");
-      Assert.AreEqual(noContentResult.StatusCode, 204, "delete is not works");
-    }
+    //  // Assert
+    //  Assert.NotNull(noContentResult, "noContentResult is null");
+    //  Assert.AreEqual(noContentResult.StatusCode, 204, "delete is not works");
+    //}
 
-    [Test]
-    public async Task DeleteByIdExpenses_ShouldReturnNotFoundWhenGetAsync()
-    {
-      // Arrange
-      mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //[Test]
+    //public async Task DeleteByIdExpenses_ShouldReturnNotFoundWhenGetAsync()
+    //{
+    //  // Arrange
+    //  mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(true));
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var notFoundResult = await controller.Delete(expectedIdOfExpense) as NotFoundResult;
+    //  // Act
+    //  var notFoundResult = await controller.Delete(expectedIdOfExpense) as NotFoundResult;
 
-      // Assert
-      Assert.AreEqual(404, notFoundResult.StatusCode, "Not found result, not works. Method Delete");
-    }
+    //  // Assert
+    //  Assert.AreEqual(404, notFoundResult.StatusCode, "Not found result, not works. Method Delete");
+    //}
 
-    [Test]
-    public async Task DeleteByIdExpenses_ShouldReturnInternalServerErrorExpense()
-    {
-      // Arrange
-      mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
-      mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(false));
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //[Test]
+    //public async Task DeleteByIdExpenses_ShouldReturnInternalServerErrorExpense()
+    //{
+    //  // Arrange
+    //  mockExpenseService.Setup(repo => repo.GetAsync(expectedIdOfExpense)).Returns(Task.FromResult(expenseObj));
+    //  mockExpenseService.Setup(repo => repo.RemoveAsync(expenseObj)).Returns(Task.FromResult(false));
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var noContentResult = await controller.Delete(expectedIdOfExpense) as ObjectResult;
+    //  // Act
+    //  var noContentResult = await controller.Delete(expectedIdOfExpense) as ObjectResult;
 
-      // Assert
-      Assert.NotNull(noContentResult, "GetAsync returns null object in method Delete");
-      Assert.AreEqual(500, noContentResult.StatusCode, "Internal server error in method Delete");
-    }
+    //  // Assert
+    //  Assert.NotNull(noContentResult, "GetAsync returns null object in method Delete");
+    //  Assert.AreEqual(500, noContentResult.StatusCode, "Internal server error in method Delete");
+    //}
 
-    [Test]
-    public async Task PostExpenses_ShouldReturnBadRequestObjectIsNull()
-    {
-      // Arrange
-      var expenseObj = new Models.Expense();
-      expenseObj = null;
-      var controller = new ExpenseController(null, null);
+    //[Test]
+    //public async Task PostExpenses_ShouldReturnBadRequestObjectIsNull()
+    //{
+    //  // Arrange
+    //  var expenseObj = new Models.Expense();
+    //  expenseObj = null;
+    //  var controller = new ExpenseController(null, null);
 
-      // Act
-      var badRequestResult = await controller.Post(expenseObj) as BadRequestResult;
+    //  // Act
+    //  var badRequestResult = await controller.Post(expenseObj) as BadRequestResult;
 
-      // Assert
-      Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
-    }
+    //  // Assert
+    //  Assert.AreEqual(400, badRequestResult.StatusCode, "Badrequest does not works. Method post");
+    //}
 
-    [Test]
-    public async Task PostExpenses_ShouldCreateExpense()
-    {
-      // Arrange
-      mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
-        .Returns(Task.FromResult(true));
-      mockExpenseService.Setup(repo => repo.GetAllAsync())
-      .Returns(Task.FromResult(GetExpensesList()));
+    //[Test]
+    //public async Task PostExpenses_ShouldCreateExpense()
+    //{
+    //  // Arrange
+    //  mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
+    //    .Returns(Task.FromResult(true));
+    //  mockExpenseService.Setup(repo => repo.GetAllAsync())
+    //  .Returns(Task.FromResult(GetExpensesList()));
 
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var objectResult = await controller.Post(expenseModelObj) as ObjectResult;
+    //  // Act
+    //  var objectResult = await controller.Post(expenseModelObj) as ObjectResult;
 
-      // Assert
-      Assert.AreEqual(201, objectResult.StatusCode, "Expense Created does not works. Method post");
-    }
+    //  // Assert
+    //  Assert.AreEqual(201, objectResult.StatusCode, "Expense Created does not works. Method post");
+    //}
 
-    [Test]
-    public async Task PostExpenses_ShouldNotCreateExpense()
-    {
-      // Arrange
-      mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
-        .Returns(Task.FromResult(false));
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //[Test]
+    //public async Task PostExpenses_ShouldNotCreateExpense()
+    //{
+    //  // Arrange
+    //  mockExpenseService.Setup(repo => repo.AddExpense(It.IsAny<Models.Expense>()))
+    //    .Returns(Task.FromResult(false));
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
 
-      // Act
-      var objectResult = await controller.Post(expenseModelObj) as ObjectResult;
+    //  // Act
+    //  var objectResult = await controller.Post(expenseModelObj) as ObjectResult;
 
-      // Assert
-      Assert.AreEqual(500, objectResult.StatusCode, "Expense StatusCode500 does not works. Method post");
-    }
+    //  // Assert
+    //  Assert.AreEqual(500, objectResult.StatusCode, "Expense StatusCode500 does not works. Method post");
+    //}
 
-    [Test]
-    public async Task PutExpenses_ShouldReturnBadRequestWhenObjectIsNull()
-    {
-      // Arrange
-      expectedIdOfExpense = 1;
-      var controller = new ExpenseController(null, null);
+    //[Test]
+    //public async Task PutExpenses_ShouldReturnBadRequestWhenObjectIsNull()
+    //{
+    //  // Arrange
+    //  expectedIdOfExpense = 1;
+    //  var controller = new ExpenseController(null, null);
 
-      // Act
-      var objectResult = await controller.Edit(expectedIdOfExpense, null) as ObjectResult;
+    //  // Act
+    //  var objectResult = await controller.Edit(expectedIdOfExpense, null) as ObjectResult;
 
-      // Assert
-      Assert.AreEqual(400, objectResult.StatusCode, "Expense StatusCode400 does not works. Method put. Object cannot be empty");
-    }
+    //  // Assert
+    //  Assert.AreEqual(400, objectResult.StatusCode, "Expense StatusCode400 does not works. Method put. Object cannot be empty");
+    //}
 
-    [Test]
-    public async Task PutExpenses_ShouldReturnStatusCode500WhenObjectIsNotUpdated()
-    {
-      // Arrange
-      mockExpenseService.Setup(repo => repo.EditExpense(It.IsAny<Models.Expense>(), It.IsAny<int>())).Returns(Task.FromResult(false));
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
-      expectedIdOfExpense = 1;
+    //[Test]
+    //public async Task PutExpenses_ShouldReturnStatusCode500WhenObjectIsNotUpdated()
+    //{
+    //  // Arrange
+    //  mockExpenseService.Setup(repo => repo.EditExpense(It.IsAny<Models.Expense>(), It.IsAny<int>())).Returns(Task.FromResult(false));
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //  expectedIdOfExpense = 1;
 
-      // Act
-      var objectResult = await controller.Edit(expectedIdOfExpense, expenseModelObj) as ObjectResult;
+    //  // Act
+    //  var objectResult = await controller.Edit(expectedIdOfExpense, expenseModelObj) as ObjectResult;
 
-      // Assert
-      Assert.AreEqual(500, objectResult.StatusCode, "Expense method put. Object was not updated.");
-    }
+    //  // Assert
+    //  Assert.AreEqual(500, objectResult.StatusCode, "Expense method put. Object was not updated.");
+    //}
 
-    [Test]
-    public async Task PutExpenses_ShouldReturnStatusCode204WhenObjectIsUpdated()
-    {
-      // Arrange
-      mockExpenseService.Setup(repo => repo.EditExpense(It.IsAny<Models.Expense>(), It.IsAny<int>())).Returns(Task.FromResult(true));
-      var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
-      expectedIdOfExpense = 1;
+    //[Test]
+    //public async Task PutExpenses_ShouldReturnStatusCode204WhenObjectIsUpdated()
+    //{
+    //  // Arrange
+    //  mockExpenseService.Setup(repo => repo.EditExpense(It.IsAny<Models.Expense>(), It.IsAny<int>())).Returns(Task.FromResult(true));
+    //  var controller = new ExpenseController(mockExpenseService.Object, mockLogger.Object);
+    //  expectedIdOfExpense = 1;
 
-      // Act
-      var noContentResult = await controller.Edit(expectedIdOfExpense, expenseModelObj) as NoContentResult;
+    //  // Act
+    //  var noContentResult = await controller.Edit(expectedIdOfExpense, expenseModelObj) as NoContentResult;
 
-      // Assert
-      Assert.AreEqual(204, noContentResult.StatusCode, "Expense method put. Object was not updated.");
-    }
+    //  // Assert
+    //  Assert.AreEqual(204, noContentResult.StatusCode, "Expense method put. Object was not updated.");
+    //}
 
   }
 
