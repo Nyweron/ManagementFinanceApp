@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ManagementFinanceApp.Data;
-using ManagementFinanceApp.Entities;
 using ManagementFinanceApp.Exceptions;
 using ManagementFinanceApp.Models;
 using Microsoft.AspNetCore.Identity;
@@ -141,7 +140,7 @@ namespace ManagementFinanceApp.Service.Account
     {
       var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authenticationSettings.JwtKey));
       var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-     // var expires = DateTime.Now.AddSeconds(15); // For tests...
+      //var expires = DateTime.Now.AddSeconds(20); // For tests...
       var expires = DateTime.Now.AddMinutes(_authenticationSettings.JwtExpireMinutes);
 
       var token = new JwtSecurityToken(

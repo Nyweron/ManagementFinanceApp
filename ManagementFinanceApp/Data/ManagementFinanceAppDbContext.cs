@@ -24,26 +24,28 @@ namespace ManagementFinanceApp.Data
     public DbSet<Plan> Plans { get; set; }
     public DbSet<Investment> Investments { get; set; }
     public DbSet<InvestmentSchedule> InvestmentSchedules { get; set; }
-    public DbSet<Role> Roles{ get; set; }
+    public DbSet<Role> Roles { get; set; }
 
     public DbSet<UserRefreshToken> UserRefreshTokens { get; set; }
-  
+    //https://codepedia.info/aspnet-core-jwt-refresh-token-authentication
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
       optionsBuilder.EnableSensitiveDataLogging();
-    } 
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+      modelBuilder.UseIdentityColumns();
+
       modelBuilder.Entity<Expense>()
         .Property(proper => proper.Id)
-        .HasDefaultValue(1);
+        .ValueGeneratedOnAdd();
 
       modelBuilder.Entity<User>()
         .Property(u => u.Email)
         .IsRequired();
 
       modelBuilder.Entity<Role>()
-        .Property(u=>u.Name)
+        .Property(u => u.Name)
         .IsRequired();
     }
   }

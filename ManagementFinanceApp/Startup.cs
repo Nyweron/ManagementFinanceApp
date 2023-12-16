@@ -73,7 +73,7 @@ namespace ManagementFinanceApp
           }
         };
       });
-   
+      //https://codepedia.info/aspnet-core-jwt-refresh-token-authentication
       services.AddAuthorization(options =>
       {
         options.AddPolicy("HasNick", builder =>
